@@ -1,7 +1,6 @@
 import express from "express";
 import helmet from 'helmet';
 import createError from "http-errors";
-import db from './database.js';
 
 import { errorHandeler } from "./controllers/errorController.js";
 import produitsRouter from './routes/produitsRouter.js';
@@ -13,19 +12,6 @@ app.use(express.json({
     limit : "10kb" //Limite la taille du body à 10kb
 }));
 app.use(express.urlencoded({extended: true}));
-
-
-
-app.get('/ok', async (request, response, next)=>{
-    try {
-        const result = await db.query`SELECT * FROM produit`
-        console.log(result.recordset);
-    } catch(err) {
-        console.log(err);
-    }
-    return response.status(200).send("ok");
-
-});
 
 app.use('/api/v1/produits', produitsRouter);
 
