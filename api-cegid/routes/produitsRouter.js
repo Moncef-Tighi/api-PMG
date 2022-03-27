@@ -7,7 +7,4 @@ router.get("/disponible", controllers.produitsDisponible);
 router.get("/:nom_produit", controllers.detailProduit)
 router.get("/", controllers.listProduits)
 
-router.patch("/commande/:nom_produit", controllers.commande);
-
-
 export default router
