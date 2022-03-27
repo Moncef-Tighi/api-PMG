@@ -1,13 +1,11 @@
 import express from "express";
-import dotenv from 'dotenv';
-import path from 'path';
 import helmet from 'helmet';
 import createError from "http-errors";
+import db from './database.js';
 
 import { errorHandeler } from "./controllers/errorController.js";
 
 const app = express();
-dotenv.config('./config.env');
 
 app.use(helmet());
 app.use(express.json({
@@ -17,8 +15,15 @@ app.use(express.urlencoded({extended: true}));
 
 
 
-app.get('/ok', (request, response, next)=>{
+app.get('/ok', async (request, response, next)=>{
     response.status(200).send("ok");
+    try {
+        const result = await db.query`SELECT * FROM produit`
+        console.log(result);
+        console.log("UI");    
+    } catch(err) {
+        console.log(err);
+    }
 });
 
 app.all('*', (request, response, next)=> {    
@@ -28,7 +33,7 @@ app.all('*', (request, response, next)=> {
 
 app.use(errorHandeler);
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 2000;
 
 app.listen(port, ()=> {
     console.log(`Server ouvert sur le port ${port}`);
