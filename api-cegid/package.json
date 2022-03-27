@@ -1,0 +1,14 @@
+{
+  "name": "api-cegid",
+  "version": "0.1.0",
+  "description": "API utilisé pour effectuer les commandes et manipuler la base de donnée de CEGID",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tighiouart Moncef",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.3"
+  }
+}
