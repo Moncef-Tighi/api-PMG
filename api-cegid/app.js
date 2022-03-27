@@ -4,6 +4,7 @@ import createError from "http-errors";
 import db from './database.js';
 
 import { errorHandeler } from "./controllers/errorController.js";
+import produitsRouter from './routes/produitsRouter.js';
 
 const app = express();
 
@@ -16,15 +17,17 @@ app.use(express.urlencoded({extended: true}));
 
 
 app.get('/ok', async (request, response, next)=>{
-    response.status(200).send("ok");
     try {
         const result = await db.query`SELECT * FROM produit`
-        console.log(result);
-        console.log("UI");    
+        console.log(result.recordset);
     } catch(err) {
         console.log(err);
     }
+    return response.status(200).send("ok");
+
 });
+
+app.use('/api/v1/produits', produitsRouter);
 
 app.all('*', (request, response, next)=> {    
     //Ce middelware a pour seul but de catch les erreurs 404 
