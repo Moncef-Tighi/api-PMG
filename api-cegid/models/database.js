@@ -19,7 +19,6 @@ const connexion = async function() {
     } catch (err) {
         console.error(`Erreur critique ! Impossible de se connecter à la base de donnée
         Erreur : ${err}`);
-        process.exit(1);
     }
 }
 connexion();

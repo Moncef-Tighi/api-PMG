@@ -2,9 +2,9 @@ import createError from 'http-errors'
 
 export const catchAsync= function(func){
     /*
-        Toute les MIDDELWARE asynchrones doivent être placés à l'intérieur de cette fonction.
-        ça permet de lancer de throw une erreur en cas de problème dans l'opération asynchrone
-        Sans devoir entourner toute les opérations asynchrones avec un bloc try/catch
+        Tout les MIDDELWARE asynchrones doivent être placés à l'intérieur de cette fonction.
+        ça permet de throw une erreur en cas de problème dans l'opération asynchrone sans
+        devoir entourner toute les opérations asynchrones avec un bloc try/catch
     */
     return (request, response, next) => {
         func(request, response, next).catch(error => {

@@ -1,4 +1,4 @@
-import * as model from '../models/produits.js';
+import * as model from '../models/article.js';
 import { catchAsync } from './errorController.js';
 import createError from 'http-errors'
 

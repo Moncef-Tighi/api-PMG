@@ -3,7 +3,7 @@ import helmet from 'helmet';
 import createError from "http-errors";
 
 import { errorHandeler } from "./controllers/errorController.js";
-import produitsRouter from './routes/produitsRouter.js';
+import produitsRouter from './routes/articlesRouter.js';
 import commandeRouter from './routes/commandeRouter.js';
 
  
@@ -15,7 +15,7 @@ app.use(express.json({
 }));
 app.use(express.urlencoded({extended: true}));
 
-app.use('/api/v1/produits', produitsRouter);
+app.use('/api/v1/articles', produitsRouter);
 app.use('/api/v1/commande', commandeRouter);
 
 app.all('*', (request, response, next)=> {    
