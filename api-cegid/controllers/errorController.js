@@ -30,13 +30,15 @@ export const errorHandeler = function(err, request, response, next) {
     logError(err);
     if (process.env.NODE_ENV==='production') {
         return response.status(err.status).json( {
-            status : err.status,
+            status : "error",
+            statusCode : err.status,
             message : err.message,
         });    
 
     } else if (process.env.NODE_ENV==='development') {
         return response.status(err.status).json( {
-            status : err.status,
+            status: "error",
+            statusCode : err.status,
             message : err.message,
             stack : err.stack
         });    

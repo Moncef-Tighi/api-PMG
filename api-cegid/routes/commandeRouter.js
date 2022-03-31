@@ -3,7 +3,7 @@ import * as controllers from '../controllers/commandeController.js';
 
 const router = express.Router()
 
-router.patch("/", controllers.commande);
+//router.patch("/", controllers.commande);
 
 
 export default router

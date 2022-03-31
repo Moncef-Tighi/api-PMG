@@ -22,7 +22,7 @@ const connexion = async function() {
         return db
     } catch (err) {
         console.error(`Erreur critique ! Impossible de se connecter à la base de donnée
-        Erreur : ${err}`);
+        Détails : ${err}`);
     }
 }
 connexion();
