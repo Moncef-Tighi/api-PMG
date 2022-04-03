@@ -1,6 +1,7 @@
 import * as qs from 'qs';
 
 class Query {
+
     constructor(allowedFields) {
         this.operators = {
             //Dictionnaire qui transforme les paramètres de querry en opérateur
@@ -19,20 +20,6 @@ class Query {
         this.queryString = qs.parse(queryString,{ 
             ignoreQueryPrefix: true 
         });
-    }
-
-    _sanitize() {
-
-    }
-
-    where(queryString) {
-        this._parse(queryString);
-        this._conditions("WHERE ");
-    }
-
-    having(queryString) {
-        this._parse(queryString);
-        this._conditions("HAVING ");
     }
 
     _conditions(start) {
@@ -79,9 +66,26 @@ class Query {
         return result.slice(0,-4);
     }
 
+    where(queryString) {
+        this._parse(queryString);
+        return this._conditions("WHERE ");
+    }
+
+    having(queryString) {
+        this._parse(queryString);
+        return this._conditions("HAVING ");
+    }
+
     sort() {
 
     }
+
+    sanitize(request) {
+        for (const [key, value] of Object.entries(this.inputs)) {
+            request.input(key, value);
+        }
+    }
+
 }
 
 const query1= new Query(["marque", "b"]);
@@ -89,8 +93,10 @@ const query1= new Query(["marque", "b"]);
 const query2= new Query(["marque","stock"]);
 
 //console.log(query1.where("marque=adidas,nike&marque=coca&b[gt]=10"))
-//console.log(query2.where("marque=adidas,nike&stock[gt]=10&stock[lte]=20"));
-console.log(query2.where("marque[like]=adi"));
+
+//console.log(query2.where("marque[like]=adi"));
+console.log(query2.having("marque=adidas,nike&stock[gt]=10&stock[lte]=20"));
+//console.log(query2.sanitize(query2.having("marque=adidas,nike&stock[gt]=10&stock[lte]=20")));
 
 
 export default Query;
