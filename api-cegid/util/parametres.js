@@ -9,10 +9,11 @@ class Query {
             "gte" : ">=",
             "lt" : '<',
             "lte" : '<=',
-            "like" : '%' 
+            "like" : '' 
         }
         this.allowedFields = allowedFields;
         this.queryString="";
+        //On sauvgarde les inputs dans cet attribut pour pouvoir les sanetize après
         this.inputs={};
     }
 
@@ -40,6 +41,7 @@ class Query {
             
             for (const param of Object.keys(fields)) {
                 i++;
+                console.log(param);
                 if (param in this.operators) {
                     if (param === 'like') result +=`${field} LIKE '%${fields[param]}%'`;
                     //TODO: Remplacer la vraie value par le @ du prepared statement
@@ -47,13 +49,18 @@ class Query {
                     this.inputs[i]= fields[param];
                 }
                 else {
-                    if (this.queryString[field].constructor === Array || this.queryString[field].split(",").length>1) {
-                        //TODO: Remplacer la vraie value par le @ du prepared statement
-                        result+=`${field} IN (${this.queryString[field]})`;
-                    }
-                    else {
-                        //TODO: Remplacer la vraie value par le @ du prepared statement
-                        result+=`${field}=@${this.queryString[field]}`;
+                    try {
+                        if (this.queryString[field].constructor === Array || this.queryString[field].split(",").length>1) {
+                            //TODO: Remplacer la vraie value par le @ du prepared statement
+                            result+=`${field} IN (${this.queryString[field]})`;
+                        }
+                        else {
+                            //TODO: Remplacer la vraie value par le @ du prepared statement
+                            result+=`${field}=@${this.queryString[field]}`;
+                        }    
+                    } catch(Err) {
+                        //Si l'opérateur est invalide, le code au dessus throw une erreur qu'on catch ici.
+                        return "Opérateur invalide"
                     }
                     this.inputs[field]=this.queryString[field];
                     result+=" AND ";
@@ -95,8 +102,8 @@ const query2= new Query(["marque","stock"]);
 //console.log(query1.where("marque=adidas,nike&marque=coca&b[gt]=10"))
 
 //console.log(query2.where("marque[like]=adi"));
-console.log(query2.having("marque=adidas,nike&stock[gt]=10&stock[lte]=20"));
+//console.log(query2.having("marque=adidas,nike&stock[gt]=10&stock[lte]=20"));
 //console.log(query2.sanitize(query2.having("marque=adidas,nike&stock[gt]=10&stock[lte]=20")));
-
+console.log(query2.where('stock[a]=test'));
 
 export default Query;
