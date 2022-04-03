@@ -27,9 +27,18 @@ class Query {
 
     where(queryString) {
         this._parse(queryString);
+        this._conditions("WHERE ");
+    }
+
+    having(queryString) {
+        this._parse(queryString);
+        this._conditions("HAVING ");
+    }
+
+    _conditions(start) {
 
         if (Object.keys(this.queryString).length === 0) return "";
-        let result = 'WHERE ';
+        let result = start;
         for (const field of Object.keys(this.queryString)) {
 
             if (!this.allowedFields.includes(field)) {
