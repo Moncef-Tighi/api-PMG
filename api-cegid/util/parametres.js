@@ -27,7 +27,8 @@ class Query {
 
     where(queryString) {
         this._parse(queryString);
-        if (!this.queryString) return "";
+
+        if (Object.keys(this.queryString).length === 0) return "";
         let result = 'WHERE ';
         for (const field of Object.keys(this.queryString)) {
 
@@ -44,24 +45,25 @@ class Query {
             for (const param of Object.keys(fields)) {
                 i++;
                 if (param in this.operators) {
+                    if (param === 'like') result +=`${field} LIKE '%${fields[param]}%'`;
                     //TODO: Remplacer la vraie value par le @ du prepared statement
-                    result+=`${field} ${this.operators[param]} ${fields[param]}` 
+                    else result+=`${field} ${this.operators[param]} ${fields[param]}`;
                     this.inputs[i]= fields[param];
                 }
                 else {
                     if (this.queryString[field].constructor === Array || this.queryString[field].split(",").length>1) {
                         //TODO: Remplacer la vraie value par le @ du prepared statement
-                        result+=`${field} IN (${this.queryString[field]})`
+                        result+=`${field} IN (${this.queryString[field]})`;
                     }
                     else {
                         //TODO: Remplacer la vraie value par le @ du prepared statement
-                        result+=`${field}=@${this.queryString[field]}`
+                        result+=`${field}=@${this.queryString[field]}`;
                     }
                     this.inputs[field]=this.queryString[field];
                     result+=" AND ";
                     break;
                 }
-                result+= " AND "
+                result+= " AND ";
 
             }
         }
@@ -73,12 +75,13 @@ class Query {
     }
 }
 
-const query1= new Query(["marque", "b"])
+const query1= new Query(["marque", "b"]);
 
-const query2= new Query(["marque","stock"])
+const query2= new Query(["marque","stock"]);
 
 //console.log(query1.where("marque=adidas,nike&marque=coca&b[gt]=10"))
-console.log(query2.where("marque=nike&marque=adidas&stock[gt]=10&stock[lte]=20"))
+//console.log(query2.where("marque=adidas,nike&stock[gt]=10&stock[lte]=20"));
+console.log(query2.where("marque[like]=adi"));
 
 
 export default Query;
