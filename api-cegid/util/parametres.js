@@ -127,12 +127,12 @@ const query2= new Query(["marque","stock", "a", "b", "c"]);
 
 //Des querry qui doivent être valides : 
 
-// console.log(query1.where("marque=nike&b[gt]=10"))
-// console.log(query2.where("marque[like]=adi"));
-// console.log(query2.having("marque=adidas,nike&stock[gt]=10&stock[lte]=20"));
-console.log(query2.where("stock[lt]=10&[or]&stock[gt]=20"));
-console.log(query2.where("stock=10[or]stock=20[or]a>10"));
-console.log(query2.where("stock=10&b=20&a[gt]=10"));
+console.log(query1.where("marque=nike&b[gt]=10"))
+console.log(query2.where("marque[like]=adi"));
+console.log(query2.having("marque=adidas,nike&stock[gt]=10&stock[lte]=20"));
+// console.log(query2.where("stock[lt]=10&[or]&stock[gt]=20"));
+// console.log(query2.where("stock=10[or]stock=20[or]a>10"));
+// console.log(query2.where("stock=10&b=20&a[gt]=10"));
 
 // console.log(query2.where("marque=adidas&stock[lt]=10[or]stock[gt]=20"));
 
