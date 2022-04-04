@@ -60,13 +60,13 @@ class Query {
             let i=0;
             //Le i est nécessaire pour protéger les inputs contre les attaques SQL
             //le i sert de nom aux inputs dans le cas ou le même attribut a plusieurs condition
-            //Exemple : b>@b AND b<@b ne fonctionnerait pas. Mais b>@1 AND b<@2 (les chiffres sont la valeur de i)fonctionnee
-            
+            //Exemple : b>@b AND b<@b ne fonctionnerait pas. Mais b>@1 AND b<@2 (les chiffres sont la valeur de i) fonctionne
+                        
             for (const param of Object.keys(fields)) {
 
                 i++;
                 if (param in this.operators) {
-                    if (!fields[param]) return `Erreur de syntax, aucune valuer n'a été trouvé pour ${field}[${param}]`
+                    if (!fields[param]) return `Erreur de syntax, aucune valeur n'a été trouvé pour ${field}[${param}]`
                     if (param === 'like') result +=`${field} LIKE '%${fields[param]}%'`;
                     //TODO: Remplacer la vraie value par le @ du prepared statement
                     else result+=`${field} ${this.operators[param]} ${fields[param]}`;
