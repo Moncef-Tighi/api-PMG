@@ -22,19 +22,19 @@ class Query {
 
 
     _parse(queryString) {
+        if (queryString.includes("[or]")) queryString= this._or(queryString);
         this.queryString = qs.parse(queryString,{ 
             ignoreQueryPrefix: true,
         });
         console.log(this.queryString);
     }
 
-    _or(current, field) {
-        //console.log(current);
-        //console.log(current.search("stock"));
-        // console.log(a);
-        // console.log(b);
-        console.log(current);
-        console.log(field);
+    _or(queryString) {
+        //L'implémentation du OR n'est pas facile. Voici l'Algorithme que j'ai trouvé : 
+        //1-Split le queryString selon là ou on trouve les [or] tout en les enlevant.
+        //2-Faire passer chaque morceau dans la méthode _conditions comme si c'était des querry à part
+        //3-Modifier _conditions pour ignorer les parenthéses là ou il faut et juste les output normal dans le SQL
+        //4-Réassembler les morceaux avec un " OR " entre eux.
         const [before, after] = this._splitInTwo(current, current.search(field));
         return `${before}(${ after.replace("[or]", " OR ") })`;
     }
@@ -44,12 +44,10 @@ class Query {
         if (Object.keys(this.queryString).length === 0) return "Empty";
         let result = start;
         for (const field of Object.keys(this.queryString)) {
-            let or = false
             const fields = this.queryString[field]
             //console.log( Object.values(fields)[0].includes('[OR]') );
             try {
                 if( Object.values(fields)[0].includes('[or]') || fields.includes('[or]')) {
-                    or = true;
                 };
             } catch(error) {
                 //ça n'a aucucn sens le catch vide. Mais pour une raison inconnu l'optional chaining (?) ne fonctionne pas
@@ -91,11 +89,9 @@ class Query {
                         return "Opérateur invalide"
                     }
                     this.inputs[field]=this.queryString[field];
-                    if (or===true) result= this._or(result, field);
                     result+=" AND ";
                     break;
                 }
-                if (or===true) result= this._or(result, field);
                 result+= " AND ";
 
             }
@@ -134,8 +130,10 @@ const query2= new Query(["marque","stock", "a", "b", "c"]);
 // console.log(query1.where("marque=nike&b[gt]=10"))
 // console.log(query2.where("marque[like]=adi"));
 // console.log(query2.having("marque=adidas,nike&stock[gt]=10&stock[lte]=20"));
-console.log(query2.where("stock[lt]=10[or]stock[gt]=20"));
-console.log(query2.where("stock=10[or]stock=20"));
+console.log(query2.where("stock[lt]=10&[or]&stock[gt]=20"));
+console.log(query2.where("stock=10[or]stock=20[or]a>10"));
+console.log(query2.where("stock=10&b=20&a[gt]=10"));
+
 // console.log(query2.where("marque=adidas&stock[lt]=10[or]stock[gt]=20"));
 
 //console.log(query2.sanitize(query2.having("marque=adidas,nike&stock[gt]=10&stock[lte]=20")));
