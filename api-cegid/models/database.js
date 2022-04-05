@@ -10,8 +10,6 @@ const config = {
     },
 }
 
-console.log(config);
-
 //J'utilise une fonction ici juste pour avoir accès à Async
 const connexion = async function() {
     try {

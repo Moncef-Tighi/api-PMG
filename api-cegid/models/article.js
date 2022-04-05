@@ -1,7 +1,7 @@
 import db from "./database.js";
 
 export const getAllArticles = async function() {
-    //const data=await db.query`SELECT * FROM produit`;
+    const data=await db.query`SELECT TOP 500 * FROM ARTICLE`;
     return data.recordset;
 };
 
