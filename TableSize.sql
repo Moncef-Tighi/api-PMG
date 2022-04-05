@@ -1,9 +1,8 @@
 SELECT 
     t.NAME AS TableName,
-    s.Name AS SchemaName,
+    CAST(ROUND(((SUM(a.total_pages) * 8) / 1024.00), 2) AS NUMERIC(36, 2)) AS TotalSpaceMB,
     p.rows,
     SUM(a.total_pages) * 8 AS TotalSpaceKB, 
-    CAST(ROUND(((SUM(a.total_pages) * 8) / 1024.00), 2) AS NUMERIC(36, 2)) AS TotalSpaceMB,
     SUM(a.used_pages) * 8 AS UsedSpaceKB, 
     CAST(ROUND(((SUM(a.used_pages) * 8) / 1024.00), 2) AS NUMERIC(36, 2)) AS UsedSpaceMB, 
     (SUM(a.total_pages) - SUM(a.used_pages)) * 8 AS UnusedSpaceKB,
