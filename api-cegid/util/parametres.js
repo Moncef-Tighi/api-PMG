@@ -60,7 +60,7 @@ class Query {
             let i=0;
             //Le i est nécessaire pour protéger les inputs contre les attaques SQL
             //le i sert de nom aux inputs dans le cas ou le même attribut a plusieurs condition
-            //Exemple : b>@b AND b<@b ne fonctionnerait pas. Mais b>@1 AND b<@2 (les chiffres sont la valeur de i) fonctionne
+            //Exemple : b>@b AND b<@b ne fonctionnerait pas. Mais b>@1 AND b<@2 fonctionne (les chiffres sont la valeur de i)
                         
             for (const param of Object.keys(fields)) {
 
@@ -110,6 +110,10 @@ class Query {
     }
 
     sort() {
+
+    }
+
+    paginate() {
 
     }
 

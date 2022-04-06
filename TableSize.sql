@@ -24,4 +24,4 @@ WHERE
 GROUP BY 
     t.Name, s.Name, p.Rows
 ORDER BY 
-    TotalSpaceMB DESC, t.Name
+    [rows] DESC, t.Name
