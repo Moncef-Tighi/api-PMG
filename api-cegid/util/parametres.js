@@ -25,11 +25,9 @@ class Query {
 
 
     _parse(queryString) {
-        if (queryString.includes("[or]")) queryString= this._or(queryString);
-        this.queryString = qs.parse(queryString,{ 
-            ignoreQueryPrefix: true,
-        });
-        console.log(this.queryString);
+
+        this.queryString = queryString        
+        if (qs.stringify(queryString).includes("[or]")) queryString= this._or(queryString);
     }
 
     _or(queryString) {
@@ -149,26 +147,26 @@ class Query {
 
 const query1= new Query(["b"]);
 
-const query2= new Query();
+const query2= new Query(["invalidField"]);
 
 //Des querry qui doivent être valides pour WHERE: 
 
-// console.log(query1.where("marque=nike&b[gt]=10"))
-// console.log(query2.where("marque[like]=adi"));
-// console.log(query2.having("marque=adidas,nike&stock[gt]=10&stock[lte]=20"));
+console.log(query1.where(qs.parse("marque=nike&a[gt]=10")))
+console.log(query2.where(qs.parse("marque[like]=adi")));
+console.log(query2.having(qs.parse("marque=adidas,nike&stock[gt]=10&stock[lte]=20")));
+console.log(query2.where(qs.parse("stock=10&b=20&a[gt]=10")));
+
+
 // console.log(query2.where("stock[lt]=10&[or]&stock[gt]=20"));
 // console.log(query2.where("stock=10[or]stock=20[or]a>10"));
-// console.log(query2.where("stock=10&b=20&a[gt]=10"));
-
 // console.log(query2.where("marque=adidas&stock[lt]=10[or]stock[gt]=20"));
 
-//console.log(query2.sanitize(query2.having("marque=adidas,nike&stock[gt]=10&stock[lte]=20")));
 
 
 //Des querry qui devraient être valide pour SORT : 
 
-console.log(query1.sort("sort=-marque,+stock"));
-console.log(query2.where("marque=adidas,nike&stock[gt]=10&stock[lte]=20") + query1.sort("sort=-marque,+stock"));
+console.log(query1.sort(qs.parse("sort=-marque,+stock")));
+console.log(query2.where(qs.parse("marque=adidas,nike&stock[gt]=10&stock[lte]=20")) + query1.sort(qs.parse("sort=-marque,+stock")) );
 
 //Des querry qui doivent être invalides : 
 
