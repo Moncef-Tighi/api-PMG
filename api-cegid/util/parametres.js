@@ -24,25 +24,23 @@ class Query {
 
     _splitInTwo = (xs, index=2) => [xs.slice(0, index), xs.slice(index)]
 
-
-    _parse(queryString) {
-
-        this.queryString = queryString        
-        if (qs.stringify(queryString).includes("[or]")) queryString= this._or(queryString);
-    }
-
     _or(queryString) {
         //L'implémentation du OR n'est pas facile. Voici l'Algorithme que j'ai trouvé : 
         //1-Split le queryString selon là ou on trouve les [or] tout en les enlevant.
         //2-Faire passer chaque morceau dans la méthode _conditions comme si c'était des querry à part
         //3-Modifier _conditions pour ignorer les parenthéses là ou il faut et juste les output normal dans le SQL
         //4-Réassembler les morceaux avec un " OR " entre eux.
-        const [before, after] = this._splitInTwo(current, current.search(field));
-        return `${before}(${ after.replace("[or]", " OR ") })`;
+        this.queryString = queryString        
+        if (Object.keys(this.queryString).length === 0) return "";
+        
+        if (qs.stringify(queryString).includes("[or]")) {
+            const [before, after] = this._splitInTwo(current, current.search(field));
+            return `${before}(${ after.replace("[or]", " OR ") })`;            
+        }
+        return
     }
 
     _conditions(start) {
-
         let result = start;
         for (const field of Object.keys(this.queryString)) {
             if (this.reservedKeyWords.includes(field)) continue;
@@ -54,23 +52,19 @@ class Query {
             // } catch(error) {
             //     //ça n'a aucucn sens le catch vide. Mais pour une raison inconnu l'optional chaining (?) ne fonctionne pas
             // }
-
             if (this.excluedFields.includes(field)) {
                 return `Erreur : le field ${field} n'est pas autorisé`;
             }
-            
             let i=0;
             //Le i est nécessaire pour protéger les inputs contre les attaques SQL
             //le i sert de nom aux inputs dans le cas ou le même attribut a plusieurs condition
             //Exemple : b>@b AND b<@b ne fonctionnerait pas. Mais b>@1 AND b<@2 fonctionne (les chiffres sont la valeur de i)
-                        
             for (const param of Object.keys(fields)) {
-
+                console.log(param);
                 i++;
                 if (param in this.operators) {
                     if (!fields[param]) return `Erreur de syntax, aucune valeur n'a été trouvé pour ${field}[${param}]`
                     if (param === 'like') {
-
                         result +=`${field} LIKE @${i} `;
                         //On est obligé d'inclure les " % " Après parce que le parser de MSSQL ne les gère pas
                         this.inputs[i]= "%" +fields[param]+ "%";
@@ -92,11 +86,8 @@ class Query {
                             let inOperator = "";
                             for (let y=0; y<params.length;y++) {
                                 inOperator+= `@${y+999},`;
-
                                 this.inputs[y+999]=this.queryString[field][y];
-
                             }
-
                             result+=`${field} IN (${inOperator.slice(0,-1)})`;
                         }
                     } catch(err) {
@@ -107,27 +98,23 @@ class Query {
                     break;
                 }
                 result+= " AND ";
-
             }
         }
         return result.slice(0,-4);
     }
 
     where(queryString) {
-        this._parse(queryString);
-        if (Object.keys(this.queryString).length === 0) return "";
+        this._or(queryString);
         return this._conditions(" WHERE ");
     }
 
     having(queryString) {
-        this._parse(queryString);
-        if (Object.keys(this.queryString).length === 0) return "";
+        this._or(queryString);
         return this._conditions(" HAVING ");
     }
 
     paginate(queryString) {
         // ATTENTION ! Impossible de paginé avec cette méthode sans Order By
-
         if (!queryString.sort) return "";
         const page=Number(queryString.page) || 1
         const pageSize = Number(queryString.pagesize) || 10;
@@ -167,8 +154,9 @@ class Query {
             for (const [key, value] of Object.entries(this.inputs)) {
                 request.input(String(key), value);
             }
-        }   
+        }  
     }
+
 }
 
 const query1= new Query("GA_CODEARTICLE",["b"]);
