@@ -5,7 +5,8 @@ import Query from '../util/parametres.js';
 export const getAllArticles = async function(paramtres) {
     const query= new Query('GA_CODEARTICLE');
 
-    const sql = `SELECT
+    const sql = 
+    `SELECT
     GA_ARTICLE,GA_CODEARTICLE,GA_CODEBARRE, GA_FAMILLENIV1,GA_FAMILLENIV2,GA_LIBELLE,
     GF_PRIXUNITAIRE, GF_QUALIFPRIX
     FROM ARTICLE
@@ -15,9 +16,9 @@ export const getAllArticles = async function(paramtres) {
     ${query.paginate(paramtres)}
     `;
     const request = new db.Request()
-    //query.sanitize(request);
+    query.sanitize(request);
+    console.log(request);
     const data = await request.query(sql);
-    console.log(data);
     return [data.recordset, data.rowsAffected];
 };
 

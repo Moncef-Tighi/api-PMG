@@ -5,7 +5,7 @@ class Query {
     constructor(defaultSort, excluedFields=[]) {
         this.defaultSort = defaultSort;
         this.excluedFields = excluedFields;
-        this.queryString="";
+        this.queryString={};
         //On sauvgarde les inputs dans cet attribut pour pouvoir les sanetize après
         this.inputs={};
     }
@@ -25,7 +25,7 @@ class Query {
     _splitInTwo = (xs, index=2) => [xs.slice(0, index), xs.slice(index)]
 
 
-    _parse(queryString="") {
+    _parse(queryString) {
 
         this.queryString = queryString        
         if (qs.stringify(queryString).includes("[or]")) queryString= this._or(queryString);
@@ -69,28 +69,34 @@ class Query {
                 i++;
                 if (param in this.operators) {
                     if (!fields[param]) return `Erreur de syntax, aucune valeur n'a été trouvé pour ${field}[${param}]`
-                    if (param === 'like') result +=`${field} LIKE '%${fields[param]}%'`;
+                    if (param === 'like') result +=`${field} LIKE '%@${i}%'`;
                     //TODO: Remplacer la vraie value par le @ du prepared statement
-                    else result+=`${field} ${this.operators[param]} ${fields[param]}`;
+                    else result+=`${field} ${this.operators[param]} @${i}`;
                     this.inputs[i]= fields[param];
                 }
                 else {
-                    if (typeof this.queryString[field] === 'object') return "Erreur de syntax : La querry n'est pas valide"
-
                     try {
-                        if (this.queryString[field].split(",").length>1) {
-                            //TODO: Remplacer la vraie value par le @ du prepared statement
-                            result+=`${field} IN (${this.queryString[field]})`;
+                        const params = this.queryString[field]
+                        if (typeof this.queryString[field] === 'string' || this.queryString[field] instanceof String) {
+                            result+=`${field}=@${field}`;
+                            this.inputs[field]=this.queryString[field];
                         }
                         else {
                             //TODO: Remplacer la vraie value par le @ du prepared statement
-                            result+=`${field}=${this.queryString[field]}`;
-                        }    
-                    } catch(Err) {
+                            let inOperator = "";
+                            for (let y=0; y<params.length;y++) {
+                                inOperator+= `@${y+999},`;
+
+                                this.inputs[y+999]=this.queryString[field][y];
+
+                            }
+
+                            result+=`${field} IN (${inOperator.slice(0,-1)})`;
+                        }
+                    } catch(err) {
                         //Si l'opérateur est invalide, le code au dessus throw une erreur qu'on catch ici.
-                        return "Opérateur invalide"
+                        return "Opérateur invalide "
                     }
-                    this.inputs[field]=this.queryString[field];
                     result+=" AND ";
                     break;
                 }
@@ -150,7 +156,7 @@ class Query {
     sanitize(request) {
         if (this.inputs) {
             for (const [key, value] of Object.entries(this.inputs)) {
-                request.input(key, value);
+                request.input(String('@' + key), value);
             }
         }   
     }
@@ -160,15 +166,14 @@ const query1= new Query("GA_CODEARTICLE",["b"]);
 
 const query2= new Query("",["invalidField"]);
 
-console.log(query1.where(qs.parse(""))
-+ query1.sort(qs.parse("")) 
-+ query1.paginate(qs.parse("")));
+// console.log(query1.where(qs.parse(""))
+// + query1.sort(qs.parse("")) 
+// + query1.paginate(qs.parse("")));
 
 
 //Des querry qui doivent être valides pour WHERE: 
 
 // console.log(query1.where(qs.parse("marque=nike&a[gt]=10")))
-// console.log(query2.where(qs.parse("mZZZZZZZZZZadi")));
 // console.log(query2.having(qs.parse("marque=adidas,nike&stock[gt]=10&stock[lte]=20")));
 // console.log(query2.where(qs.parse("stock=10&b=20&a[gt]=10")));
 
