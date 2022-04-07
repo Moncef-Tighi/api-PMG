@@ -2,7 +2,8 @@ import * as qs from 'qs';
 
 class Query {
     
-    constructor(excluedFields=[]) {
+    constructor(defaultSort, excluedFields=[]) {
+        this.defaultSort = defaultSort;
         this.excluedFields = excluedFields;
         this.queryString="";
         //On sauvgarde les inputs dans cet attribut pour pouvoir les sanetize après
@@ -24,7 +25,7 @@ class Query {
     _splitInTwo = (xs, index=2) => [xs.slice(0, index), xs.slice(index)]
 
 
-    _parse(queryString) {
+    _parse(queryString="") {
 
         this.queryString = queryString        
         if (qs.stringify(queryString).includes("[or]")) queryString= this._or(queryString);
@@ -42,7 +43,6 @@ class Query {
 
     _conditions(start) {
 
-        if (Object.keys(this.queryString).length === 0) return "Empty";
         let result = start;
         for (const field of Object.keys(this.queryString)) {
             if (field in this.reservedKeyWords) continue
@@ -103,11 +103,13 @@ class Query {
 
     where(queryString) {
         this._parse(queryString);
+        if (Object.keys(this.queryString).length === 0) return "";
         return this._conditions(" WHERE ");
     }
 
     having(queryString) {
         this._parse(queryString);
+        if (Object.keys(this.queryString).length === 0) return "";
         return this._conditions(" HAVING ");
     }
 
@@ -116,7 +118,7 @@ class Query {
 
         if (!queryString.sort) return "";
         const page=Number(queryString.page) || 1
-        const pageSize = Number(queryString.pageSize) || 500;
+        const pageSize = Number(queryString.pageSize) || 10;
         if (pageSize>1000) pageSize=1000
         return ` OFFSET ${(page-1) * pageSize} ROWS FETCH NEXT ${pageSize} ROWS ONLY `
     }
@@ -130,7 +132,10 @@ class Query {
 
     sort(queryString) {
         this.queryString=queryString;
-        if (!this.queryString['sort']) return ""
+        if (!this.queryString['sort']) {
+            if(this.defaultSort) this.queryString.sort=this.defaultSort
+            else return '';
+        }
         const fields = this.queryString.sort.split(',');
         let result = "ORDER BY "
         fields.forEach(field=>{
@@ -143,23 +148,29 @@ class Query {
     }
 
     sanitize(request) {
-        for (const [key, value] of Object.entries(this.inputs)) {
-            request.input(key, value);
-        }
+        if (this.inputs) {
+            for (const [key, value] of Object.entries(this.inputs)) {
+                request.input(key, value);
+            }
+        }   
     }
-
 }
 
-const query1= new Query(["b"]);
+const query1= new Query("GA_CODEARTICLE",["b"]);
 
-const query2= new Query(["invalidField"]);
+const query2= new Query("",["invalidField"]);
+
+console.log(query1.where(qs.parse(""))
++ query1.sort(qs.parse("")) 
++ query1.paginate(qs.parse("")));
+
 
 //Des querry qui doivent être valides pour WHERE: 
 
-console.log(query1.where(qs.parse("marque=nike&a[gt]=10")))
-console.log(query2.where(qs.parse("marque[like]=adi")));
-console.log(query2.having(qs.parse("marque=adidas,nike&stock[gt]=10&stock[lte]=20")));
-console.log(query2.where(qs.parse("stock=10&b=20&a[gt]=10")));
+// console.log(query1.where(qs.parse("marque=nike&a[gt]=10")))
+// console.log(query2.where(qs.parse("mZZZZZZZZZZadi")));
+// console.log(query2.having(qs.parse("marque=adidas,nike&stock[gt]=10&stock[lte]=20")));
+// console.log(query2.where(qs.parse("stock=10&b=20&a[gt]=10")));
 
 
 // console.log(query2.where("stock[lt]=10&[or]&stock[gt]=20"));
@@ -175,9 +186,9 @@ console.log(query2.where(qs.parse("stock=10&b=20&a[gt]=10")));
 
 //Des querry qui devraient être valide pour Paginate : 
 
-console.log(query1.where(qs.parse("marque=adidas,nike&stock[gt]=10&stock[lte]=20"))
-+ query1.sort(qs.parse("sort=-marque,+stock")) 
-+ query1.paginate(qs.parse("page=2,pageSize=800")));
+// console.log(query1.where(qs.parse("marque=adidas,nike&stock[gt]=10&stock[lte]=20"))
+// + query1.sort(qs.parse("sort=-marque,+stock")) 
+// + query1.paginate(qs.parse("page=2,pageSize=800")));
 
 
 //Des querry qui doivent être invalides : 
@@ -191,7 +202,7 @@ console.log(query1.where(qs.parse("marque=adidas,nike&stock[gt]=10&stock[lte]=20
 
 //Des querry vides : 
 
-console.log(query1.paginate(qs.parse("page=4,pageSize=200"))) //Impossible de paginer sans sort d'abord
+// console.log(query1.paginate(qs.parse("page=4,pageSize=200"))) //Impossible de paginer sans sort d'abord
 
 
 export default Query;

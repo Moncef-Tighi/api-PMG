@@ -2,13 +2,19 @@ import * as model from '../models/article.js';
 import { catchAsync } from './errorController.js';
 
 export const listArticles = catchAsync( async function(request, response,next){
-    const articles = await model.getAllArticles();
-    return response.status(200).json({
-        status : "ok",
-        body : {
-            articles,
-        }
-    })
+    try {
+        const [articles, length] = await model.getAllArticles(request.params);
+        return response.status(200).json({
+            status : "ok",
+            length: length[0],
+            body : {
+                articles,
+            }
+        })
+    } catch (error) {
+        console.log(error);
+    }
+    
 });
 
 
