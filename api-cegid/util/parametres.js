@@ -2,8 +2,8 @@ import * as qs from 'qs';
 
 class Query {
     
-    constructor(allowedFields) {
-        this.allowedFields = allowedFields;
+    constructor(excluedFields=[]) {
+        this.excluedFields = excluedFields;
         this.queryString="";
         //On sauvgarde les inputs dans cet attribut pour pouvoir les sanetize après
         this.inputs={};
@@ -46,14 +46,14 @@ class Query {
         for (const field of Object.keys(this.queryString)) {
             const fields = this.queryString[field]
             //console.log( Object.values(fields)[0].includes('[OR]') );
-            try {
-                if( Object.values(fields)[0].includes('[or]') || fields.includes('[or]')) {
-                };
-            } catch(error) {
-                //ça n'a aucucn sens le catch vide. Mais pour une raison inconnu l'optional chaining (?) ne fonctionne pas
-            }
+            // try {
+            //     if( Object.values(fields)[0].includes('[or]') || fields.includes('[or]')) {
+            //     };
+            // } catch(error) {
+            //     //ça n'a aucucn sens le catch vide. Mais pour une raison inconnu l'optional chaining (?) ne fonctionne pas
+            // }
 
-            if (!this.allowedFields.includes(field)) {
+            if (this.excluedFields.includes(field)) {
                 return `Erreur : le field ${field} n'est pas autorisé`;
             }
             
@@ -109,12 +109,30 @@ class Query {
         return this._conditions(" HAVING ");
     }
 
-    sort() {
+    paginate() {
 
     }
 
-    paginate() {
+    seekPaginate(lastResult) {
+        //Cette méthode utilise une pagination plus rapide, mais l'inconvenient c'est qu'on doit passer d'une page à la suivante
+        //Impossible de passer de la page 1 à la page 5 sans connaitre le dernier élément de la page 4 et ainsi de suite
+        //La pagination normal est BigO(n), la Seek pagination est BigO(1)
 
+    }
+
+    sort(queryString) {
+        this._parse(queryString);
+
+        if (!this.queryString['sort']) return "Aucune querry n'a été trouvé dans la méthode sort"
+        const fields = this.queryString.sort.split(',');
+        let result = "ORDER BY "
+        fields.forEach(field=>{
+            if (this.excluedFields.includes(field)) return `Erreur : le field ${field} n'est pas autorisé`;
+            if (field[0] === "-") return result+= `${field.slice(1)} DESC `
+            else if (field[0]==="+") return result+= `${field.slice(1)} ASC `
+            else return result+= `${field} ASC `
+        })
+        return result;
     }
 
     sanitize(request) {
@@ -125,15 +143,15 @@ class Query {
 
 }
 
-const query1= new Query(["marque", "b"]);
+const query1= new Query(["b"]);
 
-const query2= new Query(["marque","stock", "a", "b", "c"]);
+const query2= new Query();
 
-//Des querry qui doivent être valides : 
+//Des querry qui doivent être valides pour WHERE: 
 
-console.log(query1.where("marque=nike&b[gt]=10"))
-console.log(query2.where("marque[like]=adi"));
-console.log(query2.having("marque=adidas,nike&stock[gt]=10&stock[lte]=20"));
+// console.log(query1.where("marque=nike&b[gt]=10"))
+// console.log(query2.where("marque[like]=adi"));
+// console.log(query2.having("marque=adidas,nike&stock[gt]=10&stock[lte]=20"));
 // console.log(query2.where("stock[lt]=10&[or]&stock[gt]=20"));
 // console.log(query2.where("stock=10[or]stock=20[or]a>10"));
 // console.log(query2.where("stock=10&b=20&a[gt]=10"));
@@ -141,6 +159,12 @@ console.log(query2.having("marque=adidas,nike&stock[gt]=10&stock[lte]=20"));
 // console.log(query2.where("marque=adidas&stock[lt]=10[or]stock[gt]=20"));
 
 //console.log(query2.sanitize(query2.having("marque=adidas,nike&stock[gt]=10&stock[lte]=20")));
+
+
+//Des querry qui devraient être valide pour SORT : 
+
+console.log(query1.sort("sort=-marque,+stock"));
+
 
 //Des querry qui doivent être invalides : 
 
