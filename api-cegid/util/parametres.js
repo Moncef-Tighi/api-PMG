@@ -10,7 +10,7 @@ class Query {
         this.inputs={};
     }
 
-    reservedKeyWords = ["sort", "projection", 'page', "pageSize"]
+    reservedKeyWords = ["sort", "projection", 'page', "pagesize"]
     
 
     operators = {
@@ -45,7 +45,7 @@ class Query {
 
         let result = start;
         for (const field of Object.keys(this.queryString)) {
-            if (field in this.reservedKeyWords) continue
+            if (this.reservedKeyWords.includes(field)) continue;
             const fields = this.queryString[field]
             //console.log( Object.values(fields)[0].includes('[OR]') );
             // try {
@@ -130,7 +130,7 @@ class Query {
 
         if (!queryString.sort) return "";
         const page=Number(queryString.page) || 1
-        const pageSize = Number(queryString.pageSize) || 10;
+        const pageSize = Number(queryString.pagesize) || 10;
         if (pageSize>1000) pageSize=1000
         return ` OFFSET ${(page-1) * pageSize} ROWS FETCH NEXT ${pageSize} ROWS ONLY `
     }
@@ -139,6 +139,9 @@ class Query {
         //Cette méthode utilise une pagination plus rapide, mais l'inconvenient c'est qu'on doit passer d'une page à la suivante
         //Impossible de passer de la page 1 à la page 5 sans connaitre le dernier élément de la page 4 et ainsi de suite
         //La pagination normal est BigO(n), la Seek pagination est BigO(1)
+
+        //Une bonne idée pour faire fonctionner le seekPaginate : 
+        //Envoyer un attribut next dans la réponse qui contient le lien vers la prochaine page
 
     }
 
