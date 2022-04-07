@@ -19,6 +19,7 @@ export const getAllArticles = async function(paramtres) {
     query.sanitize(request);
     console.log(request);
     const data = await request.query(sql);
+    console.log(request);
     return [data.recordset, data.rowsAffected];
 };
 

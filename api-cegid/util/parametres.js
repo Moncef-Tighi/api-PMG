@@ -69,10 +69,16 @@ class Query {
                 i++;
                 if (param in this.operators) {
                     if (!fields[param]) return `Erreur de syntax, aucune valeur n'a été trouvé pour ${field}[${param}]`
-                    if (param === 'like') result +=`${field} LIKE '%@${i}%'`;
-                    //TODO: Remplacer la vraie value par le @ du prepared statement
-                    else result+=`${field} ${this.operators[param]} @${i}`;
-                    this.inputs[i]= fields[param];
+                    if (param === 'like') {
+
+                        result +=`${field} LIKE @${i} `;
+                        //On est obligé d'inclure les " % " Après parce que le parser de MSSQL ne les gère pas
+                        this.inputs[i]= "%" +fields[param]+ "%";
+                    }
+                    else {
+                        result+=`${field} ${this.operators[param]} @${i}`; 
+                        this.inputs[i]= fields[param];
+                    }
                 }
                 else {
                     try {
@@ -156,7 +162,7 @@ class Query {
     sanitize(request) {
         if (this.inputs) {
             for (const [key, value] of Object.entries(this.inputs)) {
-                request.input(String('@' + key), value);
+                request.input(String(key), value);
             }
         }   
     }
