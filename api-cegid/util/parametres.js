@@ -9,6 +9,9 @@ class Query {
         this.inputs={};
     }
 
+    reservedKeyWords = ["sort", "projection"]
+    
+
     operators = {
         //Dictionnaire qui transforme les paramètres de querry en opérateur
         "gt" : ">",
@@ -44,6 +47,7 @@ class Query {
         if (Object.keys(this.queryString).length === 0) return "Empty";
         let result = start;
         for (const field of Object.keys(this.queryString)) {
+            if (field in this.reservedKeyWords) continue
             const fields = this.queryString[field]
             //console.log( Object.values(fields)[0].includes('[OR]') );
             // try {
@@ -128,11 +132,11 @@ class Query {
         let result = "ORDER BY "
         fields.forEach(field=>{
             if (this.excluedFields.includes(field)) return `Erreur : le field ${field} n'est pas autorisé`;
-            if (field[0] === "-") return result+= `${field.slice(1)} DESC `
-            else if (field[0]==="+") return result+= `${field.slice(1)} ASC `
-            else return result+= `${field} ASC `
+            if (field[0] === "-") return result+= `${field.slice(1)} DESC,`
+            else if (field[0]==="+") return result+= `${field.slice(1)} ASC,`
+            else return result+= `${field} ASC,`
         })
-        return result;
+        return result.slice(0,-1);
     }
 
     sanitize(request) {
@@ -164,7 +168,7 @@ const query2= new Query();
 //Des querry qui devraient être valide pour SORT : 
 
 console.log(query1.sort("sort=-marque,+stock"));
-
+console.log(query2.where("marque=adidas,nike&stock[gt]=10&stock[lte]=20") + query1.sort("sort=-marque,+stock"));
 
 //Des querry qui doivent être invalides : 
 
