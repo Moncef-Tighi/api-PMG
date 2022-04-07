@@ -9,7 +9,7 @@ class Query {
         this.inputs={};
     }
 
-    reservedKeyWords = ["sort", "projection"]
+    reservedKeyWords = ["sort", "projection", 'page', "pageSize"]
     
 
     operators = {
@@ -111,8 +111,14 @@ class Query {
         return this._conditions(" HAVING ");
     }
 
-    paginate() {
+    paginate(queryString) {
+        // ATTENTION ! Impossible de paginé avec cette méthode sans Order By
 
+        if (!queryString.sort) return "";
+        const page=Number(queryString.page) || 1
+        const pageSize = Number(queryString.pageSize) || 500;
+        if (pageSize>1000) pageSize=1000
+        return ` OFFSET ${(page-1) * pageSize} ROWS FETCH NEXT ${pageSize} ROWS ONLY `
     }
 
     seekPaginate(lastResult) {
@@ -123,9 +129,8 @@ class Query {
     }
 
     sort(queryString) {
-        this._parse(queryString);
-
-        if (!this.queryString['sort']) return "Aucune querry n'a été trouvé dans la méthode sort"
+        this.queryString=queryString;
+        if (!this.queryString['sort']) return ""
         const fields = this.queryString.sort.split(',');
         let result = "ORDER BY "
         fields.forEach(field=>{
@@ -165,8 +170,15 @@ console.log(query2.where(qs.parse("stock=10&b=20&a[gt]=10")));
 
 //Des querry qui devraient être valide pour SORT : 
 
-console.log(query1.sort(qs.parse("sort=-marque,+stock")));
-console.log(query2.where(qs.parse("marque=adidas,nike&stock[gt]=10&stock[lte]=20")) + query1.sort(qs.parse("sort=-marque,+stock")) );
+// console.log(query1.sort(qs.parse("sort=-marque,+stock")));
+// console.log(query2.where(qs.parse("marque=adidas,nike&stock[gt]=10&stock[lte]=20")) + query1.sort(qs.parse("sort=-marque,+stock")) );
+
+//Des querry qui devraient être valide pour Paginate : 
+
+console.log(query1.where(qs.parse("marque=adidas,nike&stock[gt]=10&stock[lte]=20"))
++ query1.sort(qs.parse("sort=-marque,+stock")) 
++ query1.paginate(qs.parse("page=2,pageSize=800")));
+
 
 //Des querry qui doivent être invalides : 
 
@@ -175,5 +187,11 @@ console.log(query2.where(qs.parse("marque=adidas,nike&stock[gt]=10&stock[lte]=20
 // console.log(query2.where(["a", "b", 'c']));
 // console.log(query2.where("InvalidField[gt]=5"));
 // console.log(query2.where("stock=&stock[gt]=5"));
+
+
+//Des querry vides : 
+
+console.log(query1.paginate(qs.parse("page=4,pageSize=200"))) //Impossible de paginer sans sort d'abord
+
 
 export default Query;
