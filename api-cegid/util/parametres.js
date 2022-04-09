@@ -44,8 +44,8 @@ class Query {
         const string = qs.stringify(queryString, { encode: false, indices: false  })
         const operators = string.match(regex);
         for (const operator of operators) {
-            if (operator = '[or]') this._or(queryString);
             if (!(operator.slice(1,-1) in this.operators)) throw new Error("Erreur : Opérateur Invalide");
+            if (operator === '[or]') this._or(queryString);
         }
 
     }
@@ -55,7 +55,6 @@ class Query {
         for (const field of Object.keys(this.queryString)) {
             if (this.reservedKeyWords.includes(field)) continue;
             const fields = this.queryString[field]
-
             if (this.excluedFields.includes(field)) {
                 throw new Error(`Erreur : le field ${field} n'est pas autorisé`);
             }
@@ -167,7 +166,7 @@ const query2= new Query("",["invalidField"]);
 
 //Des querry qui doivent être valides pour WHERE: 
 
-// console.log(query1.where(qs.parse("marque=nike&marque=adidas&a[gt]=10")))
+console.log(query1.where(qs.parse("marque=nike&marque=adidas&a[gt]=10")))
 // console.log(query2.having(qs.parse("marque=adidas,nike&stock[gt]=10&stock[lte]=20")));
 // console.log(query2.where(qs.parse("stock[lt]=10&b=20&a[gt]=10")));
 
@@ -193,7 +192,7 @@ const query2= new Query("",["invalidField"]);
 //Des querry qui doivent être invalides : 
 
 // console.log(query2.where(qs.parse('stock[a]=test')));
-console.log(query2.where(qs.parse('')));
+// console.log(query2.where(qs.parse('')));
 // console.log(query2.where(qs.parse(["a", "b", 'c'])));
 // console.log(query2.where(qs.parse("InvalidField[gt]=5")));
 // console.log(query2.where(qs.parse("stock=&stock[gt]=5")));
