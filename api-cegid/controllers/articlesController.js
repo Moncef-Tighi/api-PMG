@@ -4,11 +4,10 @@ import createError from 'http-errors'
 
 export const listArticles = catchAsync( async function(request, response,next){
     const [articles, length] = await model.getAllArticles(request.query);
-    if (length[0]>0) {
-        const codeArticle = articles.map(article => article.GA_CODEARTICLE);
-        const resultat = await model.disponibilitéArticle(codeArticle);
-        console.log(resultat)
-    }
+    // if (length[0]>0) {
+    //     const codeArticle = articles.map(article => article.GA_CODEARTICLE);
+    //     const stock = await model.disponibilitéArticle(codeArticle);
+    // }
 
     return response.status(200).json({
         status : "ok",
@@ -23,10 +22,11 @@ export const listArticles = catchAsync( async function(request, response,next){
 
 
 export const ArticlesDisponible = catchAsync( async function(request, response,next){
+
     if (!request.body.articles || ! request.body.articles instanceof Array) {
         return next(createError(400, "Erreur : Une liste d'article n'a pas été fournit dans le body de la requête") )
     }
-    const articles = await model.getAllArticlesDisponibles();
+    const articles = await model.disponibilitéArticle(request.body.articles);
     return response.status(200).json({
         status : "ok",
         body : {
