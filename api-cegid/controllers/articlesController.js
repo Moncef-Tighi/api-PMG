@@ -5,8 +5,7 @@ import createError from 'http-errors'
 export const listArticles = catchAsync( async function(request, response,next){
     const [articles, length] = await model.getAllArticles(request.query);
     if (length[0]>0) {
-        const codeArticle = articles.filter(article => article.GA_CODEARTICLE);
-        console.log(codeArticle);
+        const codeArticle = articles.map(article => article.GA_CODEARTICLE);
         const resultat = await model.disponibilitéArticle(codeArticle);
         console.log(resultat)
     }

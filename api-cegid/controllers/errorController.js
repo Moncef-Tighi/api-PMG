@@ -8,6 +8,9 @@ export const catchAsync= function(func){
     */
     return (request, response, next) => {
         func(request, response, next).catch(error => {
+            if (error.code="EREQUEST") {
+                return next(createError(400, error))
+            }
             return next(createError(500, `La requête asynchrone a échouée avec le message : ${error}`))
         });
     }
@@ -26,7 +29,6 @@ export const errorHandeler = function(err, request, response, next) {
     
     err.status= err.status || 500;
     err.message = err.message || "erreur interne";
-
     logError(err);
     if (process.env.NODE_ENV==='production') {
         return response.status(err.status).json( {
