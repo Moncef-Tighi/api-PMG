@@ -43,9 +43,12 @@ class Query {
         const regex = /\[([^\]]+)\]/g
         const string = qs.stringify(queryString, { encode: false, indices: false  })
         const operators = string.match(regex);
-        for (const operator of operators) {
-            if (!(operator.slice(1,-1) in this.operators)) throw new Error("Erreur : Opérateur Invalide");
-            if (operator === '[or]') this._or(queryString);
+
+        if (operators!=null) {
+            for (const operator of operators) {
+                if (!(operator.slice(1,-1) in this.operators)) throw new Error("Erreur : Opérateur Invalide");
+                if (operator === '[or]') this._or(queryString);
+            }
         }
 
     }
@@ -96,6 +99,7 @@ class Query {
                 result+= " AND ";
             }
         }
+        if (result===" WHERE ") return ""
         return result.slice(0,-4);
     }
 
@@ -166,9 +170,10 @@ const query2= new Query("",["invalidField"]);
 
 //Des querry qui doivent être valides pour WHERE: 
 
-console.log(query1.where(qs.parse("marque=nike&marque=adidas&a[gt]=10")))
+// console.log(query1.where(qs.parse("marque=nike&marque=adidas&a[gt]=10")))
 // console.log(query2.having(qs.parse("marque=adidas,nike&stock[gt]=10&stock[lte]=20")));
 // console.log(query2.where(qs.parse("stock[lt]=10&b=20&a[gt]=10")));
+// console.log(query1.where(qs.parse("GA_CODEARTICLE= 000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZv")))
 
 
 // console.log(query2.where("stock[lt]=10&[or]&stock[gt]=20"));
