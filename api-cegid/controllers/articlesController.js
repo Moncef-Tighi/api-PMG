@@ -23,14 +23,30 @@ export const listArticles = catchAsync( async function(request, response,next){
 
 export const ArticlesDisponible = catchAsync( async function(request, response,next){
 
-    if (!request.body.articles || ! request.body.articles instanceof Array) {
+    const articles = request.body.articles
+    if (!articles || ! articles instanceof Array) {
         return next(createError(400, "Erreur : Une liste d'article n'a pas été fournit dans le body de la requête") )
     }
-    const articles = await model.disponibilitéArticle(request.body.articles);
+    const dataRecord = await model.disponibilitéArticle(articles);
+    let resultat = {};
+    articles.forEach(article => {
+        //Ce code est complexe parce que le return de la query peut être soit : Undefined, un objet ou un array d'objet
+        if (!dataRecord) return resultat[article] = 0;
+        if (dataRecord instanceof Array) {
+            dataRecord.forEach(code => {
+                if (article===code.GL_CODEARTICLE) return resultat[article] =  code['Stock Disponible']
+            })
+        }
+        else {
+            if (article===dataRecord?.GL_CODEARTICLE) return resultat[article] =  data.recordset[0].GL_CODEARTICLE
+        }
+        if (!(article in resultat)) return resultat[article] = 0;
+    });
+
     return response.status(200).json({
         status : "ok",
         body : {
-            articles,
+            articles : resultat
         }
     })
 });

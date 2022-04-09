@@ -17,46 +17,22 @@ export const getAllArticles = async function(parametres) {
 
     const request = new db.Request()
     query.sanitize(request);
-    try {
-        const data = await request.query(sql);
-        return [data.recordset, data.rowsAffected];
-    } catch(error) {
-        throw error;
-    }
+    const data = await request.query(sql);
+    return [data.recordset, data.rowsAffected];
 };
 
 export const disponibilitéArticle = async function(articles) {
     const sql = `SELECT
     GL_CODEARTICLE,
     SUM(GL_QTESTOCK) AS 'Stock Disponible'
-    FROM [BNG].[dbo].[LIGNE]
+    FROM LIGNE
     ${query.where(qs.parse('GL_CODEARTICLE='+ articles.join('&GL_CODEARTICLE=')))}
     GROUP BY GL_CODEARTICLE`;
 
     const request = new db.Request()
     query.sanitize(request);
-    try {
-        const data = await request.query(sql);
-        const dataRecord = data.recordset
-        let resultat = {};
-        articles.forEach(article => {
-            //Ce code est complexe parce que le return de la query peut être soit : Undefined, un objet ou un array d'objet
-            if (!dataRecord) return resultat[article] = 0;
-            if (dataRecord instanceof Array) {
-                dataRecord.forEach(code => {
-                    if (article===code.GL_CODEARTICLE) return resultat[article] =  code['Stock Disponible']
-                })
-            }
-            else {
-                if (article===dataRecord?.GL_CODEARTICLE) return resultat[article] =  data.recordset[0].GL_CODEARTICLE
-            }
-            if (!(article in resultat)) return resultat[article] = 0;
-        });
-        return resultat
-    } catch(error) {
-        throw error;
-    }
-
+    const data = await request.query(sql);
+    return data.recordset
 };
 
 export const emplacementArticle = async function(produit) {
