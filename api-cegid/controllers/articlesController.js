@@ -11,6 +11,7 @@ export const listArticles = catchAsync( async function(request, response,next){
 
     return response.status(200).json({
         status : "ok",
+        page : Number(request.query.page) || 1,
         length: length[0],
         body : {
             articles,
@@ -20,12 +21,14 @@ export const listArticles = catchAsync( async function(request, response,next){
 });
 
 export const unArticle = catchAsync(async function(request, response, next) {
-
-    const data = await model.getArticle(request.params);
+    console.log(request.params);
+    const taille = await model.getArticle(request.params.article);
+    if (taille.length===0) return next(createError(404, "Aucun article avec ce code n'a été trouvé"))
     return response.status(200).json({
         status : "ok",
+        codeArticlce : request.params.article,
         body : {
-            data,
+            taille,
         }
     })
 })

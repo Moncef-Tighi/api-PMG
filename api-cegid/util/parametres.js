@@ -66,6 +66,7 @@ class Query {
             //Le i est nécessaire pour protéger les inputs contre les attaques SQL
             //le i sert de nom aux inputs dans le cas ou le même attribut a plusieurs condition
             //Exemple : b>@b AND b<@b ne fonctionnerait pas. Mais b>@1 AND b<@2 fonctionne (les chiffres sont la valeur de i)
+            //IDEE : MSSQL fait la sanitization auto avec param1, param2...
             for (const param of Object.keys(fields)) {
                 i++;
                 if (param in this.operators) {

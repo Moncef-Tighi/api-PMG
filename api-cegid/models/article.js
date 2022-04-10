@@ -22,7 +22,7 @@ export const getAllArticles = async function(parametres) {
     // ${query.paginate(parametres)}`;
 
     const sql = `
-    SELECT TOP 5000
+    SELECT
     GA_CODEARTICLE, GA_FAMILLENIV1,GA_FAMILLENIV2,GA_LIBELLE, GA_PVTTC
     ,SUM(GL_QTESTOCK) AS 'Stock Disponible'
     FROM ARTICLE  
@@ -33,17 +33,16 @@ export const getAllArticles = async function(parametres) {
     ${query.sort(parametres)}
     ${query.paginate(parametres)}
     `
-
     const request = new db.Request()
     query.sanitize(request);
     const data = await request.query(sql);
     return [data.recordset, data.rowsAffected];
 };
 
-export const getArticle = function(param) {
+export const getArticle = async function(param) {
     const data = await db.query`
     SELECT
-    GA_CODEARTICLE,GA_CODEBARRE, GA_FAMILLENIV1,GA_FAMILLENIV2,GA_LIBELLE, GA_PVTTC
+    GA_CODEBARRE
     ,ISNULL( GDI_LIBELLE, 'Inconnue') AS 'Dimension'
     ,ISNULL( SUM(GL_QTESTOCK), 0) AS 'Stock Disponible'
     FROM ARTICLE  
