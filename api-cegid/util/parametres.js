@@ -57,6 +57,7 @@ class Query {
         let result = start;
         for (const field of Object.keys(this.queryString)) {
             if (this.reservedKeyWords.includes(field)) continue;
+            
             const fields = this.queryString[field]
             if (this.excluedFields.includes(field)) {
                 throw new Error(`Erreur : le field ${field} n'est pas autorisé`);
@@ -88,8 +89,9 @@ class Query {
                             //TODO: Remplacer la vraie value par le @ du prepared statement
                             let inOperator = "";
                             for (let y=0; y<params.length;y++) {
-                                inOperator+= `@${y+999},`;
-                                this.inputs[y+999]=params[y];
+                                inOperator+= `@${i},`;
+                                this.inputs[i]=params[y];
+                                i++;
                             }
                             result+=`${field} IN (${inOperator.slice(0,-1)})`;
                         }

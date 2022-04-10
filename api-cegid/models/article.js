@@ -3,15 +3,20 @@ import Query from '../util/parametres.js';
 import qs from "qs";
 
 
-const query= new Query('GA_CODEARTICLE');
+const query= new Query('-GA_DATECREATION');
 
 export const getAllArticles = async function(parametres) {
-    const sql = `SELECT
-    GA_ARTICLE,GA_CODEARTICLE,GA_CODEBARRE, GA_FAMILLENIV1,GA_FAMILLENIV2,GA_LIBELLE,
-    GF_PRIXUNITAIRE, GF_QUALIFPRIX
-    FROM ARTICLE
-    INNER JOIN TARIF ON ARTICLE.GA_ARTICLE = TARIF.GF_ARTICLE
+    const sql = `
+    SELECT
+    GA_ARTICLE,GA_CODEARTICLE,GA_CODEBARRE, GA_FAMILLENIV1,GA_FAMILLENIV2,GA_LIBELLE, GA_PVHT , GA_PVTTC
+    ,ISNULL( GDI_LIBELLE, 'Inconnue') AS 'Dimension'
+    ,ISNULL( SUM(GL_QTESTOCK), 0) AS 'Stock Disponible'
+    FROM ARTICLE  
+    LEFT JOIN LIGNE ON LiGNE.GL_CODEARTICLE = ARTICLE.GA_CODEARTICLE 
+    LEFT JOIN DIMENSION ON ARTICLE.GA_CODEDIM1= DIMENSION.GDI_CODEDIM
     ${query.where(parametres)}
+    GROUP BY Ga_CODEARTICLE, GA_DATECREATION, GA_ARTICLE, GA_CODEBARRE,GA_FAMILLENIV1,GA_FAMILLENIV2,GA_LIBELLE, GA_PVHT , GA_PVTTC
+    ,GDI_LIBELLE 
     ${query.sort(parametres)}
     ${query.paginate(parametres)}`;
 
@@ -22,7 +27,8 @@ export const getAllArticles = async function(parametres) {
 };
 
 export const disponibilitéArticle = async function(articles) {
-    const sql = `SELECT
+    const sql = `
+    SELECT
     GL_CODEARTICLE,
     SUM(GL_QTESTOCK) AS 'Stock Disponible'
     FROM LIGNE
