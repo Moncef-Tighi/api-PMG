@@ -6,20 +6,6 @@ import qs from "qs";
 const query= new Query('-GA_DATECREATION');
 
 export const getAllArticles = async function(parametres) {
-    // const sql = `
-    // SELECT
-    // GA_CODEARTICLE,GA_CODEBARRE, GA_FAMILLENIV1,GA_FAMILLENIV2,GA_LIBELLE, GA_PVTTC
-    // ,ISNULL( GDI_LIBELLE, 'Inconnue') AS 'Dimension'
-    // ,ISNULL( SUM(GL_QTESTOCK), 0) AS 'Stock Disponible'
-    // FROM ARTICLE  
-    // LEFT JOIN LIGNE ON LiGNE.GL_ARTICLE = ARTICLE.GA_ARTICLE 
-    // LEFT JOIN DIMENSION ON ARTICLE.GA_CODEDIM1= DIMENSION.GDI_CODEDIM
-    // ${query.where(parametres)}
-    // GROUP BY Ga_CODEARTICLE, GA_DATECREATION, GA_CODEBARRE,GA_FAMILLENIV1,GA_FAMILLENIV2,GA_LIBELLE,GA_PVTTC
-    // ,GDI_LIBELLE
-    // HAVING SUM(GL_QTESTOCK)>0
-    // ${query.sort(parametres)}
-    // ${query.paginate(parametres)}`;
 
     const sql = `
     SELECT
@@ -56,6 +42,18 @@ export const getArticle = async function(param) {
 }
 
 
+// export const getTarifs = async function(articles) {
+//     console.log(articles.join(','));
+//     const data = await db.query`
+//     SELECT 
+//     GF_PRIXUNITAIRE
+//     FROM TARIF
+//     WHERE TARIF.GF_ARTICLE in (${articles.join(',')})
+//     `
+//     return data.recordset;
+// }
+
+ 
 export const disponibilitéArticle = async function(articles) {
     const sql = `
     SELECT

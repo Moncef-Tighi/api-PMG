@@ -3,7 +3,7 @@ import { catchAsync } from './errorController.js';
 import createError from 'http-errors'
 
 export const listArticles = catchAsync( async function(request, response,next){
-    
+
     const [articles, length] = await model.getAllArticles(request.query);
     // if (length[0]>0) {
     //     const codeArticle = articles.map(article => article.GA_CODEARTICLE);
