@@ -3,6 +3,7 @@ import { catchAsync } from './errorController.js';
 import createError from 'http-errors'
 
 export const listArticles = catchAsync( async function(request, response,next){
+    
     const [articles, length] = await model.getAllArticles(request.query);
     // if (length[0]>0) {
     //     const codeArticle = articles.map(article => article.GA_CODEARTICLE);
@@ -21,7 +22,7 @@ export const listArticles = catchAsync( async function(request, response,next){
 });
 
 export const unArticle = catchAsync(async function(request, response, next) {
-    console.log(request.params);
+
     const taille = await model.getArticle(request.params.article);
     if (taille.length===0) return next(createError(404, "Aucun article avec ce code n'a été trouvé"))
     return response.status(200).json({

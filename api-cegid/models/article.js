@@ -24,7 +24,7 @@ export const getAllArticles = async function(parametres) {
     const sql = `
     SELECT
     GA_CODEARTICLE, GA_FAMILLENIV1,GA_FAMILLENIV2,GA_LIBELLE, GA_PVTTC
-    ,SUM(GL_QTESTOCK) AS 'Stock Disponible'
+    ,SUM(GL_QTESTOCK) AS 'Stock'
     FROM ARTICLE  
     LEFT JOIN LIGNE ON LiGNE.GL_CODEARTICLE = ARTICLE.GA_CODEARTICLE 
     ${query.where(parametres)}
