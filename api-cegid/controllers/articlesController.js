@@ -19,7 +19,13 @@ export const listArticles = catchAsync( async function(request, response,next){
     
 });
 
+export const unArticle = catchAsync(async function(request, response, next) {
 
+    
+    return response.status(200).json({
+        status : "ok"
+    })
+})
 
 export const ArticlesDisponible = catchAsync( async function(request, response,next){
 
