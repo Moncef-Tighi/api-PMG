@@ -6,7 +6,42 @@ import qs from "qs";
 const query= new Query('-GA_DATECREATION');
 
 export const getAllArticles = async function(parametres) {
+    // const sql = `
+    // SELECT
+    // GA_CODEARTICLE,GA_CODEBARRE, GA_FAMILLENIV1,GA_FAMILLENIV2,GA_LIBELLE, GA_PVTTC
+    // ,ISNULL( GDI_LIBELLE, 'Inconnue') AS 'Dimension'
+    // ,ISNULL( SUM(GL_QTESTOCK), 0) AS 'Stock Disponible'
+    // FROM ARTICLE  
+    // LEFT JOIN LIGNE ON LiGNE.GL_ARTICLE = ARTICLE.GA_ARTICLE 
+    // LEFT JOIN DIMENSION ON ARTICLE.GA_CODEDIM1= DIMENSION.GDI_CODEDIM
+    // ${query.where(parametres)}
+    // GROUP BY Ga_CODEARTICLE, GA_DATECREATION, GA_CODEBARRE,GA_FAMILLENIV1,GA_FAMILLENIV2,GA_LIBELLE,GA_PVTTC
+    // ,GDI_LIBELLE
+    // HAVING SUM(GL_QTESTOCK)>0
+    // ${query.sort(parametres)}
+    // ${query.paginate(parametres)}`;
+
     const sql = `
+    SELECT TOP 5000
+    GA_CODEARTICLE, GA_FAMILLENIV1,GA_FAMILLENIV2,GA_LIBELLE, GA_PVTTC
+    ,SUM(GL_QTESTOCK) AS 'Stock Disponible'
+    FROM ARTICLE  
+    LEFT JOIN LIGNE ON LiGNE.GL_CODEARTICLE = ARTICLE.GA_CODEARTICLE 
+    ${query.where(parametres)}
+    GROUP BY GA_CODEARTICLE,GA_FAMILLENIV1,GA_FAMILLENIV2,GA_LIBELLE,GA_PVTTC,GA_DATECREATION
+    HAVING SUM(GL_QTESTOCK) > 0
+    ${query.sort(parametres)}
+    ${query.paginate(parametres)}
+    `
+
+    const request = new db.Request()
+    query.sanitize(request);
+    const data = await request.query(sql);
+    return [data.recordset, data.rowsAffected];
+};
+
+export const getArticle = function(param) {
+    const data = await db.query`
     SELECT
     GA_CODEARTICLE,GA_CODEBARRE, GA_FAMILLENIV1,GA_FAMILLENIV2,GA_LIBELLE, GA_PVTTC
     ,ISNULL( GDI_LIBELLE, 'Inconnue') AS 'Dimension'
@@ -14,18 +49,13 @@ export const getAllArticles = async function(parametres) {
     FROM ARTICLE  
     LEFT JOIN LIGNE ON LiGNE.GL_ARTICLE = ARTICLE.GA_ARTICLE 
     LEFT JOIN DIMENSION ON ARTICLE.GA_CODEDIM1= DIMENSION.GDI_CODEDIM
-    ${query.where(parametres)}
+    WHERE GA_CODEARTICLE= ${param}
     GROUP BY Ga_CODEARTICLE, GA_DATECREATION, GA_CODEBARRE,GA_FAMILLENIV1,GA_FAMILLENIV2,GA_LIBELLE,GA_PVTTC
     ,GDI_LIBELLE
-    HAVING SUM(GL_QTESTOCK)>0
-    ${query.sort(parametres)}
-    ${query.paginate(parametres)}`;
+    `;
+    return data.recordset
+}
 
-    const request = new db.Request()
-    query.sanitize(request);
-    const data = await request.query(sql);
-    return [data.recordset, data.rowsAffected];
-};
 
 export const disponibilitéArticle = async function(articles) {
     const sql = `

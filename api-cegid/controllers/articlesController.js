@@ -21,9 +21,12 @@ export const listArticles = catchAsync( async function(request, response,next){
 
 export const unArticle = catchAsync(async function(request, response, next) {
 
-    
+    const data = await model.getArticle(request.params);
     return response.status(200).json({
-        status : "ok"
+        status : "ok",
+        body : {
+            data,
+        }
     })
 })
 
