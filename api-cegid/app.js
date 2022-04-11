@@ -1,6 +1,7 @@
 import express from "express";
 import helmet from 'helmet';
 import createError from "http-errors";
+const cors = require('cors')
 
 import { errorHandeler } from "./controllers/errorController.js";
 import produitsRouter from './routes/articlesRouter.js';
@@ -8,6 +9,7 @@ import produitsRouter from './routes/articlesRouter.js';
  
 const app = express();
 
+app.use(cors())
 app.use(helmet());
 app.use(express.json({
     limit : "10kb" //Limite la taille du body à 10kb
