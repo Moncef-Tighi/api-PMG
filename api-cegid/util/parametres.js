@@ -106,8 +106,9 @@ class Query {
         return result.slice(0,-4);
     }
 
-    where(queryString) {
+    where(queryString, ignore = false) {
         this._parsing(queryString);
+        if (ignore) return this._conditions(" ");
         return this._conditions(" WHERE ");
     }
 
