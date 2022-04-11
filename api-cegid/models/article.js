@@ -21,11 +21,21 @@ export const getAllArticles = async function(parametres) {
     //`
 
     const sql = `
-    SELECT DISTINCT TOP 500
+    SELECT DISTINCT TOP 200
     GA_CODEARTICLE, GA_FAMILLENIV1, GA_DATECREATION,GA_LIBELLE,ISNULL(GF_PRIXUNITAIRE, GA_PVTTC) as 'Prix Actuel', GA_PVTTC as 'Prix Initial',
     GF_DATEMODIF as 'Dernière date Tarif', GF_LIBELLE as 'Description Tarif', GF_DATEDEBUT, GF_DATEFIN
     GFM_TYPETARIF, GFM_PERTARIF, GFM_NATURETYPE,
-    GA2_LIBREARTE
+    GA2_LIBREARTE, 
+    ISNULL((
+        SELECT
+        SUM(GQ_PHYSIQUE-GQ_RESERVECLI+GQ_RESERVEFOU-GQ_PREPACLI) QTE_STOCK_NET
+        FROM DISPO
+        LEFT JOIN ARTICLE ON GA_ARTICLE=GQ_ARTICLE
+        WHERE GA_CODEARTICLE=GCTARFCONMODEART.GA_CODEARTICLE
+        GROUP BY
+        GA_CODEARTICLE
+    ),0) AS 'Stock'
+    
 
     FROM GCTARFCONMODEART  
     WHERE 
@@ -38,11 +48,11 @@ export const getAllArticles = async function(parametres) {
         SELECT MAX(GF_DATEMODIF) FROM TARIF
         WHERE GCTARFCONMODEART.GA_ARTICLE = TARIF.GF_ARTICLE
     )
-    ${query.where(params, true)}
+    AND GF_DATEMODIF>'2021-01-01' 
+    ${query.where(parametres, true)}
     ` 
-    // ${query.sort(params)}
-    // ${query.paginate(params)}
-
+    // ${query.sort(parametres)}
+    // ${query.paginate(parametres)}
     const request = new db.Request()
     query.sanitize(request);
     const data = await request.query(sql);

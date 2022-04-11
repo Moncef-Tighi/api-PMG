@@ -106,9 +106,9 @@ class Query {
         return result.slice(0,-4);
     }
 
-    where(queryString, ignore = false) {
+    where(queryString, and = false) {
         this._parsing(queryString);
-        if (ignore) return this._conditions(" ");
+        if (and) return this._conditions(" AND ");
         return this._conditions(" WHERE ");
     }
 
