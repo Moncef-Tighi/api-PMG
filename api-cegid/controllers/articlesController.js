@@ -60,7 +60,6 @@ export const ArticlesDisponible = catchAsync( async function(request, response,n
         }
         if (!(article in resultat)) return resultat[article] = 0;
     });
-    console.log("ok");
     return response.status(200).json({
         status : "ok",
         body : {
@@ -69,7 +68,19 @@ export const ArticlesDisponible = catchAsync( async function(request, response,n
     })
 });
 
+const formatResponseDepot = function(depots,taille) {
+    depots[taille.GDE_LIBELLE].push({
+        "Dimension" : taille.Dimension,
+        "Stock Net" : taille["Stock Net"],
+        "Transfert" : taille.Qte_TRANSFERT,
+        "Vendu" : taille.QTE_VENDU,
+        "Stock" : taille.Qte_Stock,
+        'Ecart Inventaire' : taille.GQ_ECARTINV
+    });
+}
 export const ArticleDepot = catchAsync( async function(request, response,next){
+    
+    
     const article = await model.emplacementArticle(request.params.article);
 
     if (article.length===0) {
@@ -78,26 +89,11 @@ export const ArticleDepot = catchAsync( async function(request, response,next){
 
     const depots = {};
     article.forEach(taille => {
-        console.log(taille);
         if (taille.GDE_LIBELLE in depots) {
-            depots[taille.GDE_LIBELLE].push({
-                "Dimension" : taille.Dimension,
-                "Stock Net" : taille["Stock Net"],
-                "Transfert" : taille.Qte_TRANSFERT,
-                "Vendu" : taille.QTE_VENDU,
-                "Stock" : taille.Qte_Stock,
-                'Ecart Inventaire' : taille.GQ_ECARTINV
-            });
+            formatResponseDepot(depots, taille)
         } else {
             depots[taille.GDE_LIBELLE] = [];
-            depots[taille.GDE_LIBELLE].push({
-                "Dimension" : taille.Dimension,
-                "Stock Net" : taille["Stock Net"],
-                "Transfert" : taille.Qte_TRANSFERT,
-                "Vendu" : taille.QTE_VENDU,
-                "Stock" : taille.Qte_Stock,
-                'Ecart Inventaire' : taille.GQ_ECARTINV
-            });
+            formatResponseDepot(depots, taille)
         }
     })
     return response.status(200).json({

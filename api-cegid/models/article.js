@@ -7,19 +7,6 @@ const query= new Query('-GA_DATECREATION');
 
 export const getAllArticles = async function(parametres) {
 
-    // const sql = `
-    // SELECT
-    // GA_CODEARTICLE, GA_FAMILLENIV1,GA_FAMILLENIV2,GA_LIBELLE, GA_PVTTC
-    // ,SUM(GL_QTESTOCK) AS 'Stock'
-    // FROM ARTICLE  
-    // LEFT JOIN LIGNE ON LiGNE.GL_CODEARTICLE = ARTICLE.GA_CODEARTICLE 
-    // ${query.where(parametres)}
-    // GROUP BY GA_CODEARTICLE,GA_FAMILLENIV1,GA_FAMILLENIV2,GA_LIBELLE,GA_PVTTC,GA_DATECREATION
-    // HAVING SUM(GL_QTESTOCK) > 0
-    // ${query.sort(parametres)}
-    // ${query.paginate(parametres)}
-    //`
-
     const sql = `
     SELECT DISTINCT TOP 200
     GA_CODEARTICLE, GA_FAMILLENIV1, GA_DATECREATION,GA_LIBELLE,ISNULL(GF_PRIXUNITAIRE, GA_PVTTC) as 'Prix Actuel', GA_PVTTC as 'Prix Initial',
@@ -36,7 +23,6 @@ export const getAllArticles = async function(parametres) {
         GA_CODEARTICLE
     ),0) AS 'Stock'
     
-
     FROM GCTARFCONMODEART  
     WHERE 
     (GF_REGIMEPRIX = 'TTC' 
@@ -60,10 +46,13 @@ export const getAllArticles = async function(parametres) {
 };
 
 export const infoArticle = async function(parametre) {
+
     const data = await db.query `
     SELECT DISTINCT
-    GA_FAMILLENIV1, GA_DATECREATION,GA_LIBELLE,ISNULL(GF_PRIXUNITAIRE, GA_PVTTC) as 'Prix Actuel', GA_PVTTC as 'Prix Initial',
-    GF_DATEMODIF as 'Dernière date Tarif', GF_LIBELLE as 'Description Tarif', GF_DATEDEBUT, GF_DATEFIN
+    GA_FAMILLENIV1 AS GA_FAMILLENIV1,
+    GA_FAMILLENIV2 AS GA_FAMILLENIV2,
+    GA_DATECREATION,GA_LIBELLE,ISNULL(GF_PRIXUNITAIRE, GA_PVTTC) as 'Prix Actuel', GA_PVTTC as 'Prix Initial',
+    GF_DATEMODIF as 'Dernière date Tarif', GF_LIBELLE as 'Description Tarif', GF_DATEDEBUT, GF_DATEFIN,
     GFM_TYPETARIF, GFM_PERTARIF, GFM_NATURETYPE,
     GA2_LIBREARTE
 
@@ -78,6 +67,7 @@ export const infoArticle = async function(parametre) {
     )
     AND GA_CODEARTICLE = ${parametre}
     `;
+
     return data.recordset;
 }
 
@@ -163,9 +153,11 @@ export const emplacementArticle = async function(article) {
     ORDER BY GDE_LIBELLE DESC
     `;
     return data.recordset;
+    
 };
 
 export const disponibilitéArticle = async function(articles) {
+    
     const sql = `
     SELECT
     GL_CODEARTICLE,
