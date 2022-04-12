@@ -59,26 +59,23 @@ export const getAllArticles = async function(parametres) {
     return [data.recordset, data.rowsAffected];
 };
 
-export const getArticle = async function(parametre) {
-    // const data = await db.query`
-    // SELECT
-    // GA_CODEBARRE
-    // ,ISNULL( GDI_LIBELLE, 'Inconnue') AS 'Dimension'
-    // ,ISNULL( SUM(GL_QTESTOCK), 0) AS 'Stock Disponible'
-    // FROM ARTICLE  
-    // LEFT JOIN LIGNE ON LiGNE.GL_ARTICLE = ARTICLE.GA_ARTICLE 
-    // LEFT JOIN DIMENSION ON ARTICLE.GA_CODEDIM1= DIMENSION.GDI_CODEDIM
-    // WHERE GA_CODEARTICLE= ${param}
-    // GROUP BY Ga_CODEARTICLE, GA_DATECREATION, GA_CODEBARRE,GA_FAMILLENIV1,GA_FAMILLENIV2,GA_LIBELLE,GA_PVTTC
-    // ,GDI_LIBELLE
-    // `;
+export const infoArticle = async function(parametre) {
+
+}
+
+
+export const dispoArticleTaille = async function(article) {
 
     const data = await db.query`
     SELECT
-
-    GA_CODEARTICLE, GA_LIBELLE, GA_CODEBARRE,
-    GDI1.GDI_LIBELLE , GDI2.GDI_LIBELLE,
-    SUM(GQ_PHYSIQUE-GQ_RESERVECLI+GQ_RESERVEFOU-GQ_PREPACLI) QTE_STOCK_NET
+    
+    GA_CODEBARRE,
+    ISNULL(GDI1.GDI_LIBELLE , GDI2.GDI_LIBELLE) AS 'Dimension',
+    SUM(GQ_PHYSIQUE-GQ_RESERVECLI+GQ_RESERVEFOU-GQ_PREPACLI) AS 'Stock Net',
+    SUM(GQ_TRANSFERT) AS 'Transfert',
+    SUM(GQ_LIVRECLIENT+GQ_VENTEFFO) AS 'Vendu',
+    SUM(GQ_PHYSIQUE) AS 'Stock',
+    SUM(GQ_ECARTINV) AS 'Ecart Inventaire'
 
     FROM DISPO
 
@@ -90,9 +87,8 @@ export const getArticle = async function(parametre) {
         AND ARTICLE.GA_CODEDIM2 = GDI2.GDI_CODEDIM 
         AND GDI2.GDI_TYPEDIM = 'DI2' 
 
-    WHERE GA_CODEARTICLE=${parametre}
+    WHERE GA_CODEARTICLE=${article} AND GA_TYPEARTICLE = 'MAR'
     GROUP BY
-    GA_CODEARTICLE, GA_LIBELLE,
     GA_CODEBARRE,
     GDI1.GDI_LIBELLE , GDI2.GDI_LIBELLE
     `
@@ -113,6 +109,44 @@ export const getArticle = async function(parametre) {
 // }
 
  
+
+export const emplacementArticle = async function(article) {
+    const data=await db.query`
+    SELECT
+    GDE_LIBELLE,
+    GQ_DEPOT,
+    ISNULL(GDI1.GDI_LIBELLE , GDI2.GDI_LIBELLE) AS 'Dimension',
+    
+    SUM(GQ_PHYSIQUE-GQ_RESERVECLI+GQ_RESERVEFOU-GQ_PREPACLI) AS 'Stock Net',
+    SUM(GQ_TRANSFERT) AS Qte_TRANSFERT,
+    SUM(GQ_LIVRECLIENT+GQ_VENTEFFO) QTE_VENDU,
+    SUM(GQ_PHYSIQUE) AS Qte_Stock,
+    SUM(GQ_ECARTINV) AS GQ_ECARTINV
+
+    FROM DISPO
+    LEFT JOIN ARTICLE ON GA_ARTICLE = GQ_ARTICLE
+
+    LEFT OUTER JOIN DIMENSION AS GDI1 ON ARTICLE.GA_GRILLEDIM1 = GDI1.GDI_GRILLEDIM 
+    AND ARTICLE.GA_CODEDIM1 = GDI1.GDI_CODEDIM 
+    AND GDI1.GDI_TYPEDIM = 'DI1' 
+    LEFT OUTER JOIN DIMENSION AS GDI2 ON ARTICLE.GA_GRILLEDIM2 = GDI2.GDI_GRILLEDIM 
+    AND ARTICLE.GA_CODEDIM2 = GDI2.GDI_CODEDIM 
+    AND GDI2.GDI_TYPEDIM = 'DI2' 
+    
+    INNER JOIN DEPOTS ON GQ_DEPOT = GDE_DEPOT
+    AND GQ_CLOTURE <> 'X' AND GA_TYPEARTICLE = 'MAR'-- AND GQ_PHYSIQUE <> '0'
+    WHERE GA_CODEARTICLE = ${article}
+    
+    GROUP BY
+    GDE_LIBELLE, GDE_ABREGE,
+    GQ_DEPOT,
+    GDI1.GDI_LIBELLE , GDI2.GDI_LIBELLE
+    
+    ORDER BY GDE_LIBELLE DESC
+    `;
+    return data.recordset;
+};
+
 export const disponibilitéArticle = async function(articles) {
     const sql = `
     SELECT
@@ -126,9 +160,4 @@ export const disponibilitéArticle = async function(articles) {
     query.sanitize(request);
     const data = await request.query(sql);
     return data.recordset
-};
-
-export const emplacementArticle = async function(produit) {
-    // const data=await db.query`SELECT * FROM produit WHERE nom_produit=${produit}`;
-    return data.recordset;
 };
