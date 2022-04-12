@@ -24,16 +24,14 @@ export const listArticles = catchAsync( async function(request, response,next){
 export const unArticle = catchAsync(async function(request, response, next) {
 
     const infoArticle = await model.infoArticle(request.params.article);
-    
     if (infoArticle.length===0) return next(createError(404, "Aucun article avec ce code n'a été trouvé"))
-
     const taille = await model.dispoArticleTaille(request.params.article);
 
     return response.status(200).json({
         status : "ok",
         codeArticlce : request.params.article,
-        "Détails" : infoArticle,
         body : {
+            "details" : infoArticle[0],
             taille,
         }
     })
@@ -66,23 +64,26 @@ export const ArticlesDisponible = catchAsync( async function(request, response,n
             articles : resultat
         }
     })
+
 });
 
 const formatResponseDepot = function(depots,taille) {
+
     depots[taille.GDE_LIBELLE].push({
-        "Dimension" : taille.Dimension,
-        "Stock Net" : taille["Stock Net"],
-        "Transfert" : taille.Qte_TRANSFERT,
-        "Vendu" : taille.QTE_VENDU,
-        "Stock" : taille.Qte_Stock,
-        'Ecart Inventaire' : taille.GQ_ECARTINV
+        dimension : taille.dimension,
+        stockNet : taille.stockNet,
+        // transfert : taille.transfert,
+        // vendu : taille.vendu,
+        // stock : taille.stock,
+        // ecartInventaire : taille.ecartInventaire
     });
+
 }
+
 export const ArticleDepot = catchAsync( async function(request, response,next){
     
-    
     const article = await model.emplacementArticle(request.params.article);
-
+    console.log(article);
     if (article.length===0) {
         return next(createError(204,`Aucun article avec ce code n'a été trouvé`));
     }
@@ -102,4 +103,5 @@ export const ArticleDepot = catchAsync( async function(request, response,next){
             depots,
         }
     })
+    
 });

@@ -51,8 +51,8 @@ export const infoArticle = async function(parametre) {
     SELECT DISTINCT
     GA_FAMILLENIV1 AS GA_FAMILLENIV1,
     GA_FAMILLENIV2 AS GA_FAMILLENIV2,
-    GA_DATECREATION,GA_LIBELLE,ISNULL(GF_PRIXUNITAIRE, GA_PVTTC) as 'Prix Actuel', GA_PVTTC as 'Prix Initial',
-    GF_DATEMODIF as 'Dernière date Tarif', GF_LIBELLE as 'Description Tarif', GF_DATEDEBUT, GF_DATEFIN,
+    GA_DATECREATION,GA_LIBELLE,ISNULL(GF_PRIXUNITAIRE, GA_PVTTC) as 'prixActuel', GA_PVTTC as 'prixInitial',
+    GF_DATEMODIF as 'dernierTarif', GF_LIBELLE as 'descriptionTarif', GF_DATEDEBUT, GF_DATEFIN,
     GFM_TYPETARIF, GFM_PERTARIF, GFM_NATURETYPE,
     GA2_LIBREARTE
 
@@ -78,12 +78,8 @@ export const dispoArticleTaille = async function(article) {
     SELECT
     
     GA_CODEBARRE,
-    ISNULL(GDI1.GDI_LIBELLE , GDI2.GDI_LIBELLE) AS 'Dimension',
-    SUM(GQ_PHYSIQUE-GQ_RESERVECLI+GQ_RESERVEFOU-GQ_PREPACLI) AS 'Stock Net',
-    SUM(GQ_TRANSFERT) AS 'Transfert',
-    SUM(GQ_LIVRECLIENT+GQ_VENTEFFO) AS 'Vendu',
-    SUM(GQ_PHYSIQUE) AS 'Stock',
-    SUM(GQ_ECARTINV) AS 'Ecart Inventaire'
+    ISNULL(GDI1.GDI_LIBELLE , GDI2.GDI_LIBELLE) AS 'dimension',
+    SUM(GQ_PHYSIQUE-GQ_RESERVECLI+GQ_RESERVEFOU-GQ_PREPACLI) AS 'stockNet'
 
     FROM DISPO
 
@@ -123,14 +119,9 @@ export const emplacementArticle = async function(article) {
     SELECT
     GDE_LIBELLE,
     GQ_DEPOT,
-    ISNULL(GDI1.GDI_LIBELLE , GDI2.GDI_LIBELLE) AS 'Dimension',
+    ISNULL(GDI1.GDI_LIBELLE , GDI2.GDI_LIBELLE) AS 'dimension',
+    SUM(GQ_PHYSIQUE-GQ_RESERVECLI+GQ_RESERVEFOU-GQ_PREPACLI) AS 'stockNet'
     
-    SUM(GQ_PHYSIQUE-GQ_RESERVECLI+GQ_RESERVEFOU-GQ_PREPACLI) AS 'Stock Net',
-    SUM(GQ_TRANSFERT) AS Qte_TRANSFERT,
-    SUM(GQ_LIVRECLIENT+GQ_VENTEFFO) QTE_VENDU,
-    SUM(GQ_PHYSIQUE) AS Qte_Stock,
-    SUM(GQ_ECARTINV) AS GQ_ECARTINV
-
     FROM DISPO
     LEFT JOIN ARTICLE ON GA_ARTICLE = GQ_ARTICLE
 
@@ -157,7 +148,7 @@ export const emplacementArticle = async function(article) {
 };
 
 export const disponibilitéArticle = async function(articles) {
-    
+
     const sql = `
     SELECT
     GL_CODEARTICLE,
