@@ -1,7 +1,7 @@
 import express from "express";
 import helmet from 'helmet';
 import createError from "http-errors";
-const cors = require('cors')
+import cors from 'cors';
 
 import { errorHandeler } from "./controllers/errorController.js";
 import produitsRouter from './routes/articlesRouter.js';

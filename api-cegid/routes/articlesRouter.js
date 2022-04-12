@@ -5,7 +5,7 @@ const router = express.Router()
 
 router.get("/", controllers.listArticles);
 router.get("/:article", controllers.unArticle);
+router.get("/detail_stock/:article", controllers.ArticleDepot);
 router.post("/disponible", controllers.ArticlesDisponible);
-router.post("/detail", controllers.detailArticle);
 
 export default router

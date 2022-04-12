@@ -23,7 +23,8 @@ export const listArticles = catchAsync( async function(request, response,next){
 
 export const unArticle = catchAsync(async function(request, response, next) {
 
-    const taille = await model.getArticle(request.params.article);
+
+    const taille = await model.dispoArticleTaille(request.params.article);
     if (taille.length===0) return next(createError(404, "Aucun article avec ce code n'a été trouvé"))
     return response.status(200).json({
         status : "ok",
@@ -55,7 +56,7 @@ export const ArticlesDisponible = catchAsync( async function(request, response,n
         }
         if (!(article in resultat)) return resultat[article] = 0;
     });
-
+    console.log("ok");
     return response.status(200).json({
         status : "ok",
         body : {
@@ -64,16 +65,41 @@ export const ArticlesDisponible = catchAsync( async function(request, response,n
     })
 });
 
-export const detailArticle = catchAsync( async function(request, response,next){
-    // const articles = await model.getOneArticle(request.params.nom_produit);
+export const ArticleDepot = catchAsync( async function(request, response,next){
+    const article = await model.emplacementArticle(request.params.article);
 
-    // if (articles.length===0) {
-    //     return next(createError(204,`Aucun produit avec ce nom n'a été trouvé`));
-    // }
-    // return response.status(200).json({
-    //     status : 'ok',
-    //     body : {
-    //         articles,
-    //     }
-    // })
+    if (article.length===0) {
+        return next(createError(204,`Aucun article avec ce code n'a été trouvé`));
+    }
+
+    const depots = {};
+    article.forEach(taille => {
+        console.log(taille);
+        if (taille.GDE_LIBELLE in depots) {
+            depots[taille.GDE_LIBELLE].push({
+                "Dimension" : taille.Dimension,
+                "Stock Net" : taille["Stock Net"],
+                "Transfert" : taille.Qte_TRANSFERT,
+                "Vendu" : taille.QTE_VENDU,
+                "Stock" : taille.Qte_Stock,
+                'Ecart Inventaire' : taille.GQ_ECARTINV
+            });
+        } else {
+            depots[taille.GDE_LIBELLE] = [];
+            depots[taille.GDE_LIBELLE].push({
+                "Dimension" : taille.Dimension,
+                "Stock Net" : taille["Stock Net"],
+                "Transfert" : taille.Qte_TRANSFERT,
+                "Vendu" : taille.QTE_VENDU,
+                "Stock" : taille.Qte_Stock,
+                'Ecart Inventaire' : taille.GQ_ECARTINV
+            });
+        }
+    })
+    return response.status(200).json({
+        status : 'ok',
+        body : {
+            depots,
+        }
+    })
 });
