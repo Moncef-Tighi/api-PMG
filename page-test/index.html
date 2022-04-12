@@ -19,48 +19,66 @@
 
     <div id="main">
 
-        <section>
-            <aside class="main-aside">
-                <img id="illustration" width="300px" height="300px" style="background-color: lightgray;">
-                <p id="label"></p>
-            </aside>
+        <aside class="main-aside">
+            <img id="illustration" width="300px" height="300px" style="background-color: lightgray;">
+            <p id="label"></p>
+        </aside>
 
-            <aside>
-                <h2>Prix Initial <span id='prix_initial'></span></h2>
-                <h1>Prix Actuel <span  id='prix_acutel'></span></h1>
-                <div>
-                    <ul>
-                        <li>Informations Article : </li>
-                        <li><b>FamilleNiv1 : </b><span  id='famille_niv1'></span></li>
-                        <li><b>FamilleNiv2 : </b><span id='famille_niv2'></span></li>
-                        <li><b>Date création : </b><span id='date_creation'></span></li>
-                        <li><b>LibreARTE : </b><span  id='libre_art'></span></li>
-                    </ul>
-                    <ul>
-                        <li>Informations Tarif :</li>
-                        <li><b>Date du Tarif : </b><span  id='date_tarif'></span></li>
-                        <li><b>Description Tarif : </b><span id='description_tarif'></span></li>
-                        <li><b>Début Tarif : </b><span id='date_debut'></span> | <b>Fin Tarif : </b><span  id='date_fin'></span> </li>
-                        <li><b>Type Tarif : </b><span  id='type_tarif'></span></li>
-                        <li><b>Nature Tarif : </b><span  id='nature_tarif'></span></li>
-                        <li><b>PerTarif : </b><span  id='pertarif'></span></li>
-                    </ul>
-                </div>
-            </aside>
-        
-        </section>
-        <section>
-            <table>
-                <thead>
-                    <td>Code Barre</td>
-                    <td>Taille 1</td>
-                    <td>Stock</td>
-                </thead>
-                <tbody id="table">
-                    
-                </tbody>
-            </table>
-        </section>
+        <aside>
+            <h3>Prix Initial <span id='prix_initial'></span></h3>
+            <h2>Prix Actuel <span  id='prix_acutel'></span></h2>
+            <div>
+                <ul>
+                    <h3>Informations Article : </h3>
+                    <li><b>FamilleNiv1 : </b><span  id='famille_niv1'></span></li>
+                    <li><b>FamilleNiv2 : </b><span id='famille_niv2'></span></li>
+                    <li><b>Date création : </b><span id='date_creation'></span></li>
+                    <li><b>LibreARTE : </b><span  id='libre_art'></span></li>
+                </ul>
+                <ul>
+                    <h3>Informations Tarif :</h3>
+                    <li><b>Date du Tarif : </b><span  id='date_tarif'></span></li>
+                    <li><b>Description Tarif : </b><span id='description_tarif'></span></li>
+                    <li><b>Début Tarif : </b><span id='date_debut'></span></li>
+                    <li><b>Fin Tarif : </b><span  id='date_fin'></span> </li>
+                    <li><b>Type Tarif : </b><span  id='type_tarif'></span></li>
+                    <li><b>Nature Tarif : </b><span  id='nature_tarif'></span></li>
+                    <li><b>PerTarif : </b><span  id='pertarif'></span></li>
+                </ul>
+            </div>
+        </aside>
+    
+        <table>
+            <thead>
+                <td>Code Barre</td>
+                <td>Taille 1</td>
+                <td>Stock</td>
+                <td>Vendu</td>
+                <td>Transfert</td>
+            </thead>
+            <tbody id="table">
+                
+            </tbody>
+        </table>
+
+        <table>
+            <thead>
+                <td>Depot</td>
+                <td>Information</td>
+                <td>S</td>
+                <td>M</td>
+                <td>L</td>
+                <td>XL</td>
+                <td>XXL</td>
+            </thead>
+            <tbody>
+                <td rowspan="5">nom Depot</td>
+                <tr><td>Stock Net</td></tr>
+                <tr><td>Transfert</td></tr>
+                <tr><td>Vendu</td></tr>
+                <tr><td>Ecart Inventaire</td></tr>
+            </tbody>
+        </table>
     </div>
 
     <div id="empty">

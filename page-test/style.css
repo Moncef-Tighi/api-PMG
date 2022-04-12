@@ -19,12 +19,19 @@ header {
     align-items: stretch;
     justify-content: space-around;
 }
+#main {
+    grid-template-columns: 1fr 1fr;
+    justify-items: center;
+    grid-row-gap: 10%;
+}
 
 
 table {
     display: table-row-group;
     vertical-align: middle;
     border-color: inherit;
+    grid-column: span 2;
+    justify-self: center;
 }
 th, td {
     padding: 15px;
