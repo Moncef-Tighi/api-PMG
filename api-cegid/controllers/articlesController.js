@@ -23,12 +23,16 @@ export const listArticles = catchAsync( async function(request, response,next){
 
 export const unArticle = catchAsync(async function(request, response, next) {
 
+    const infoArticle = await model.infoArticle(request.params.article);
+    
+    if (infoArticle.length===0) return next(createError(404, "Aucun article avec ce code n'a été trouvé"))
 
     const taille = await model.dispoArticleTaille(request.params.article);
-    if (taille.length===0) return next(createError(404, "Aucun article avec ce code n'a été trouvé"))
+
     return response.status(200).json({
         status : "ok",
         codeArticlce : request.params.article,
+        "Détails" : infoArticle,
         body : {
             taille,
         }
