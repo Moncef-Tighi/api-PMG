@@ -6,39 +6,57 @@ import qs from "qs";
 const query= new Query('-GA_DATECREATION');
 
 export const getAllArticles = async function(parametres) {
-
-    const sql = `
-    SELECT DISTINCT TOP 200
-    GA_CODEARTICLE, GA_FAMILLENIV1, GA_DATECREATION,GA_LIBELLE,ISNULL(GF_PRIXUNITAIRE, GA_PVTTC) as 'Prix Actuel', GA_PVTTC as 'Prix Initial',
-    GF_DATEMODIF as 'Dernière date Tarif', GF_LIBELLE as 'Description Tarif', GF_DATEDEBUT, GF_DATEFIN
-    GFM_TYPETARIF, GFM_PERTARIF, GFM_NATURETYPE,
-    GA2_LIBREARTE, 
-    ISNULL((
-        SELECT
-        SUM(GQ_PHYSIQUE-GQ_RESERVECLI+GQ_RESERVEFOU-GQ_PREPACLI) QTE_STOCK_NET
-        FROM DISPO
-        LEFT JOIN ARTICLE ON GA_ARTICLE=GQ_ARTICLE
-        WHERE GA_CODEARTICLE=GCTARFCONMODEART.GA_CODEARTICLE
-        GROUP BY
-        GA_CODEARTICLE
-    ),0) AS 'Stock'
     
-    FROM GCTARFCONMODEART  
-    WHERE 
-    (GF_REGIMEPRIX = 'TTC' 
-        AND ((GA_STATUTART='GEN' or GA_STATUTART='UNI')  
-        AND ( GFM_TYPETARIF IS NULL OR GFM_TYPETARIF IN ('','','001','RETAIL')) AND GF_ARTICLE<>'') 
-        AND GFM_NATURETYPE = 'VTE' 
-    )
-    AND GF_DATEMODIF = ( 
-        SELECT MAX(GF_DATEMODIF) FROM TARIF
-        WHERE GCTARFCONMODEART.GA_ARTICLE = TARIF.GF_ARTICLE
-    )
-    AND GF_DATEMODIF>'2021-01-01' 
-    ${query.where(parametres, true)}
-    ` 
+    
+    //Cette requête contient le vrai prix avec le dernier tarif en date, mais elle est trop lente
+
+    // const sql = `
+    // SELECT DISTINCT TOP 200
+    // GA_CODEARTICLE, GA_FAMILLENIV1, GA_DATECREATION,GA_LIBELLE,ISNULL(GF_PRIXUNITAIRE, GA_PVTTC) as 'Prix Actuel', GA_PVTTC as 'Prix Initial',
+    // GF_DATEMODIF as 'Dernière date Tarif', GF_LIBELLE as 'Description Tarif', GF_DATEDEBUT, GF_DATEFIN
+    // GFM_TYPETARIF, GFM_PERTARIF, GFM_NATURETYPE,
+    // GA2_LIBREARTE, 
+    // ISNULL((
+    //     SELECT
+    //     SUM(GQ_PHYSIQUE-GQ_RESERVECLI+GQ_RESERVEFOU-GQ_PREPACLI) QTE_STOCK_NET
+    //     FROM DISPO
+    //     LEFT JOIN ARTICLE ON GA_ARTICLE=GQ_ARTICLE
+    //     WHERE GA_CODEARTICLE=GCTARFCONMODEART.GA_CODEARTICLE
+    //     GROUP BY
+    //     GA_CODEARTICLE
+    // ),0) AS 'Stock'
+    
+    // FROM GCTARFCONMODEART  
+    // WHERE 
+    // (GF_REGIMEPRIX = 'TTC' 
+    //     AND ((GA_STATUTART='GEN' or GA_STATUTART='UNI')  
+    //     AND ( GFM_TYPETARIF IS NULL OR GFM_TYPETARIF IN ('','','001','RETAIL')) AND GF_ARTICLE<>'') 
+    //     AND GFM_NATURETYPE = 'VTE' 
+    // )
+    // AND GF_DATEMODIF = ( 
+    //     SELECT MAX(GF_DATEMODIF) FROM TARIF
+    //     WHERE GCTARFCONMODEART.GA_ARTICLE = TARIF.GF_ARTICLE
+    // )
+    // AND GF_DATEMODIF>'2021-01-01' 
+    // ${query.where(parametres, true)}
     // ${query.sort(parametres)}
     // ${query.paginate(parametres)}
+    // ` 
+
+    const sql = `
+    SELECT
+    GA_CODEARTICLE, GA_FAMILLENIV1,GA_FAMILLENIV2, GA_LIBELLE, GA_PVTTC AS 'prixInitial', 
+    SUM(GQ_PHYSIQUE-GQ_RESERVECLI+GQ_RESERVEFOU-GQ_PREPACLI) AS 'stock'
+    , GA_DATECREATION, GA_DATEMODIF
+    
+    FROM DISPO
+    LEFT JOIN ARTICLE ON GA_ARTICLE=GQ_ARTICLE 
+    ${query.where(parametres)}
+    GROUP BY Ga_CODEARTICLE,GA_FAMILLENIV1,GA_FAMILLENIV2,GA_LIBELLE,GA_PVTTC,GA_DATEMODIF, GA_DATECREATION
+    ${query.sort(parametres)}
+    ${query.paginate(parametres)}
+    `
+
     const request = new db.Request()
     query.sanitize(request);
     const data = await request.query(sql);
