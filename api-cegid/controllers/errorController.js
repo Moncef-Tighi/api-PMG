@@ -8,8 +8,12 @@ export const catchAsync= function(func){
     */
     return (request, response, next) => {
         func(request, response, next).catch(error => {
-            if (error.code="EREQUEST") {
-                return next(createError(400, error))
+            console.log(error);
+            if (error.code==="badQuery") {
+                return next(createError(400, 'query invalide : ' + error));
+            }
+            if (error.code==="EREQUEST") {
+                return next(createError(500, 'erreur base de donnée : ' + error))
             }
             return next(createError(500, `La requête asynchrone a échouée avec le message : ${error}`))
         });
@@ -19,7 +23,7 @@ export const catchAsync= function(func){
 
 const logError = function(err) {
     if (err.status!=404) {
-        console.error(err);
+        //console.error(err);
     }
 }
 

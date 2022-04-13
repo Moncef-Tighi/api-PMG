@@ -1,5 +1,6 @@
 import * as qs from 'qs';
 
+
 class Query {
     
     constructor(defaultSort, excluedFields=[]) {
@@ -8,6 +9,12 @@ class Query {
         this.queryString={};
         //On sauvgarde les inputs dans cet attribut pour pouvoir les sanetize après
         this.inputs={};
+    }
+    
+    errorHandeler = function(message, status="badQuery") {
+        const error = new Error(message);
+        error.code = status;
+        return error;
     }
 
     reservedKeyWords = ["sort", "projection", 'page', "pagesize"]
@@ -46,7 +53,7 @@ class Query {
 
         if (operators!=null) {
             for (const operator of operators) {
-                if (!(operator.slice(1,-1) in this.operators)) throw new Error("Erreur : Opérateur Invalide");
+                if (!(operator.slice(1,-1) in this.operators)) throw this.errorHandeler("Opérateur Invalide");
                 if (operator === '[or]') this._or(queryString);
             }
         }
@@ -60,7 +67,7 @@ class Query {
             
             const fields = this.queryString[field]
             if (this.excluedFields.includes(field)) {
-                throw new Error(`Erreur : le field ${field} n'est pas autorisé`);
+                throw this.errorHandeler(`le field ${field} n'est pas autorisé`);
             }
             let i=0;
             //Le i est nécessaire pour protéger les inputs contre les attaques SQL
@@ -70,7 +77,7 @@ class Query {
             for (const param of Object.keys(fields)) {
                 i++;
                 if (param in this.operators) {
-                    if (!fields[param]) throw new Error( `Erreur de syntax, aucune valeur n'a été trouvé pour ${field}[${param}]`);
+                    if (!fields[param]) throw this.errorHandeler( `Erreur de syntax, aucune valeur n'a été trouvé pour ${field}[${param}]`);
                     if (param === 'like') {
                         result +=`${field} LIKE @${i} `;
                         //On est obligé d'inclure les " % " Après parce que le parser de MSSQL ne les gère pas
@@ -142,15 +149,19 @@ class Query {
             if(this.defaultSort) this.queryString.sort=this.defaultSort
             else return '';
         }
-        const fields = this.queryString.sort.split(',');
-        let result = "ORDER BY "
-        fields.forEach(field=>{
-            if (this.excluedFields.includes(field)) throw new Error(`Erreur : le field ${field} n'est pas autorisé`);
-            if (field[0] === "-") return result+= `${field.slice(1)} DESC,`
-            else if (field[0]==="+") return result+= `${field.slice(1)} ASC,`
-            else return result+= `${field} ASC,`
-        })
-        return result.slice(0,-1);
+        try {
+            const fields = this.queryString.sort.split(',');
+            let result = "ORDER BY "
+            fields.forEach(field=>{
+                if (this.excluedFields.includes(field)) throw this.errorHandeler(`le field ${field} n'est pas autorisé`);
+                if (field[0] === "-") return result+= `${field.slice(1)} DESC,`
+                else if (field[0]==="+") return result+= `${field.slice(1)} ASC,`
+                else return result+= `${field} ASC,`
+            })
+            return result.slice(0,-1);
+        } catch {
+            throw this.errorHandeler("Le tri n'est pas valide");
+        }
     }
 
     sanitize(request) {
