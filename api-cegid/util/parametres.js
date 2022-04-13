@@ -109,19 +109,25 @@ class Query {
                 result+= " AND ";
             }
         }
-        if (result===" WHERE ") return ""
+        if (result === " WHERE ") return "";
         return result.slice(0,-4);
     }
 
     where(queryString, and = false) {
         this._parsing(queryString);
-        if (and) return this._conditions(" AND ");
-        return this._conditions(" WHERE ");
+        if (Object.keys(queryString).length>0) {
+            if (and) return this._conditions(" AND ");
+            return this._conditions(" WHERE ");
+        }
+        return ""
     }
 
     having(queryString) {
         this._parsing(queryString);
-        return this._conditions(" HAVING ");
+        if (Object.keys(queryString).length>0) {
+            return this._conditions(" HAVING ");
+        }
+        return ""
     }
 
     paginate(queryString) {

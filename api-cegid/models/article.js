@@ -4,7 +4,7 @@ import qs from "qs";
 
 const query= new Query('-GA_DATEMODIF');
 
-export const getAllArticles = async function(parametres,having="") {
+export const getAllArticles = async function(parametres,having={}) {
     
     //Cette requête contient le vrai prix avec le dernier tarif en date, mais elle est trop lente
 
@@ -185,7 +185,7 @@ export const articleAllTarifs = async function(article) {
     (GF_REGIMEPRIX = 'TTC' AND ((GA_STATUTART='GEN' or GA_STATUTART='UNI')  
                         AND ( GFM_TYPETARIF IS NULL OR GFM_TYPETARIF IN ('','','001','RETAIL')) AND GF_ARTICLE<>'') 
     AND GFM_NATURETYPE = 'VTE' )
-    AND GA_CODEARTICLE = '875695-400'
+    AND GA_CODEARTICLE = ${article}
 
     ORDER BY GF_DATEMODIF DESC 
     `
