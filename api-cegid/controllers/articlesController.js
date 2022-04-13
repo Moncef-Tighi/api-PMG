@@ -4,11 +4,17 @@ import createError from 'http-errors'
 
 export const listArticles = catchAsync( async function(request, response,next){
 
+
     const [articles, length] = await model.getAllArticles(request.query);
     // if (length[0]>0) {
     //     const codeArticle = articles.map(article => article.GA_CODEARTICLE);
     //     const stock = await model.disponibilitéArticle(codeArticle);
     // }
+
+    if (articles.length===0) return (next(createError(400, 'Aucun article ne correspond à cette recherche')))
+    
+    //TODO : L'URL sera très certainement invalide en PROD
+    articles.map(article => article.details = encodeURI(`http://${request.get('host')}${request.originalUrl.split('?')[0]}/${article.GA_CODEARTICLE}`) )
 
     return response.status(200).json({
         status : "ok",
@@ -31,7 +37,8 @@ export const unArticle = catchAsync(async function(request, response, next) {
         status : "ok",
         codeArticlce : request.params.article,
         body : {
-            "details" : infoArticle[0],
+            "info" : infoArticle[0],
+            "detailsStock" : encodeURI(`http://${request.get('host')}/api/v1/articles/detail_stock/${request.params.article}`),
             taille,
         }
     })

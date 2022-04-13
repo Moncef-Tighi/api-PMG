@@ -96,7 +96,7 @@ form.addEventListener('submit', async (event)=> {
     };
     const data = await response.json();
     const tailles = data.body.taille;
-    const details = data.body.details;
+    const details = data.body.info;
     mainPage.style.display="grid";
     label.innerText= `Libelle : ${details.GA_LIBELLE}`
 
