@@ -13,6 +13,7 @@ export const catchAsync= function(func){
                 return next(createError(400, 'query invalide : ' + error));
             }
             if (error.code==="EREQUEST") {
+                if (error.message.includes('ORDER BY')) next(createError(400, "L'attribut utilisé pour trier n'existe pas"))
                 return next(createError(400, 'erreur base de donnée : ' + error))
             }
             if (error.code==="ETIMEOUT") {

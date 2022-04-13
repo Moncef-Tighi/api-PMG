@@ -48,6 +48,7 @@ export const getAllArticles = async function(parametres,having={}) {
     , MAX(GA_PVTTC) AS 'GA_PVTTC', 
     SUM(GQ_PHYSIQUE-GQ_RESERVECLI+GQ_RESERVEFOU-GQ_PREPACLI) AS 'stock'
     , MAX(GA_DATECREATION) as "GA_DATECREATION", MAX(GA_DATEMODIF) as "GA_DATEMODIF"
+    , [total]= COUNT(*) OVER()
     
     FROM DISPO
     INNER JOIN ARTICLE ON GA_ARTICLE=GQ_ARTICLE AND GQ_CLOTURE <> 'X' AND GA_TYPEARTICLE = 'MAR' 
@@ -156,7 +157,7 @@ export const emplacementArticle = async function(article) {
 export const disponibilitéArticle = async function(articles) {
 
     const sql = `
-    SELECT TOP 1000
+    SELECT
     GA_CODEARTICLE,
     SUM(GQ_PHYSIQUE-GQ_RESERVECLI+GQ_RESERVEFOU-GQ_PREPACLI) AS 'stockNet'
     FROM DISPO
@@ -174,17 +175,21 @@ export const disponibilitéArticle = async function(articles) {
 export const articleAllTarifs = async function(article) {
 
     const data = await db.query`
-    SELECT DISTINCT TOP 100
+    SELECT DISTINCT
     GA_CODEARTICLE,GA_LIBELLE,ISNULL(GF_PRIXUNITAIRE, GA_PVTTC) as 'Prix Actuel', GA_PVTTC as 'Prix Initial',
     GF_DATEMODIF, GF_LIBELLE as 'Description Tarif', GF_DATEDEBUT, GF_DATEFIN
     GFM_TYPETARIF, GFM_PERTARIF, GFM_NATURETYPE,
     GA2_LIBREARTE
     
     FROM GCTARFCONMODEART  
-    WHERE 
-    (GF_REGIMEPRIX = 'TTC' AND ((GA_STATUTART='GEN' or GA_STATUTART='UNI')  
-                        AND ( GFM_TYPETARIF IS NULL OR GFM_TYPETARIF IN ('','','001','RETAIL')) AND GF_ARTICLE<>'') 
-    AND GFM_NATURETYPE = 'VTE' )
+    WHERE (
+        GF_REGIMEPRIX = 'TTC' AND (
+            (GA_STATUTART='GEN' or GA_STATUTART='UNI')  
+            AND ( GFM_TYPETARIF IS NULL OR GFM_TYPETARIF IN ('','','001','RETAIL')
+            s) 
+        AND GF_ARTICLE<>'') 
+        AND GFM_NATURETYPE = 'VTE' 
+    )
     AND GA_CODEARTICLE = ${article}
 
     ORDER BY GF_DATEMODIF DESC 
