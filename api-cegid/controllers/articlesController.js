@@ -44,35 +44,6 @@ export const unArticle = catchAsync(async function(request, response, next) {
     })
 })
 
-export const ArticlesDisponible = catchAsync( async function(request, response,next){
-
-    const articles = request.body.articles
-    if (!articles || ! articles instanceof Array) {
-        return next(createError(400, "Erreur : Une liste d'article n'a pas été fournit dans le body de la requête") )
-    }
-    const dataRecord = await model.disponibilitéArticle(articles);
-    let resultat = {};
-    articles.forEach(article => {
-        //Ce code est complexe parce que le return de la query peut être soit : Undefined, un objet ou un array d'objet
-        if (!dataRecord) return resultat[article] = 0;
-        if (dataRecord instanceof Array) {
-            dataRecord.forEach(code => {
-                if (article===code.GL_CODEARTICLE) return resultat[article] =  code['Stock Disponible']
-            })
-        }
-        else {
-            if (article===dataRecord?.GL_CODEARTICLE) return resultat[article] =  data.recordset[0].GL_CODEARTICLE
-        }
-        if (!(article in resultat)) return resultat[article] = 0;
-    });
-    return response.status(200).json({
-        status : "ok",
-        body : {
-            articles : resultat
-        }
-    })
-
-});
 
 const formatResponseDepot = function(depots,taille) {
 
@@ -94,7 +65,7 @@ export const ArticleDepot = catchAsync( async function(request, response,next){
     if (article.length===0) {
         return next(createError(204,`Aucun article avec ce code n'a été trouvé`));
     }
-
+    
     const depots = {};
     article.forEach(taille => {
         if (taille.GDE_LIBELLE in depots) {
@@ -112,4 +83,34 @@ export const ArticleDepot = catchAsync( async function(request, response,next){
         }
     })
     
+});
+
+export const ArticlesDisponible = catchAsync( async function(request, response,next){
+
+    const articles = request.body.articles
+    if (!articles || ! articles instanceof Array) {
+        return next(createError(400, "Erreur : Une liste d'article n'a pas été fournit dans le body de la requête") )
+    }
+    const dataRecord = await model.disponibilitéArticle(articles);
+    let resultat = {};
+    articles.forEach(article => {
+        //Ce code est complexe parce que le return de la query peut être soit : Undefined, un objet ou un array d'objet
+        if (!dataRecord) return resultat[article] = 0;
+        if (dataRecord instanceof Array) {
+            dataRecord.forEach(code => {
+                if (article===code.GA_CODEARTICLE) return resultat[article] =  code['Stock Disponible']
+            })
+        }
+        else {
+            if (article===dataRecord?.GA_CODEARTICLE) return resultat[article] =  data.recordset[0].GA_CODEARTICLE
+        }
+        if (!(article in resultat)) return resultat[article] = 0;
+    });
+    return response.status(200).json({
+        status : "ok",
+        body : {
+            articles : resultat
+        }
+    })
+
 });

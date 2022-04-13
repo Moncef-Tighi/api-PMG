@@ -170,12 +170,13 @@ export const emplacementArticle = async function(article) {
 export const disponibilitéArticle = async function(articles) {
 
     const sql = `
-    SELECT
-    GL_CODEARTICLE,
-    SUM(GL_QTESTOCK) AS 'Stock Disponible'
-    FROM LIGNE
+    SELECT TOP 1000
+    GA_CODEARTICLE,
+    SUM(GQ_PHYSIQUE-GQ_RESERVECLI+GQ_RESERVEFOU-GQ_PREPACLI) AS 'stockNet'
+    FROM DISPO
+    LEFT JOIN ARTICLE ON GA_ARTICLE = GQ_ARTICLE
     ${query.where(qs.parse('GL_CODEARTICLE='+ articles.join('&GL_CODEARTICLE=')))}
-    GROUP BY GL_CODEARTICLE`;
+    GROUP BY GA_CODEARTICLE`;
 
     const request = new db.Request()
     query.sanitize(request);

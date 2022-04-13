@@ -119,12 +119,12 @@ const depot = document.querySelector('#depot');
 
 depot.addEventListener('click', async ()=> {
     const code = codeArticle.value
-    tableCleanup();
     const response = await fetch(`http://localhost:3000/api/v1/articles/detail_stock/${code}`, {
         headers: {
             'Accept': 'application/json'
         }
     });
+    tableCleanup();
     const data = await response.json();
     const depots = data.body.depots;
     nomDepot.innerHTML='';
