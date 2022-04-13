@@ -98,7 +98,7 @@ export const ArticlesDisponible = catchAsync( async function(request, response,n
         if (!dataRecord) return resultat[article] = 0;
         if (dataRecord instanceof Array) {
             dataRecord.forEach(code => {
-                if (article===code.GA_CODEARTICLE) return resultat[article] =  code['Stock Disponible']
+                if (article===code.GA_CODEARTICLE) return resultat[article] =  code['stockNet']
             })
         }
         else {

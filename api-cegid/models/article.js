@@ -44,17 +44,17 @@ export const getAllArticles = async function(parametres) {
         // ` 
 
     const sql = `
-    SELECT
-    GA_CODEARTICLE, MAX(GA_FAMILLENIV1) AS "FamilleNiv1",MAX(GA_FAMILLENIV2) AS "FamilleNiv2"
-    , MAX(GA_LIBELLE) AS "Libelle"
-    , MAX(GA_PVTTC) AS 'prixInitial', 
+    SELECT DISTINCT
+    GA_CODEARTICLE, MAX(GA_FAMILLENIV1) AS "GA_FAMILLENIV1",MAX(GA_FAMILLENIV2) AS "GA_FAMILLENIV2"
+    , MAX(GA_LIBELLE) AS "GA_LIBELLE"
+    , MAX(GA_PVTTC) AS 'GA_PVTTC', 
     SUM(GQ_PHYSIQUE-GQ_RESERVECLI+GQ_RESERVEFOU-GQ_PREPACLI) AS 'stock'
-    , MAX(GA_DATECREATION) AS "GA_DATECREATION", MAX(GA_DATEMODIF) as "GA_DATEMODIF"
+    , MAX(GA_DATECREATION) as "GA_DATECREATION", MAX(GA_DATEMODIF) as "GA_DATEMODIF"
     
     FROM DISPO
     LEFT JOIN ARTICLE ON GA_ARTICLE=GQ_ARTICLE 
     ${query.where(parametres)}
-    GROUP BY Ga_CODEARTICLE,GA_DATECREATION
+    GROUP BY Ga_CODEARTICLE
     ${query.sort(parametres)}
     ${query.paginate(parametres)}
     `
@@ -175,7 +175,7 @@ export const disponibilitéArticle = async function(articles) {
     SUM(GQ_PHYSIQUE-GQ_RESERVECLI+GQ_RESERVEFOU-GQ_PREPACLI) AS 'stockNet'
     FROM DISPO
     LEFT JOIN ARTICLE ON GA_ARTICLE = GQ_ARTICLE
-    ${query.where(qs.parse('GL_CODEARTICLE='+ articles.join('&GL_CODEARTICLE=')))}
+    ${query.where(qs.parse('GA_CODEARTICLE='+ articles.join('&GA_CODEARTICLE=')))}
     GROUP BY GA_CODEARTICLE`;
 
     const request = new db.Request()
