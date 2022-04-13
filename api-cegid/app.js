@@ -16,6 +16,8 @@ app.use(express.json({
 }));
 //app.use(express.urlencoded({extended: true}));
 
+app.use(express.static('public/page-test'));
+
 app.use('/api/v1/articles', produitsRouter);
 // app.use('/test', (request,response) => {
 //     console.log(request.query);

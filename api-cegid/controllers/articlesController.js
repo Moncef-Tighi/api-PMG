@@ -83,7 +83,7 @@ const formatResponseDepot = function(depots,taille) {
 export const ArticleDepot = catchAsync( async function(request, response,next){
     
     const article = await model.emplacementArticle(request.params.article);
-    console.log(article);
+
     if (article.length===0) {
         return next(createError(204,`Aucun article avec ce code n'a été trouvé`));
     }
