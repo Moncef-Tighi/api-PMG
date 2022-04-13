@@ -118,20 +118,6 @@ export const dispoArticleTaille = async function(article) {
 
 }
 
-
-// export const getTarifs = async function(articles) {
-//     console.log(articles.join(','));
-//     const data = await db.query`
-//     SELECT 
-//     GF_PRIXUNITAIRE
-//     FROM TARIF
-//     WHERE TARIF.GF_ARTICLE in (${articles.join(',')})
-//     `
-//     return data.recordset;
-// }
-
- 
-
 export const emplacementArticle = async function(article) {
 
     const data=await db.query`
@@ -184,3 +170,25 @@ export const disponibilitéArticle = async function(articles) {
     return data.recordset;
 
 };
+
+export const articleAllTarifs = async function(article) {
+
+    const data = await db.query`
+    SELECT DISTINCT TOP 100
+    GA_CODEARTICLE,GA_LIBELLE,ISNULL(GF_PRIXUNITAIRE, GA_PVTTC) as 'Prix Actuel', GA_PVTTC as 'Prix Initial',
+    GF_DATEMODIF, GF_LIBELLE as 'Description Tarif', GF_DATEDEBUT, GF_DATEFIN
+    GFM_TYPETARIF, GFM_PERTARIF, GFM_NATURETYPE,
+    GA2_LIBREARTE
+    
+    FROM GCTARFCONMODEART  
+    WHERE 
+    (GF_REGIMEPRIX = 'TTC' AND ((GA_STATUTART='GEN' or GA_STATUTART='UNI')  
+                        AND ( GFM_TYPETARIF IS NULL OR GFM_TYPETARIF IN ('','','001','RETAIL')) AND GF_ARTICLE<>'') 
+    AND GFM_NATURETYPE = 'VTE' )
+    AND GA_CODEARTICLE = '875695-400'
+
+    ORDER BY GF_DATEMODIF DESC 
+    `
+    return data.recordset;
+
+}
