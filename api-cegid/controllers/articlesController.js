@@ -106,6 +106,7 @@ export const ArticleDepot = catchAsync( async function(request, response,next){
     })
     return response.status(200).json({
         status : 'ok',
+        codeArticlce : request.params.article,
         body : {
             depots,
         }
