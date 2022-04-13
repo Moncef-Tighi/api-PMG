@@ -13,7 +13,7 @@ export const catchAsync= function(func){
                 return next(createError(400, 'query invalide : ' + error));
             }
             if (error.code==="EREQUEST") {
-                return next(createError(500, 'erreur base de donnée : ' + error))
+                return next(createError(400, 'erreur base de donnée : ' + error))
             }
             if (error.code==="ETIMEOUT") {
                 return next(createError(500, "La base de donnée n'a pas répondu assez vite, veuillez réessayer plus tard"))

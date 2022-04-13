@@ -4,8 +4,12 @@ import createError from 'http-errors'
 
 export const listArticles = catchAsync( async function(request, response,next){
 
-
-    const [articles, length] = await model.getAllArticles(request.query);
+    const having = {}
+    if(request.query.stock) {
+        having['SUM(GQ_PHYSIQUE-GQ_RESERVECLI+GQ_RESERVEFOU-GQ_PREPACLI)']=request.query.stock;
+        delete request.query.stock;
+    }
+    const [articles, length] = await model.getAllArticles(request.query, having);
     // if (length[0]>0) {
     //     const codeArticle = articles.map(article => article.GA_CODEARTICLE);
     //     const stock = await model.disponibilitéArticle(codeArticle);

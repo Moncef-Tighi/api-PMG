@@ -4,7 +4,7 @@ import qs from "qs";
 
 const query= new Query('-GA_DATEMODIF');
 
-export const getAllArticles = async function(parametres) {
+export const getAllArticles = async function(parametres,having="") {
     
     //Cette requête contient le vrai prix avec le dernier tarif en date, mais elle est trop lente
 
@@ -50,9 +50,10 @@ export const getAllArticles = async function(parametres) {
     , MAX(GA_DATECREATION) as "GA_DATECREATION", MAX(GA_DATEMODIF) as "GA_DATEMODIF"
     
     FROM DISPO
-    INNER JOIN ARTICLE ON GA_ARTICLE=GQ_ARTICLE 
-    ${query.where(parametres, true)} AND GQ_CLOTURE <> 'X' AND GA_TYPEARTICLE = 'MAR'
+    INNER JOIN ARTICLE ON GA_ARTICLE=GQ_ARTICLE AND GQ_CLOTURE <> 'X' AND GA_TYPEARTICLE = 'MAR' 
+    ${query.where(parametres)} 
     GROUP BY Ga_CODEARTICLE
+    ${query.having(having)}
     ${query.sort(parametres)}
     ${query.paginate(parametres)}
     `
