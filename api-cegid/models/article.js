@@ -50,8 +50,8 @@ export const getAllArticles = async function(parametres) {
     , MAX(GA_DATECREATION) as "GA_DATECREATION", MAX(GA_DATEMODIF) as "GA_DATEMODIF"
     
     FROM DISPO
-    LEFT JOIN ARTICLE ON GA_ARTICLE=GQ_ARTICLE 
-    ${query.where(parametres)}
+    INNER JOIN ARTICLE ON GA_ARTICLE=GQ_ARTICLE 
+    ${query.where(parametres, true)} AND GQ_CLOTURE <> 'X' AND GA_TYPEARTICLE = 'MAR'
     GROUP BY Ga_CODEARTICLE
     ${query.sort(parametres)}
     ${query.paginate(parametres)}
