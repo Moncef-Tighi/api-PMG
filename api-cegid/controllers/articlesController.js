@@ -11,7 +11,7 @@ export const listArticles = catchAsync( async function(request, response,next){
     //     const stock = await model.disponibilitéArticle(codeArticle);
     // }
 
-    if (articles.length===0) return (next(createError(400, 'Aucun article ne correspond à cette recherche')))
+    if (articles.length===0) return (next(createError(404, 'Aucun article ne correspond à cette recherche')))
     
     //TODO : L'URL sera très certainement invalide en PROD
     articles.map(article => article.details = encodeURI(`http://${request.get('host')}${request.originalUrl.split('?')[0]}/${article.GA_CODEARTICLE}`) )

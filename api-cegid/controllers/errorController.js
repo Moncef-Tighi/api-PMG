@@ -15,6 +15,9 @@ export const catchAsync= function(func){
             if (error.code==="EREQUEST") {
                 return next(createError(500, 'erreur base de donnée : ' + error))
             }
+            if (error.code==="ETIMEOUT") {
+                return next(createError(500, "La base de donnée n'a pas répondu assez vite, veuillez réessayer plus tard"))
+            }
             return next(createError(500, `La requête asynchrone a échouée avec le message : ${error}`))
         });
     }
@@ -23,7 +26,7 @@ export const catchAsync= function(func){
 
 const logError = function(err) {
     if (err.status!=404) {
-        //console.error(err);
+        console.error(err);
     }
 }
 
