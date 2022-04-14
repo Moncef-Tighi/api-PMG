@@ -25,13 +25,36 @@ export const recherche = catchAsync( async function(request, response,next){
     });
 });
 
+
+const formatResponseDepot = function(depots,taille) {
+
+    depots[taille.GDE_LIBELLE].push({
+        dimension : taille.dimension,
+        stockNet : taille.stockNet,
+    });
+
+}
+
 export const unArticle = catchAsync( async function(request, response,next){
     const infoArticle = await model.infoArticle(request.params.article);
     if (infoArticle.length===0) return next(createError(404, "Aucun article avec ce code n'a été trouvé"))
     const tailles = await model.dispoArticleTaille(request.params.article);
+    const article = await model.emplacementArticle(request.params.article);
+    
+    const depots = {};
+    article.forEach(taille => {
+        if (taille.GDE_LIBELLE in depots) {
+            formatResponseDepot(depots, taille)
+        } else {
+            depots[taille.GDE_LIBELLE] = [];
+            formatResponseDepot(depots, taille)
+        }
+    })
 
     return response.render("article", {
         article : infoArticle[0],
+        dimensions : tailles.map(taille=> taille.dimension),
         tailles,
+        depots,
     })
 })

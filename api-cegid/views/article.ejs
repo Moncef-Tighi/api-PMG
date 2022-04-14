@@ -57,8 +57,32 @@
                 <%}) %>
             </tbody>
         </table>
-
+        
         <% console.log(depots)%>
+        <table>
+            <thead>
+            <td>depots</td>
+                <% dimensions.forEach(dimension=> { %>
+                    <td><%= dimension%></td>
+                <%}) %> 
+            </thead>
+            <tbody id="body">      
+                <% for(const depot of Object.keys(depots)) { %>
+                    <tr><td><%= depot %></td>
+                    <% let i=0; %> 
+                    <% for (const dim of depots[depot]) { %>
+                        <% if (i>dimensions.length) break %>
+                        <% while (dimensions[i]!=dim.dimenion) {%>
+                            <% i++%>
+                        <%}%>
+                        <td><%= dim.stockNet %></td>
+                    <% } %>
+                    </tr>
+                <% } %>
+            </tbody>  
+         </table>
+
+
         <!-- <table>
             <thead>
                 <td>Code Barre</td>
