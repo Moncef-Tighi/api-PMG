@@ -40,13 +40,12 @@ export const getAllArticles = async function(parametres,having={}) {
         // ${query.sort(parametres)}
         // ${query.paginate(parametres)}
     // ` 
-
     const sql = `
     SELECT DISTINCT
     GA_CODEARTICLE, MAX(GA_FAMILLENIV1) AS "GA_FAMILLENIV1",MAX(GA_FAMILLENIV2) AS "GA_FAMILLENIV2"
     , MAX(GA_LIBELLE) AS "GA_LIBELLE"
-    , MAX(GA_PVTTC) AS 'GA_PVTTC', 
-    SUM(GQ_PHYSIQUE-GQ_RESERVECLI+GQ_RESERVEFOU-GQ_PREPACLI) AS 'stock'
+    , MAX(GA_PVTTC) AS 'GA_PVTTC'
+    ,SUM(GQ_PHYSIQUE-GQ_RESERVECLI+GQ_RESERVEFOU-GQ_PREPACLI) AS 'stock'
     , MAX(GA_DATECREATION) as "GA_DATECREATION", MAX(GA_DATEMODIF) as "GA_DATEMODIF"
     , [total]= COUNT(*) OVER()
     
@@ -60,6 +59,7 @@ export const getAllArticles = async function(parametres,having={}) {
     `
     const request = new db.Request()
     query.sanitize(request);
+    console.log(sql);
     const data = await request.query(sql);
     return [data.recordset, data.rowsAffected];
 
@@ -186,7 +186,7 @@ export const articleAllTarifs = async function(article) {
         GF_REGIMEPRIX = 'TTC' AND (
             (GA_STATUTART='GEN' or GA_STATUTART='UNI')  
             AND ( GFM_TYPETARIF IS NULL OR GFM_TYPETARIF IN ('','','001','RETAIL')
-            s) 
+            ) 
         AND GF_ARTICLE<>'') 
         AND GFM_NATURETYPE = 'VTE' 
     )

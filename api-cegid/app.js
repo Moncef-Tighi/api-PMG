@@ -11,10 +11,11 @@ const app = express();
 
 app.use(cors())
 app.use(helmet());
+app.disable('x-powered-by');
 app.use(express.json({
     limit : "10kb" //Limite la taille du body à 10kb
 }));
-//app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({extended: true}));
 
 app.use(express.static('public/page-test'));
 

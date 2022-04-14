@@ -62,6 +62,7 @@ class Query {
 
     _conditions(start) {
         let result = start;
+        let i=0;
         for (const field of Object.keys(this.queryString)) {
             if (this.reservedKeyWords.includes(field)) continue;
             
@@ -69,7 +70,6 @@ class Query {
             if (this.excluedFields.includes(field)) {
                 throw this.errorHandeler(`le field ${field} n'est pas autorisé`);
             }
-            let i=0;
             //Le i est nécessaire pour protéger les inputs contre les attaques SQL
             //le i sert de nom aux inputs dans le cas ou le même attribut a plusieurs condition
             //Exemple : b>@b AND b<@b ne fonctionnerait pas. Mais b>@1 AND b<@2 fonctionne (les chiffres sont la valeur de i)
@@ -79,26 +79,25 @@ class Query {
                 if (param in this.operators) {
                     if (!fields[param]) throw this.errorHandeler( `Erreur de syntax, aucune valeur n'a été trouvé pour ${field}[${param}]`);
                     if (param === 'like') {
-                        result +=`${field} LIKE @${i} `;
+                        result +=`${field} LIKE '%' + @param${i} + '%' `;
                         //On est obligé d'inclure les " % " Après parce que le parser de MSSQL ne les gère pas
-                        this.inputs[i]= "%" +fields[param]+ "%";
                     }
                     else {
-                        result+=`${field} ${this.operators[param]} @${i}`; 
-                        this.inputs[i]= fields[param];
+                        result+=`${field} ${this.operators[param]} @param${i}`; 
                     }
+                    this.inputs[`param${i}`]= fields[param];
                 }
                 else {
                         const params = this.queryString[field]
                         if (typeof params === 'string' || params instanceof String) {
-                            result+=`${field}=@${field}`;
-                            this.inputs[field]=params;
+                            result+=`${field}=@param${i}`;
+                            this.inputs[`param${i}`]=params;
                         }else{
                             //TODO: Remplacer la vraie value par le @ du prepared statement
                             let inOperator = "";
                             for (let y=0; y<params.length;y++) {
-                                inOperator+= `@${i},`;
-                                this.inputs[i]=params[y];
+                                inOperator+= `@param${i},`;
+                                this.inputs[`param${i}`]=params[y];
                                 i++;
                             }
                             result+=`${field} IN (${inOperator.slice(0,-1)})`;
@@ -108,6 +107,7 @@ class Query {
                 }
                 result+= " AND ";
             }
+            i++;
         }
         if (result === " WHERE ") return "";
         return result.slice(0,-4);

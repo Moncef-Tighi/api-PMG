@@ -3,7 +3,6 @@ import { catchAsync } from './errorController.js';
 import createError from 'http-errors'
 
 export const listArticles = catchAsync( async function(request, response,next){
-
     const having = {}
     if(request.query.stock) {
         having['SUM(GQ_PHYSIQUE-GQ_RESERVECLI+GQ_RESERVEFOU-GQ_PREPACLI)']=request.query.stock;
@@ -17,7 +16,7 @@ export const listArticles = catchAsync( async function(request, response,next){
     //TODO : L'URL sera très certainement invalide en PROD
     articles.map(article => {
         delete article.total;
-        article.details = encodeURI(`http://${request.get('host')}${request.originalUrl.split('?')[0]}/${article.GA_CODEARTICLE}`) 
+        article.details = encodeURI(`http://${request.get('host')}${request.originalUrl.split('?')[0]}/${article.GA_CODEARTICLE}`);
     })
 
     return response.status(200).json({
@@ -41,9 +40,10 @@ export const unArticle = catchAsync(async function(request, response, next) {
     return response.status(200).json({
         status : "ok",
         codeArticlce : request.params.article,
+        details_stock : encodeURI(`http://${request.get('host')}/api/v1/articles/detail_stock/${request.params.article}`),
+        historiqueTarif : encodeURI(`http://${request.get('host')}/api/v1/articles/tarifs/${request.params.article}`),
         body : {
             "info" : infoArticle[0],
-            "detailsStock" : encodeURI(`http://${request.get('host')}/api/v1/articles/detail_stock/${request.params.article}`),
             taille,
         }
     })
