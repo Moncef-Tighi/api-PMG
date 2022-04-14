@@ -17,30 +17,48 @@
         </form>
         <h2>Plus d'options : </h2>
         <form id="recherche"> 
-            <div>
-                <label>Libelle : </label>
-                <input type="text" name="GA_LIBELLE" id="libelle" autofocus >
-            </div>
-            <div>
-                <label>Famille niv</label>
-                <input type="text" name="GA_FAMILLENIV1" id="familleNiv">
-            </div>
-            <div>
-                <label>prix original</label>
-                <input type="text" name="GA_PVTTC" id="PVTTC" placeholder="ex : <= 10000">
-            </div>
-            <div>
-                <label>Stock</label>
-                <input type="text" name="stock" placeholder="ex : > 0" id="stock">
-            </div>
-            <div>
-                <label>taille de la page</label>
-                <input type="number" name="pageSize" id="pageSize" >
-            </div>
-            <div>
-                <label>Page</label>
-                <input type="number" name="page" id="page">
-            </div>
+            <aside id="recherche-fields">
+                <div>
+                    <label>Libelle : </label>
+                    <input type="text" name="GA_LIBELLE" id="libelle" autofocus >
+                </div>
+                <div>
+                    <label>Famille niv</label>
+                    <input type="text" name="GA_FAMILLENIV1" id="familleNiv">
+                </div>
+                <div>
+                    <label>prix original</label>
+                    <input type="text" name="GA_PVTTC" id="PVTTC" placeholder="ex : <= 10000">
+                </div>
+                <div>
+                    <label>Stock</label>
+                    <input type="text" name="stock" placeholder="ex : > 0" id="stock">
+                </div>
+                <div>
+                    <label>taille de la page</label>
+                    <input type="number" name="pageSize" id="pageSize" >
+                </div>
+                <div>
+                    <label>Page</label>
+                    <input type="number" name="page" id="page">
+                </div>
+            </aside>
+            <h2>Trier par : </h2>
+            <aside>
+                <label>Ordre : </label>
+                <select id="ordre">
+                    <option value="-">Descendant</option>
+                    <option value="+">Ascendant</option>
+                </select>
+                <label>Champ :</label>
+                <select id="sort">
+                    <option value="GA_DATEMODIF">Date Modification</option>
+                    <option value="stock">Stock</option>
+                    <option value="GA_PVTTC">Prix</option>
+                    <option value="GA_LIBELLE">Libelle</option>
+                    <option value="GA_FAMILLENIV1">FamilleNiv</option>
+                </select>
+            </aside>
             <button type="submit">Envoyer</button>
         </form>
     </header>

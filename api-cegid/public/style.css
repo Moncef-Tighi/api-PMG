@@ -12,7 +12,7 @@ body {
     padding: 10px;
 }
 
-#recherche {
+#recherche-fields {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-gap: 10px;
