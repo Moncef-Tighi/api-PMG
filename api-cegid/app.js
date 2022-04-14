@@ -5,21 +5,24 @@ import cors from 'cors';
 
 import { errorHandeler } from "./controllers/errorController.js";
 import produitsRouter from './routes/articlesRouter.js';
+import viewRouter from './routes/viewRouter.js';
 
  
 const app = express();
 
-app.use(cors())
+app.use(cors());
 app.use(helmet());
+app.set('view engine', 'ejs');
 app.disable('x-powered-by');
 app.use(express.json({
-    limit : "10kb" //Limite la taille du body à 10kb
+    limit : "100kb" //Limite la taille du body à 10s0kb
 }));
 app.use(express.urlencoded({extended: true}));
 
-app.use(express.static('public/page-test'));
+app.use(express.static('public'));
 
 app.use('/api/v1/articles', produitsRouter);
+app.use('/view', viewRouter);
 // app.use('/test', (request,response) => {
 //     console.log(request.query);
 //     return response.status(200).json("ok");
