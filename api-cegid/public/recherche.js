@@ -1,4 +1,5 @@
 const form = document.querySelector('#recherche');
+const form_article = document.querySelector('#code_article');
 
 function numberSearch(field, value) {
     const dictionary = {
@@ -41,4 +42,11 @@ form.addEventListener('submit',event => {
     console.log(result);
     window.location.href = decodeURI(`${window.location.href.split('?')[0]}?${result}`);
 
+})
+
+
+form_article.addEventListener('submit',event => {
+    event.preventDefault();
+    const codeArticle = document.querySelector('#codeArticle').value
+    window.location.href = decodeURI(`${window.location.href.split('?')[0]}/${codeArticle}`);
 })
