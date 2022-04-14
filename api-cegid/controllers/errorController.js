@@ -14,6 +14,7 @@ export const catchAsync= function(func){
             }
             if (error.code==="EREQUEST") {
                 if (error.message.includes('ORDER BY')) next(createError(400, "L'attribut utilisé pour trier n'existe pas"))
+                if (error.message.includes('FETCH')) next(createError(400, "La query est invalide"))
                 return next(createError(400, 'erreur base de donnée : ' + error))
             }
             if (error.code==="ETIMEOUT") {

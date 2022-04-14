@@ -59,7 +59,6 @@ export const getAllArticles = async function(parametres,having={}) {
     `
     const request = new db.Request()
     query.sanitize(request);
-    console.log(sql);
     const data = await request.query(sql);
     return [data.recordset, data.rowsAffected];
 
