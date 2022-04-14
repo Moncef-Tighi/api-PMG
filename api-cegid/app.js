@@ -23,10 +23,6 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.static('public'));
 app.use('/api/v1/articles', produitsRouter);
 app.use('/', viewRouter);
-// app.use('/test', (request,response) => {
-//     console.log(request.query);
-//     return response.status(200).json("ok");
-// });
 
 app.all('*', (request, response, next)=> {    
     //Ce middelware a pour seul but de catch les erreurs 404 
