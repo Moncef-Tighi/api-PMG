@@ -12,6 +12,7 @@ body {
     margin: auto;
     padding: 10px;
     background-color: #ce0700d8;
+    font-size: 125%;
 }
 
 #recherche-fields {
@@ -49,7 +50,7 @@ th {
 }
 
 th, td {
-    border-bottom: 1px solid #ddd;
+    border-bottom: 3px solid #ddd;
 }
   
 tr:nth-child(even) {background-color: #f2f2f2;}
@@ -66,11 +67,64 @@ tr:nth-child(even) {background-color: #f2f2f2;}
 }
 
 h1, h2 {
-    color : black;
+    color: #ce0700d8;
 }
 
 #titre_fiche {
     text-align: center;
-    font-size: 120%;
+    font-size: 42px;
     color: white;
+}
+
+ul {
+    list-style: none;
+    line-height: 20px;
+    padding-left: 15px;
+}
+
+@media only screen and (max-width: 1100px) {
+    body {
+        max-width: 100%;
+    }
+    th, td {
+        padding : 10px;
+    }
+  }
+@media only screen and (max-width: 900px) {
+    #recherche_table {
+        width: 100%;
+    }
+    body {
+        font-size: 90%;   
+    }
+    #recherche_table tr th,#recherche_table tr td {
+        padding : 5px;
+    }
+}
+@media only screen and (max-width: 750px) {
+    body, #recherche-page {
+        margin: 0px;
+    }
+    body {
+        padding: 0px
+    }
+    #recherche_table tr th, #recherche_table tr td {
+        padding : 3px;
+    }
+    #main {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    header {
+        width: fit-content;
+    }
+    #recherche-page {
+        padding: 0px;
+        width: fit-content;
+    }
+    #recherche_table tr th, #recherche_table tr td {
+        padding : 1px;
+    }
 }

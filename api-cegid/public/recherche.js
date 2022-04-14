@@ -35,8 +35,8 @@ form.addEventListener('submit',event => {
     if (familleNiv) result+= `GA_FAMILLENIV1[like]=${familleNiv}&`
     if (PVTTC) result+=numberSearch("GA_PVTTC", PVTTC);
     if (stock) result+=numberSearch("stock", stock);
-    if (pageSize) result+= `pageSize=${pageSize}`
-    if (page) result+= `page=${page}`
+    if (pageSize) result+= `pagesize=${pageSize}&`
+    if (page) result+= `page=${page}&`
     result+=`sort=${ordre}${sort}`
     
     console.log(result);
