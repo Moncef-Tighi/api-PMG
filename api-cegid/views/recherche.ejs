@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page test | API Cegid</title>
+    <link rel="stylesheet" href="style.css">
+    <script defer src="recherche.js"></script>
+</head>
+<body>
+    <header>
+        <form method="get" action="article"> 
+            <label>Code article : </label>
+            <input type="text" name="GA_CODEARTICLE" id="codeArticle" autofocus >
+            <button type="submit">Envoyer</button>
+        </form>
+        <h2>Plus d'options : </h2>
+        <form id="recherche"> 
+            <div>
+                <label>Libelle : </label>
+                <input type="text" name="GA_LIBELLE" id="libelle" autofocus >
+            </div>
+            <div>
+                <label>Famille niv</label>
+                <input type="text" name="GA_FAMILLENIV1" id="familleNiv">
+            </div>
+            <div>
+                <label>prix original</label>
+                <input type="text" name="GA_PVTTC" id="PVTTC" placeholder="ex : <= 10000">
+            </div>
+            <div>
+                <label>Stock</label>
+                <input type="text" name="stock" placeholder="ex : > 0" id="stock">
+            </div>
+            <div>
+                <label>taille de la page</label>
+                <input type="number" name="pageSize" id="pageSize" >
+            </div>
+            <div>
+                <label>Page</label>
+                <input type="number" name="page" id="page">
+            </div>
+            <button type="submit">Envoyer</button>
+        </form>
+    </header>
+
+    <section>
+        <% if (articles) {  %>
+            <aside>Résultats correspondant à la query : <%= totalSize%></aside>
+            <table>
+                <thead>
+                    <td>Code Article</td>
+                    <td>Libelle</td>
+                    <td>FamilleNiv</td>
+                    <td>Date création</td>
+                    <td>Date modification</td>
+                    <td>Prix original</td>
+                    <td>Stock</td>
+                    <td>détails</td>
+                </thead>
+                <% for (article of articles) { %>
+                    <tr>
+                        <td><h1><%= article.GA_CODEARTICLE %></h1></td>
+                        <td><%= article.GA_LIBELLE %></td>
+                        <td><%= article.GA_FAMILLENIV1 %> | <%= article.GA_FAMILLENIV2 %></td>
+                        
+                        <td><%= article.GA_DATECREATION.toLocaleDateString(); %></td>
+                        <td><%= article.GA_DATEMODIF.toLocaleDateString(); %></td>
+                        
+                        <td><b><%= article.GA_PVTTC %></b></td>
+                        <td><b> <%= article.stock %> </b></li>
+                        <td><a href="<%= article.details %>">plus de détails</a></td>
+                    </tr>
+                <% } %>
+            </table>
+        <%} %>
+    </section>
+</body>
