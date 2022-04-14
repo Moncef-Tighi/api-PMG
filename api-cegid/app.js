@@ -19,10 +19,10 @@ app.use(express.json({
 }));
 app.use(express.urlencoded({extended: true}));
 
-app.use(express.static('public'));
 
 app.use('/api/v1/articles', produitsRouter);
 app.use('/view', viewRouter);
+app.use(express.static('public'));
 // app.use('/test', (request,response) => {
 //     console.log(request.query);
 //     return response.status(200).json("ok");

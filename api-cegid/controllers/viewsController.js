@@ -1,5 +1,6 @@
 import * as model from '../models/article.js';
 import { catchAsync } from './errorController.js';
+import createError from 'http-errors'
 
 export const recherche = catchAsync( async function(request, response,next){
     const having = {}
@@ -25,5 +26,12 @@ export const recherche = catchAsync( async function(request, response,next){
 });
 
 export const unArticle = catchAsync( async function(request, response,next){
+    const infoArticle = await model.infoArticle(request.params.article);
+    if (infoArticle.length===0) return next(createError(404, "Aucun article avec ce code n'a été trouvé"))
+    const tailles = await model.dispoArticleTaille(request.params.article);
 
+    return response.render("article", {
+        article : infoArticle[0],
+        tailles,
+    })
 })
