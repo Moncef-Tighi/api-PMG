@@ -4,97 +4,93 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page test | API Cegid</title>
+    <title> Article | API Cegid</title>
     <link rel="stylesheet" href="../style.css">
 </head>
 <body>
+    <div id="titre_fiche">
+        <h1>Fiche d'Article</h1>
+    </div>
 
     <div id="main">
-
-        <aside class="main-aside">
-            <img id="illustration" width="300px" height="300px" style="background-color: lightgray">
-            <p id="label"></p>
-        </aside>
-
-        <aside>
-            <h3>Prix Initial <span id='prix_initial'></span></h3>
-            <h2>Prix Actuel <span  id='prix_acutel'></span></h2>
+        <section>
+            <aside class="main-aside">
+                <h3><a href="/recherche">Revenir en arrière</a></h3>
+                <img id="illustration" width="300px" height="300px" style="background-color: lightgray">
+                <p><%= article.GA_LIBELLE %></p>
+            </aside>
+        </section>
+        <section>
+            <h3>Prix Initial : <%=article.prixInitial %> </h3>
+            <h2>Prix Actuel : <%=article.prixActuel %></h2>
             <div>
                 <ul>
                     <h3>Informations Article : </h3>
                     <li><b>FamilleNiv1 : </b><%=article.GA_FAMILLENIV1  %></li>
                     <li><b>FamilleNiv2 : </b><%=article.GA_FAMILLENIV2  %></li>
-                    <li><b>Date création : </b><%=article.GA_DATECREATION  %></li>
+                    <li><b>Date création : </b><%=article.GA_DATECREATION.toLocaleDateString()  %></li>
                     <li><b>LibreARTE : </b><%=article.GA2_LIBREARTE  %></li>
                 </ul>
                 <ul>
                     <h3>Informations Tarif :</h3>
-                    <li><b>Date du Tarif : </b><%= article.dernierTarif %></li>
+                    <li><b>Date du Tarif : </b><%= article.dernierTarif.toLocaleDateString() %></li>
                     <li><b>Description Tarif : </b><%= article.descriptionTarif %></li>
-                    <li><b>Début Tarif : </b><%= article.GF_DATEDEBUT %></li>
-                    <li><b>Fin Tarif : </b><%= article.GF_DATEFIN %></li>
+                    <li><b>Début Tarif : </b><%= article.GF_DATEDEBUT.toLocaleDateString() %></li>
+                    <li><b>Fin Tarif : </b><%= article.GF_DATEFIN.toLocaleDateString() %></li>
                     <li><b>Type Tarif : </b><%= article.GFM_TYPETARIF %></li>
                     <li><b>Nature Tarif : </b><%= article.GFM_NATURETYPE %></li>
                     <li><b>PerTarif : </b><%= article.GFM_PERTARIF %></li>
                 </ul>
             </div>
-        </aside>
+        </section>
 
-        <table>
-            <thead>
-                <td>Dimension</td>
-                <td>Code barre</td>
-                <td>Stock Net</td>
+        <section>
+            <table>
+                <thead>
+                    <td>Dimension</td>
+                    <td>Code barre</td>
+                    <td>Stock Net</td>
+    
+                </thead>
+                <tbody id="body">       
+                    <% tailles.forEach(taille=> { %>
+                        <tr>
+                            <td><%= taille.dimension%></td>
+                            <td><%= taille.GA_CODEBARRE%></td>
+                            <td><%= taille.stockNet%></td>
+                        </tr>
+                    <%}) %>
+                </tbody>
+            </table>
+        </section>
 
-            </thead>
-            <tbody id="body">       
-                <% tailles.forEach(taille=> { %>
-                    <tr>
-                        <td><%= taille.dimension%></td>
-                        <td><%= taille.GA_CODEBARRE%></td>
-                        <td><%= taille.stockNet%></td>
-                    </tr>
-                <%}) %>
-            </tbody>
-        </table>
-        
-        <% console.log(depots)%>
-        <table>
-            <thead>
-            <td>depots</td>
-                <% dimensions.forEach(dimension=> { %>
-                    <td><%= dimension%></td>
-                <%}) %> 
-            </thead>
-            <tbody id="body">      
-                <% for(const depot of Object.keys(depots)) { %>
-                    <tr><td><%= depot %></td>
-                    <% let i=0; %> 
-                    <% for (const dim of depots[depot]) { %>
-                        <% if (i>dimensions.length) break %>
-                        <% while (dimensions[i]!=dim.dimenion) {%>
-                            <% i++%>
-                        <%}%>
-                        <td><%= dim.stockNet %></td>
+        <section>
+
+            <table>
+                <thead>
+                <td>depots</td>
+                    <% dimensions.forEach(dimension=> { %>
+                        <td><%= dimension%></td>
+                    <%}) %> 
+                </thead>
+                <tbody id="body">      
+                    <% for(const depot of Object.keys(depots)) { %>
+                        <tr><td><%= depot %></td>
+                            <% for (const dim of depots[depot]) { %>
+                            <% let i=0; %> 
+                            <% if (i>dimensions.length) break %>
+                            <% while (dimensions[i]!=dim.dimension) {%>
+                                <% if (i>dimensions.length) break %>
+                                <% i++%>
+                            <%}%>
+                            <td><%= dim.stockNet %></td>
+                        <% } %>
+                        </tr>
                     <% } %>
-                    </tr>
-                <% } %>
-            </tbody>  
-         </table>
+                </tbody>  
+             </table>
 
-
-        <!-- <table>
-            <thead>
-                <td>Code Barre</td>
-                <td>Taille 1</td>
-                <td>Stock</td>
-                <td>Vendu</td>
-                <td>Transfert</td>
-            </thead>
-            <tbody id="table">
-                
-            </tbody>
-        </table> -->
+        </section>    
     </div>
 </body>
 </html>

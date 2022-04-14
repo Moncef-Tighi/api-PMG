@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page test | API Cegid</title>
+    <title>Recherche | API Cegid</title>
     <link rel="stylesheet" href="../style.css">
     <script defer src="../recherche.js"></script>
 </head>
@@ -63,7 +63,7 @@
         </form>
     </header>
 
-    <section>
+    <div id="recherche-page">
         <% if (articles) {  %>
             <aside>Résultats correspondant à la query : <%= totalSize%></aside>
             <table>
@@ -88,10 +88,10 @@
                         
                         <td><b><%= article.GA_PVTTC %></b></td>
                         <td><b> <%= article.stock %> </b></li>
-                        <td><a href="<%= article.details %>">plus de détails</a></td>
+                        <td><a href="/recherche/<%=article.GA_CODEARTICLE%>">plus de détails</a></td>
                     </tr>
                 <% } %>
             </table>
         <%} %>
-    </section>
+    </div>
 </body>
