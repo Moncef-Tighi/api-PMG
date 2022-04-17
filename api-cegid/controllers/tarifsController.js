@@ -1,6 +1,12 @@
-import * as model from '../models/tarifs';
+import * as model from '../models/tarifs.js';
 import { catchAsync } from './errorController.js';
 import createError from 'http-errors'
+
+
+export const derniersTarifs = catchAsync( async function(request, response, next) {
+
+    
+})
 
 
 export const historiqueTarif = catchAsync( async function(request, response,next){

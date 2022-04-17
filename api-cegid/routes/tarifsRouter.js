@@ -1,8 +1,9 @@
 import express from "express";
-import * as controllers from '../controllers/tarifsController';
+import * as controllers from '../controllers/tarifsController.js';
 
 const router = express.Router()
 
-router.get("/tarifs/:article", controllers.historiqueTarif);
+router.get("/:article", controllers.historiqueTarif);
+router.post("/", controllers.derniersTarifs);
 
 export default router

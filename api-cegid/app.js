@@ -5,8 +5,8 @@ import cors from 'cors';
 
 import { errorHandeler } from "./controllers/errorController.js";
 import produitsRouter from './routes/articlesRouter.js';
+import tarifsRouter from './routes/tarifsRouter.js'
 import viewRouter from './routes/viewRouter.js';
-
  
 const app = express();
 
@@ -15,13 +15,14 @@ app.use(helmet());
 app.set('view engine', 'ejs');
 app.disable('x-powered-by');
 app.use(express.json({
-    limit : "100kb" //Limite la taille du body à 10s0kb
+    limit : "100kb" //Limite la taille du body à 100kb
 }));
 app.use(express.urlencoded({extended: true}));
 
 
 app.use(express.static('public'));
 app.use('/api/v1/articles', produitsRouter);
+app.use('/api/v1/tarifs', tarifsRouter);
 app.use('/', viewRouter);
 
 app.all('*', (request, response, next)=> {    

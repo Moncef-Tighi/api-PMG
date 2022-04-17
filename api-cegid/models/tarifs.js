@@ -2,7 +2,6 @@ import db from "./database.js";
 import Query from '../util/parametres.js';
 import qs from "qs";
 
-
 export const articleAllTarifs = async function(article) {
 
     const data = await db.query`
