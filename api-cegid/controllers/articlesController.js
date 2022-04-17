@@ -37,6 +37,7 @@ export const unArticle = catchAsync(async function(request, response, next) {
     if (infoArticle.length===0) return next(createError(404, "Aucun article avec ce code n'a été trouvé"))
     const taille = await model.dispoArticleTaille(request.params.article);
 
+    //TODO : L'URL sera très certainement invalide en PROD
     return response.status(200).json({
         status : "ok",
         codeArticlce : request.params.article,
@@ -68,7 +69,7 @@ export const ArticleDepot = catchAsync( async function(request, response,next){
     const article = await model.emplacementArticle(request.params.article);
 
     if (article.length===0) {
-        return next(createError(204,`Aucun article avec ce code n'a été trouvé`));
+        return next(createError(404,`Aucun article avec ce code n'a été trouvé`));
     }
     
     const depots = {};

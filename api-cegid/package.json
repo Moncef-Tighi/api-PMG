@@ -1,6 +1,6 @@
 {
   "name": "api-cegid",
-  "version": "0.1.0",
+  "version": "0.9.0",
   "description": "API utilisé pour effectuer les commandes et manipuler la base de donnée de CEGID",
   "main": "app.js",
   "scripts": {

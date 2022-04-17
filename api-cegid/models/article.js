@@ -57,7 +57,7 @@ export const getAllArticles = async function(parametres,having={}) {
     ${query.sort(parametres)}
     ${query.paginate(parametres)}
     `
-    const request = new db.Request()
+    const request = new db.Request();
     query.sanitize(request);
     const data = await request.query(sql);
     return [data.recordset, data.rowsAffected];

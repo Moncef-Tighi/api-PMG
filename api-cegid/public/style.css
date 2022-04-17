@@ -1,7 +1,6 @@
 
 header {
     height: fit-content;
-    padding: 2%;
     border: 3px solid black;  
     border-radius: 5px;
     margin: 25px;
@@ -14,7 +13,6 @@ body {
     margin: auto;
     padding: 10px;
     background-color: #ce0700d8;
-    font-size: 125%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -56,9 +54,9 @@ th, td {
     padding: 15px;
     text-align: left;
   }
-th {
-    background-color: black;
-    color: white;
+thead {
+    font-weight: bold;
+    font-size: 110%;
 }
 
 th, td {
