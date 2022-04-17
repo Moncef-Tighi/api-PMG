@@ -149,9 +149,9 @@ class Query {
 
     }
 
-    sort(queryString) {
+    sort(queryString={}) {
         this.queryString=queryString;
-        if (!this.queryString['sort']) {
+        if (! (this.queryString.sort)) {
             if(this.defaultSort) this.queryString.sort=this.defaultSort
             else return '';
         }

@@ -7,9 +7,9 @@ const query= new Query('-Gf_DATEMODIF');
 export const tarifsArticles = async function(articles) {
 
     const sql = `
-    SELECT DISTINCT
-    GA_CODEARTICLE,ISNULL(GF_PRIXUNITAIRE, GA_PVTTC) as 'prixActuel'
-    ,GF_DATEMODIF    
+    SELECT
+    GA_CODEARTICLE,ISNULL(MAX(GF_PRIXUNITAIRE)  , GA_PVTTC) as 'prixActuel'
+    ,MAX(GF_DATEMODIF) as 'GF_DATEMODIF'
     FROM GCTARFCONMODEART  
     WHERE (
         GF_REGIMEPRIX = 'TTC' AND (
@@ -19,8 +19,8 @@ export const tarifsArticles = async function(articles) {
         AND GF_ARTICLE<>'') 
         AND GFM_NATURETYPE = 'VTE' 
     )
-    ${query.where(qs.parse('GA_CODEARTICLE='+ articles.join('&GA_CODEARTICLE=')))}
-    GROUP BY GA_CODEARTICLE
+    ${query.where(qs.parse('GA_CODEARTICLE='+ articles.join('&GA_CODEARTICLE=')), true)}
+    GROUP BY GA_CODEARTICLE, GA_PVTTC
     ${query.sort()}`;
 
     const request = new db.Request()
