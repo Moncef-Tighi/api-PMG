@@ -1,0 +1,27 @@
+{
+  "name": "api-plateforme",
+  "version": "0.1.0",
+  "description": "API utilisé pour administrer la plateforme E-Commerce, elle possède une partie dédiée aux livraison et une autres à la gestion des articles mis en vente",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "cross-env NODE_ENV=development node -r dotenv/config app.js dotenv_config_path=./config.env",
+    "dev": "cross-env NODE_ENV=development nodemon -r dotenv/config app.js dotenv_config_path=./config.env"
+  },
+  "author": "Tighiouart Moncef",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "2.8.5",
+    "dotenv": "16.0.0",
+    "express": "4.17.3",
+    "helmet": "5.0.2",
+    "http-errors": "2.0.0",
+    "pg": "^8.7.3",
+    "qs": "6.10.3"
+  },
+  "type": "module",
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "nodemon": "^2.0.15"
+  }
+}
