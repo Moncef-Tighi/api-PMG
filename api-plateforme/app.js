@@ -3,6 +3,7 @@ import helmet from 'helmet';
 import createError from "http-errors";
 import cors from 'cors';
 
+import db from "./models/database.js";
 import { errorHandeler } from "./controllers/errorController.js";
 //import produitsRouter from './routes/articlesRouter.js';
  
