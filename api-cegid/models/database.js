@@ -15,14 +15,10 @@ const connexion = async function() {
     try {
         await db.connect(config)
         console.log("Connexion à la base de donnée réussie.");
-        //TODO : Enlever la querry de test
-        // const test = await db.query`SELECT 'ok' as test`;
-        // console.log("Querry de test : "+ test.recordset[0].test);
         return db
     } catch (err) {
         console.error(`Erreur critique ! Impossible de se connecter à la base de donnée
         Détails : ${err}`);
-        console.error('-----');
         console.error(err.originalError);    
     }
 }
