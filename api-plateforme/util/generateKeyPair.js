@@ -1,0 +1,24 @@
+import crypto from 'crypto';
+import fs from 'fs';
+
+function genKeyPair() {
+    
+    const keyPair = crypto.generateKeyPairSync('rsa', {
+        modulusLength: 4096, // bits - standard for RSA keys
+        publicKeyEncoding: {
+            type: 'pkcs1', // "Public Key Cryptography Standards 1" 
+            format: 'pem' // Most common formatting choice
+        },
+        privateKeyEncoding: {
+            type: 'pkcs1', // "Public Key Cryptography Standards 1"
+            format: 'pem' // Most common formatting choice
+        }
+    });
+
+    fs.writeFileSync('./key_public.pem', keyPair.publicKey); 
+    
+    fs.writeFileSync('./key_prive.pem', keyPair.privateKey);
+
+}
+
+genKeyPair();
