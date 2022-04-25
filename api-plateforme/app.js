@@ -3,7 +3,7 @@ import helmet from 'helmet';
 import createError from "http-errors";
 import cors from 'cors';
 
-import db from "./models/database.js";
+import authentificationRouter from './routes/authentificationRoute.js';
 import { errorHandeler } from "./controllers/errorController.js";
 //import produitsRouter from './routes/articlesRouter.js';
  
@@ -22,6 +22,7 @@ app.use(express.static('public'));
 app.use('/', (request, response) => {
     response.status(200).send("ok");
 });
+app.use('/api/v1/employes', authentificationRouter);
 //app.use('/api/v1/articles', produitsRouter);
 app.all('*', (request, response, next)=> {    
     //Ce middelware a pour seul but de catch les erreurs 404 
