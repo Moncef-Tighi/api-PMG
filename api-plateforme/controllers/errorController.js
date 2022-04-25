@@ -9,7 +9,9 @@ export const catchAsync= function(func){
     return (request, response, next) => {
         func(request, response, next).catch(error => {
             console.log(error);
-            if (error.code==="23505")  return next(createError(400, `La création a échouée, cette ligne existe déjà. Détail : ${error.detail}`))
+            if (error.code==="23505") {
+                return next(createError(400, `La création a échouée, cette ligne existe déjà. Détail : ${error.detail}`))
+            }
             return next(createError(500, `La requête asynchrone a échouée avec le message : ${error}`))
         });
     }

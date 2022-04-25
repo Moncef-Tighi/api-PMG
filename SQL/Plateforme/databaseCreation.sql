@@ -22,9 +22,9 @@ CREATE TABLE roles (
 );
 
 CREATE TABLE permissions (
-	id_permission INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     id_employe INT NOT NULL,
     id_role INT NOT NULL,
+    PRIMARY KEY(id_employe, id_role),
     CONSTRAINT fk_employe FOREIGN KEY (id_employe) REFERENCES employé(id_employe),
     CONSTRAINT fk_role FOREIGN KEY (id_role) REFERENCES roles(id_role)
 );
