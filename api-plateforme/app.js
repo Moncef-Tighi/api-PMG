@@ -4,6 +4,8 @@ import createError from "http-errors";
 import cors from 'cors';
 
 import authentificationRouter from './routes/employéRoute.js';
+import permissionsRouter from './routes/permissionsRouter.js';
+
 import { errorHandeler } from "./controllers/errorController.js";
 //import produitsRouter from './routes/articlesRouter.js';
  
@@ -20,6 +22,8 @@ app.use(express.urlencoded({extended: true}));
 
 app.use(express.static('public'));
 app.use('/api/v1/employes', authentificationRouter);
+app.use('/api/v1/permissions', permissionsRouter);
+
 //app.use('/api/v1/articles', produitsRouter);
 app.all('*', (request, response, next)=> {    
     //Ce middelware a pour seul but de catch les erreurs 404 

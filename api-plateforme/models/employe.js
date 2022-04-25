@@ -9,5 +9,5 @@ export const newEmploye = async function(email, password, nom, prenom="", poste=
     `
     const values = [email, password, nom, prenom, poste];
     const response = await db.query(sql, values)
-    return response;
+    return response.rows[0];
 }
