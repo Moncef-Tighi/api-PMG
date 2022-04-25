@@ -1,43 +1,40 @@
 import { catchAsync } from './errorController.js';
 import * as model from '../models/employe.js';
-import {hash, genSalt} from 'bcrypt';
+import {compare} from 'bcrypt';
 import createError from 'http-errors'
 
-export const listEmployes = catchAsync( async function(request, response) {
+
+const sendJWT = function(user, statusCode, response) {
+
+};
+
+export const connexion = catchAsync( async function(request, response) {
+    
+    return response.status(200).send("ok");
+    
+});
+
+export const deconnexion = catchAsync( async function(request, response) {
+    
+    return response.status(200).send("ok");
+    
+});
+
+export const changeMyPassword = catchAsync( async function(request, response) {
 
     return response.status(200).send("ok");
 
 });
 
-export const createEmploye = catchAsync( async function(request, response, next) {
-
-    const login = request.body.login;
-    const nom = request.body.nom;
-    const prenom= request.body.prenom;
-    const poste = request.body.poste;
-    if (!login || !nom || !request.body.password) {
-        return next(createError(400, `Impossible de créer l'employé : une information obligatoire n'a pas été fournit.`))
-    }
-    const salt = await genSalt(10);
-    const password = await hash(request.body.password, salt);
-    const result = await model.newEmploye(login, password, nom, prenom, poste);
-    return response.status(201).json({
-        status: "ok",
-        message : "L'employé a bien été créé",
-        body : result.rows[0]
-    });
-
-});
-
-export const disableEmploye = catchAsync( async function(request, response) {
+export const protect = catchAsync( async function(request, response) {
+    //Fonction qui vérifie que l'utilisateur est connecté
 
     return response.status(200).send("ok");
 
 });
 
-export const modifyEmploye = catchAsync( async function(request, response) {
-
+export const restrict = catchAsync( async function(request, response) {
+    //Fonction qui vérifie que l'utilisateur a le droit d'accéder à la route
     return response.status(200).send("ok");
 
 });
-
