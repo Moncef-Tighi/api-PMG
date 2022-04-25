@@ -6,7 +6,7 @@ INSERT INTO roles(nom_role) VALUES
 ('commmande_setif'),
 ('commmande_oran');
 
-INSERT INTO employé(login, password, nom, date_creation)
+INSERT INTO employé(email, password, nom, date_creation)
 VALUES 
 ('admin', 'root' , 'admin',  CURRENT_TIMESTAMP );
 
