@@ -4,7 +4,7 @@ import fs from 'fs';
 function genKeyPair() {
     
     const keyPair = crypto.generateKeyPairSync('rsa', {
-        modulusLength: 4096, // bits - standard for RSA keys
+        modulusLength: 4096, // en bits
         publicKeyEncoding: {
             type: 'pkcs1', // "Public Key Cryptography Standards 1" 
             format: 'pem' // Most common formatting choice
