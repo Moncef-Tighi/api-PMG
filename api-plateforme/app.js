@@ -19,9 +19,6 @@ app.use(express.urlencoded({extended: true}));
 
 
 app.use(express.static('public'));
-app.use('/', (request, response) => {
-    response.status(200).send("ok");
-});
 app.use('/api/v1/employes', authentificationRouter);
 //app.use('/api/v1/articles', produitsRouter);
 app.all('*', (request, response, next)=> {    
