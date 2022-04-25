@@ -13,3 +13,12 @@ export const addRole = async function(id_employe, id_role) {
     const response = await db.query(sql, values)
     return response.rows[0];
 }
+
+export const deletePermission = async function(id_employe, id_role) {
+
+    const sql = `DELETE FROM permissions WHERE id_employe=$1 AND id_role=$2 `;
+    const values = [id_employe,  id_role];
+    const response = await db.query(sql, values)
+    return response.rows[0];
+
+}

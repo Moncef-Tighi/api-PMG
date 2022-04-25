@@ -34,7 +34,7 @@ export const errorHandeler = function(err, request, response, next) {
     if (process.env.NODE_ENV==='production') {
         return response.status(err.status).json( {
             status : "error",
-            statusCode : err.status,
+            statusCode : err.stack,
             message : err.message,
         });    
 
