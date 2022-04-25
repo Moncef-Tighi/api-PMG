@@ -9,7 +9,6 @@ CREATE TABLE employé (
 	id_employe INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
 	login VARCHAR ( 50 ) UNIQUE NOT NULL,
 	password VARCHAR ( 255 ) NOT NULL,
-	salt VARCHAR ( 255 ) NOT NULL,
     nom VARCHAR(25) NOT NULL,
     prenom VARCHAR(25),
     poste VARCHAR(25),

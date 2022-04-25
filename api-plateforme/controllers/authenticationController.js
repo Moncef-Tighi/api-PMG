@@ -20,11 +20,12 @@ export const createEmploye = catchAsync( async function(request, response, next)
     }
     const salt = await genSalt(10);
     const password = await hash(request.body.password, salt);
-    console.log(password);
-    console.log(salt);
-    const result = await model.newEmploye(login, password, salt, nom, prenom, poste);
-    console.log(result);
-    return response.status(200).send("ok");
+    const result = await model.newEmploye(login, password, nom, prenom, poste);
+    return response.status(201).json({
+        status: "ok",
+        message : "L'employé a bien été créé",
+        body : result.rows[0]
+    });
 
 });
 

@@ -1,13 +1,13 @@
 import db from "./database.js";
 
-export const newEmploye = async function(login, password, salt, nom, prenom="", poste=""){
+export const newEmploye = async function(login, password, nom, prenom="", poste=""){
     const sql = `
-    INSERT INTO employé(login, password, salt, nom, prenom, poste, date_creation)
+    INSERT INTO employé(login, password, nom, prenom, poste, date_creation)
     VALUES 
-    ($1, $2, $3, $4, $5, $6, CURRENT_TIMESTAMP )
+    ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP )
     RETURNING *
     `
-    const values = [login, password, salt, nom, prenom, poste];
+    const values = [login, password, nom, prenom, poste];
     const response = await db.query(sql, values)
     return response;
 }

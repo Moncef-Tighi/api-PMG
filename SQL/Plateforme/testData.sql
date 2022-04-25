@@ -6,9 +6,9 @@ INSERT INTO roles(nom_role) VALUES
 ('commmande_setif'),
 ('commmande_oran');
 
-INSERT INTO employé(login, password, salt, nom, date_creation)
+INSERT INTO employé(login, password, nom, date_creation)
 VALUES 
-('admin', 'root' , 'xyé144frn' , 'admin',  CURRENT_TIMESTAMP );
+('admin', 'root' , 'admin',  CURRENT_TIMESTAMP );
 
 INSERT INTO permissions(id_employe, id_role) VALUES
 (1,1),
