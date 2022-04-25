@@ -1,9 +1,9 @@
-DROP TABLE IF EXISTS employé;
-DROP TABLE IF EXISTS roles;
-DROP TABLE IF EXISTS permissions;
-DROP TABLE IF EXISTS historique_actions;
-DROP TABLE IF EXISTS article;
-DROP TABLE IF EXISTS taille;
+DROP TABLE IF EXISTS employé CASCADE;
+DROP TABLE IF EXISTS roles CASCADE;
+DROP TABLE IF EXISTS permissions CASCADE;
+DROP TABLE IF EXISTS historique_actions CASCADE;
+DROP TABLE IF EXISTS article CASCADE;
+DROP TABLE IF EXISTS taille CASCADE;
 
 CREATE TABLE employé (
 	id_employe INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
@@ -13,7 +13,7 @@ CREATE TABLE employé (
     nom VARCHAR(25) NOT NULL,
     prenom VARCHAR(25),
     poste VARCHAR(25),
-    activé BOOLEAN,
+    activé BOOLEAN DEFAULT true,
 	date_creation TIMESTAMP NOT NULL
 );
 
@@ -50,7 +50,7 @@ CREATE TABLE article (
     familleNiv2 VARCHAR(100),
     description TEXT,
     tags VARCHAR(100),
-    activé BOOLEAN
+    activé BOOLEAN DEFAULT true
 );
 
 CREATE TABLE taille (
