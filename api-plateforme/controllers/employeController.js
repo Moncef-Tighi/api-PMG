@@ -3,11 +3,27 @@ import * as model from '../models/employe.js';
 import {hash, genSalt} from 'bcrypt';
 import createError from 'http-errors';
 
-export const listEmployes = catchAsync( async function(request, response) {
 
-    return response.status(200).send("ok");
+
+export const listEmployes = catchAsync( async function(request, response) {
+    const employes= await model.allEmploye();
+    return response.status(200).json({
+        status: 'ok',
+        body : employes
+    });
 
 });
+
+export const findEmploye = catchAsync( async function(request, response,next) {
+    if (!request.params.id) return next(createError(400, `Aucun id n'a été trouvé`));
+    const employe= await model.oneEmploye(request.params.id);
+    if (!employe) return next(createError(404, `Impossible de trouver un employe avec l'id ${request.params.id}`));
+    return response.status(200).json({
+        status: 'ok',
+        body : employe
+    });
+
+})
 
 export const createEmploye = catchAsync( async function(request, response, next) {
 
