@@ -63,6 +63,10 @@ export const changeMyPassword = catchAsync( async function(request, response, ne
     })
 });
 
+export const changeAnyPassword = catchAsync(async function(request, response, next) {
+    
+})
+
 export const disableEmploye = catchAsync( async function(request, response) {
 
     return response.status(200).send("ok");

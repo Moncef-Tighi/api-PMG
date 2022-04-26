@@ -39,3 +39,12 @@ export const removePermission = catchAsync(async function(request,response) {
     });
 
 });
+
+
+export const createPermission = catchAsync(async function(request, response) {
+
+})
+
+export const deletePermission = catchAsync(async function(request, response) {
+    
+})
