@@ -1,10 +1,12 @@
 import { catchAsync } from './errorController.js';
 import * as model from '../models/employe.js';
-import {compare} from 'bcrypt';
 import createError from 'http-errors'
+
 import {readFileSync} from 'fs';
 import {resolve} from 'path';
 import generateKeyPairSync from '../util/generateKeyPair.js';
+
+import {compare} from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import passport from 'passport';
 
@@ -36,7 +38,7 @@ export const connexion = catchAsync( async function(request, response, next) {
     const employe = await model.employeLogin(email);
     if (!employe) return next(createError(400, `Email incorrecte`));
 
-    if (compare(password, employe.password)) {
+    if (await compare(password, employe.password)) {
         const token = signJwt(employe)
         return response.status(200).json({
             status:"ok",
@@ -72,16 +74,18 @@ export const AuthStrategy = async function(jwt_payload, done) {
 
 export const protect = passport.authenticate('jwt', {session: false});
 
+export const restrict= function(...roles) {
+    return (request, response, next)=> {
+        const permissions = request.user.permissions;
+        for (const permission of permissions) {
+            if (roles.includes(permission)) return next();
+        }
+        return next(createError(403, `l'employé n'a pas le droit d'effectuer cette action`));
+    }
+}
 
 export const changeMyPassword = catchAsync( async function(request, response) {
 
-    return response.status(200).send("ok");
-
-});
-
-
-export const restrict = catchAsync( async function(request, response) {
-    //Fonction qui vérifie que l'utilisateur a le droit d'accéder à la route
     return response.status(200).send("ok");
 
 });
