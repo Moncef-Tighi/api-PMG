@@ -2,7 +2,17 @@ import { catchAsync } from './errorController.js';
 import * as model from '../models/employe.js';
 import {compare} from 'bcrypt';
 import createError from 'http-errors'
-
+import {readFileSync} from 'fs';
+import {resolve} from 'path';
+import generateKeyPairSync from '../util/generateKeyPair.js';
+try {
+    var publicKey = readFileSync(resolve('key_public.pem'), {encoding: 'utf-8'});
+    var privateKey = readFileSync(resolve('key_prive.pem'), {encoding: 'utf-8'});
+} catch(error) {
+    generateKeyPairSync();
+    var publicKey = readFileSync(resolve('key_public.pem'), {encoding: 'utf-8'});
+    var privateKey = readFileSync(resolve('key_prive.pem'), {encoding: 'utf-8'});
+}
 
 const sendJWT = function(user, statusCode, response) {
 

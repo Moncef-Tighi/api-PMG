@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 import fs from 'fs';
 
-function genKeyPair() {
+export default function genKeyPair() {
     
     const keyPair = crypto.generateKeyPairSync('rsa', {
         modulusLength: 4096, // en bits
@@ -20,5 +20,3 @@ function genKeyPair() {
     fs.writeFileSync('./key_prive.pem', keyPair.privateKey);
 
 }
-
-genKeyPair();
