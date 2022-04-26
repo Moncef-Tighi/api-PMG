@@ -6,6 +6,7 @@ import createError from 'http-errors';
 
 
 export const listEmployes = catchAsync( async function(request, response) {
+    console.log(request.user);
     const employes= await model.allEmploye();
     return response.status(200).json({
         status: 'ok',

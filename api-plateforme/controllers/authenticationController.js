@@ -6,26 +6,20 @@ import {readFileSync} from 'fs';
 import {resolve} from 'path';
 import generateKeyPairSync from '../util/generateKeyPair.js';
 import jwt from 'jsonwebtoken';
-
-import {Strategy} from 'passport-jwt'
-import {ExtractJwt} from 'passport-jwt'
-
 import passport from 'passport';
 
 try {
-    var publicKey = readFileSync(resolve('key_public.pem'), {encoding: 'utf-8'});
     var privateKey = readFileSync(resolve('key_prive.pem'), {encoding: 'utf-8'});
 } catch(error) {
     generateKeyPairSync();
-    var publicKey = readFileSync(resolve('key_public.pem'), {encoding: 'utf-8'});
     var privateKey = readFileSync(resolve('key_prive.pem'), {encoding: 'utf-8'});
 }
 
 
 const signJwt = function(employe) {
     const token = jwt.sign({
-        employe_id : employe.employe_id,
-        permission : employe.permissions,
+        employe_id : employe.id_employe,
+        permissions : employe.permissions,
         iat: Math.floor(Date.now() / 1000) - 30
     }, privateKey, {
         algorithm: 'RS256',
@@ -56,17 +50,13 @@ export const connexion = catchAsync( async function(request, response, next) {
 });
 
 
-const authStrategyOptions = {
-    jwtFromRequest : ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: publicKey,
-    algorithms : ['rs256']
-}
 
-export const protect = passport.use(new Strategy(authStrategyOptions, function(jwt_payload, done) {
-
+export const AuthStrategy = async function(jwt_payload, done) {
+    //C'est une fonction qui est utilisé par Passport pour vérifier les informations du JWT après avoir vérifié sa signature
     try {
-        const employe = await model.employeLogin(jwt_payload.employe_id);
+        const employe = await model.oneEmploye(jwt_payload.employe_id);
         if (!employe) return done(null, false, `le token est invalide ou expiré`);
+
         //Ici, on vérifie si les permissions n'ont pas changés depuis le moment ou le JWT a été signé
         //Si c'est le cas alors le token n'est plus valide
         if (employe.permissions.sort().toString() != jwt_payload.permissions.sort().toString()){
@@ -77,7 +67,10 @@ export const protect = passport.use(new Strategy(authStrategyOptions, function(j
         return done (error, false)
     }
 
-}));
+};
+
+
+export const protect = passport.authenticate('jwt', {session: false});
 
 
 export const changeMyPassword = catchAsync( async function(request, response) {
