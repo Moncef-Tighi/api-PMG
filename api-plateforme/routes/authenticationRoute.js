@@ -4,7 +4,6 @@ import * as controllers from '../controllers/authenticationController.js';
 const router = express.Router();
 
 router.post("/connexion", controllers.connexion);
-router.get("/deconnexion", controllers.deconnexion);
 router.use(controllers.restrict);
 router.post("/change_password", controllers.changeMyPassword);
 export default router;
