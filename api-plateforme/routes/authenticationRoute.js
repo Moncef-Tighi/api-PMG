@@ -5,5 +5,4 @@ const router = express.Router();
 
 router.post("/connexion", controllers.connexion);
 router.use(controllers.protect);
-router.post("/change_password", controllers.changeMyPassword);
 export default router;

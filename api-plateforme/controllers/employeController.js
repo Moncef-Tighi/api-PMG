@@ -26,6 +26,10 @@ export const findEmploye = catchAsync( async function(request, response,next) {
 
 })
 
+const hashPassword = async function(clearTextPassword) {
+    const salt = await genSalt(10);
+    return await hash(clearTextPassword, salt);
+};
 
 export const createEmploye = catchAsync( async function(request, response, next) {
 
@@ -36,8 +40,7 @@ export const createEmploye = catchAsync( async function(request, response, next)
     if (!email || !nom || !request.body.password) {
         return next(createError(400, `Impossible de créer l'employé : une information obligatoire n'a pas été fournit.`))
     }
-    const salt = await genSalt(10);
-    const password = await hash(request.body.password, salt);
+    const password = await hashPassword(request.body.password);
     const data = await model.newEmploye(email, password, nom, prenom, poste);
     delete data.password;
     return response.status(201).json({
@@ -46,6 +49,18 @@ export const createEmploye = catchAsync( async function(request, response, next)
         body : data
     });
 
+});
+
+export const changeMyPassword = catchAsync( async function(request, response, next) {
+    const newPassword = request.body.password;
+    if (!newPassword) return next(createError(400, `aucun mot de passe n'a été spécifié`));
+    const password = await hashPassword(newPassword);
+
+    await model.changePassword(request.user.id_employe, password);
+    return response.status(200).json({
+        status:'ok',
+        message: "Votre mot de passe a bien été changé, veuillez vous reconnecter."
+    })
 });
 
 export const disableEmploye = catchAsync( async function(request, response) {

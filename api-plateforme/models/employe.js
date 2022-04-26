@@ -57,3 +57,11 @@ export const findEmployeId = async function(email) {
     const response = await db.query(sql, values)
     return response.rows[0];
 }
+
+export const changePassword = async function(id, password) {
+    const sql = `UPDATE employé SET password= $2 WHERE id_employe=$1`;
+    const values = [id, password];
+    const response = await db.query(sql, values)
+    return response.rows[0];
+
+}

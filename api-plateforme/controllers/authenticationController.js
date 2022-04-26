@@ -83,9 +83,3 @@ export const restrict= function(...roles) {
         return next(createError(403, `l'employé n'a pas le droit d'effectuer cette action`));
     }
 }
-
-export const changeMyPassword = catchAsync( async function(request, response) {
-
-    return response.status(200).send("ok");
-
-});
