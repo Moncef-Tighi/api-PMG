@@ -26,17 +26,16 @@ export const oneEmploye = async function(id) {
 
 }
 
-export const employeLogin = async function(emailOrId) {
+export const employeLogin = async function(email) {
     const sql = `SELECT employé.id_employe, password, email,
     array_agg(nom_role) as "permissions" FROM employé
     INNER JOIN permissions ON employé.id_employe = permissions.id_employe
     INNER JOIN roles ON permissions.id_role = roles.id_role
-    WHERE email= $1 OR employé.id_emplye= $1
+    WHERE email= $1
     GROUP BY employé.id_employe, password, email
     `;
-    const values = [emailOrId];
+    const values = [email];
     const response = await db.query(sql, values);
-
     return response.rows[0];
 }
 
