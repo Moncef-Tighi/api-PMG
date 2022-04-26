@@ -2,11 +2,11 @@ import db from "./database.js";
 
 
 export const allEmploye = async function() {
-    const response = await db.query(`SELECT employé.id_employe,email, nom, prenom, poste, 
+    const response = await db.query(`SELECT employé.id_employe,email, nom, prenom, poste, activé
     array_agg(nom_role) as "permissions" FROM employé
     INNER JOIN permissions ON employé.id_employe = permissions.id_employe
     INNER JOIN roles ON permissions.id_role = roles.id_role
-    GROUP BY employé.id_employe,email, nom, prenom, poste`);
+    GROUP BY employé.id_employe,email, nom, prenom, poste,activé`);
     return response.rows;
 
 }
@@ -31,7 +31,7 @@ export const employeLogin = async function(email) {
     array_agg(nom_role) as "permissions" FROM employé
     INNER JOIN permissions ON employé.id_employe = permissions.id_employe
     INNER JOIN roles ON permissions.id_role = roles.id_role
-    WHERE email= $1
+    WHERE email= $1 AND activé=true
     GROUP BY employé.id_employe, password, email
     `;
     const values = [email];
