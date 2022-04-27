@@ -51,6 +51,13 @@ export const createEmploye = catchAsync( async function(request, response, next)
 
 });
 
+export const modifyEmploye = catchAsync( async function(request, response) {
+
+    
+    return response.status(200).send("ok");
+
+});
+
 export const changeMyPassword = catchAsync( async function(request, response, next) {
     const newPassword = request.body.password;
     if (!newPassword) return next(createError(400, `aucun mot de passe n'a été spécifié`));
@@ -102,11 +109,5 @@ export const enableEmploye = catchAsync(async function(request, response) {
         status: "ok",
         message: "L'employé a bien été activé."
     });
-
-});
-
-export const modifyEmploye = catchAsync( async function(request, response) {
-
-    return response.status(200).send("ok");
 
 });
