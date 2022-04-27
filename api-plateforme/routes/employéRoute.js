@@ -4,8 +4,10 @@ import { protect, restrict } from "../controllers/authenticationController.js";
 
 const router = express.Router();
 
+router.get("/", controllers.listEmployes);
+
 router.use(protect)
-    //Route qui permet à un employé de changer son propre mot de passe.
+//Route qui permet à un employé de changer son propre mot de passe.
     router.get("/profile", controllers.profile);
     router.patch("/my_password", controllers.changeMyPassword);
 
@@ -17,6 +19,6 @@ router.use(protect)
         router.patch("/activer", controllers.enableEmploye);
         router.delete("/supprimer", controllers.disableEmploye);
         router.get("/:id", controllers.findEmploye);
-        router.get("/", controllers.listEmployes);
+        //router.get("/", controllers.listEmployes);
 
 export default router;
