@@ -42,15 +42,18 @@ export const getAllArticles = async function(parametres,having={}) {
     // ` 
     const sql = `
     SELECT DISTINCT
-    GA_CODEARTICLE, MAX(GA_FAMILLENIV1) AS "GA_FAMILLENIV1",MAX(GA_FAMILLENIV2) AS "GA_FAMILLENIV2"
+    GA_CODEARTICLE, 
+    MAX(a.CC_LIBELLE) AS "marque",MAX(b.CC_LIBELLE) AS "type"
     , MAX(GA_LIBELLE) AS "GA_LIBELLE"
     , MAX(GA_PVTTC) AS 'GA_PVTTC'
     ,SUM(GQ_PHYSIQUE-GQ_RESERVECLI+GQ_RESERVEFOU-GQ_PREPACLI) AS 'stock'
     , MAX(GA_DATECREATION) as "GA_DATECREATION", MAX(GA_DATEMODIF) as "GA_DATEMODIF"
     , [total]= COUNT(*) OVER()
-    
+        
     FROM DISPO
     INNER JOIN ARTICLE ON GA_ARTICLE=GQ_ARTICLE AND GQ_CLOTURE <> 'X' AND GA_TYPEARTICLE = 'MAR' 
+    LEFT JOIN CHOIXCOD AS a ON a.CC_CODE=GA_FAMILLENIV1
+    LEFT JOIN CHOIXCOD AS b ON b.CC_CODE=GA_FAMILLENIV2    
     ${query.where(parametres)} 
     GROUP BY Ga_CODEARTICLE
     ${query.having(having)}
@@ -68,14 +71,15 @@ export const infoArticle = async function(parametre) {
 
     const data = await db.query `
     SELECT DISTINCT
-    GA_FAMILLENIV1,
-    GA_FAMILLENIV2,
+    a.CC_LIBELLE AS "marque",b.CC_LIBELLE AS "type",
     GA_DATECREATION,GA_LIBELLE,ISNULL(GF_PRIXUNITAIRE, GA_PVTTC) as 'prixActuel', GA_PVTTC as 'prixInitial',
     GF_DATEMODIF as 'dernierTarif', GF_LIBELLE as 'descriptionTarif', GF_DATEDEBUT, GF_DATEFIN,
     GFM_TYPETARIF, GFM_PERTARIF, GFM_NATURETYPE,
     GA2_LIBREARTE
 
     FROM GCTARFCONMODEART  
+    LEFT JOIN CHOIXCOD AS a ON a.CC_CODE=GA_FAMILLENIV1
+    LEFT JOIN CHOIXCOD AS b ON b.CC_CODE=GA_FAMILLENIV2    
     WHERE 
     (GF_REGIMEPRIX = 'TTC' AND ((GA_STATUTART='GEN' or GA_STATUTART='UNI')  
                         AND ( GFM_TYPETARIF IS NULL OR GFM_TYPETARIF IN ('','','001','RETAIL')) AND GF_ARTICLE<>'') 
