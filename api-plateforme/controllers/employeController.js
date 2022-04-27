@@ -70,7 +70,7 @@ export const changeAnyPassword = catchAsync(async function(request, response, ne
     if (!id_employe) return next(createError(400, `aucun employé n'a été spécifié`));
 
     const password = await hashPassword(newPassword);
-    
+
     await model.changePassword(id_employe, password);
     return response.status(200).json({
         status:'ok',
@@ -80,8 +80,28 @@ export const changeAnyPassword = catchAsync(async function(request, response, ne
 })
 
 export const disableEmploye = catchAsync( async function(request, response) {
+    const id_employe = request.body.id_employe;
+    if (!id_employe) return next(createError(400, `aucun employé n'a été spécifié`));
 
-    return response.status(200).send("ok");
+    await model.activationEmploye(id_employe, false);
+
+    return response.status(200).json({
+        status: "ok",
+        message: "L'employé a bien été désactivé."
+    });
+
+});
+
+export const enableEmploye = catchAsync(async function(request, response) {
+    const id_employe = request.body.id_employe;
+    if (!id_employe) return next(createError(400, `aucun employé n'a été spécifié`));
+
+    await model.activationEmploye(id_employe, true);
+
+    return response.status(200).json({
+        status: "ok",
+        message: "L'employé a bien été activé."
+    });
 
 });
 

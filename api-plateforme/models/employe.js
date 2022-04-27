@@ -65,3 +65,11 @@ export const changePassword = async function(id, password) {
     return response.rows[0];
 
 }
+
+export const activationEmploye = async function(id, activation) {
+    //Cette fonction est utilisé pour désactiver et réactiver les employés.
+    const sql = `UPDATE employé SET activé= $2 WHERE id_employe=$1`;
+    const values = [id, activation];
+    const response = await db.query(sql, values)
+    return response.rows[0];
+}

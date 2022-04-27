@@ -36,7 +36,7 @@ export const connexion = catchAsync( async function(request, response, next) {
     const password = request.body.password;
     if (!email | !password) return next(createError(400, `Email ou mot de passe introuvable`))
     const employe = await model.employeLogin(email);
-    if (!employe) return next(createError(400, `Email incorrecte`));
+    if (!employe) return next(createError(400, `Email incorrecte ou employé inexistant`));
 
     if (await compare(password, employe.password)) {
         const token = signJwt(employe)
