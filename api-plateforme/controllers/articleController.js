@@ -20,6 +20,10 @@ export const unArticle = catchAsync( async function(request, response) {
 
 });
 
+export const ajoutArticle = catchAsync(async function(request, response) {
+
+    
+})
 
 export const articleEtat = catchAsync( async function(request, response) {
     //Est-ce que l'article est mis en vente sur la plateforme ? Si oui, est-il activé ?
