@@ -1,11 +1,11 @@
 import express from "express";
-import * as controllers from '../controllers/roleController';
+import * as controllers from '../controllers/roleController.js';
 
 const router = express.Router();
 
-// router.post("/", controllers.listEmployes);
-// router.post("/creation", controllers.createEmploye);
-// router.post("/delete", controllers.disableEmploye);
-// router.post("/modifier", controllers.modifyEmploye);
+router.get("/", controllers.listeRole);
+router.post("/creation", controllers.createRole);
+router.put("/modifier", controllers.modifyRole);
+router.delete("/delete", controllers.deleteRole);
 
 export default router;

@@ -15,6 +15,7 @@ import {resolve} from 'path';
 import employeRouter from './routes/employéRoute.js';
 import permissionsRouter from './routes/permissionsRouter.js';
 import authenticationRouter from './routes/authenticationRoute.js';
+import roleRouter from "./routes/roleRoute.js";
 
 import { errorHandeler } from "./controllers/errorController.js";
 //import produitsRouter from './routes/articlesRouter.js';
@@ -51,6 +52,7 @@ passport.use('jwt', new Strategy(authStrategyOptions, AuthStrategy));
 app.use(express.static('public'));
 app.use('/api/v1/employes', employeRouter);
 app.use('/api/v1/permissions', permissionsRouter);
+app.use('/api/v1/roles', roleRouter);
 app.use('/api/v1/', authenticationRouter);
 
 

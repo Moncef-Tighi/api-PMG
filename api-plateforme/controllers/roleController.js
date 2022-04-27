@@ -4,7 +4,8 @@ import createError from 'http-errors';
 
 
 export const listeRole = catchAsync(async function(request, response) {
-    const roles = model.readRoles();
+    const roles = await model.readRoles();
+
     return response.status(200).json({
         status: 'ok',
         body : roles
