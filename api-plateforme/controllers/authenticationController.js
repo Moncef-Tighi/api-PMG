@@ -57,12 +57,13 @@ export const AuthStrategy = async function(jwt_payload, done) {
     //C'est une fonction qui est utilisé par Passport pour vérifier les informations du JWT après avoir vérifié sa signature
     try {
         const employe = await model.oneEmploye(jwt_payload.employe_id);
-        if (!employe) return done(null, false, `le token est invalide ou expiré`);
+
+        if (!employe || !employe.activé) return done(null, false, `le token est invalide ou expiré`);
 
         //Ici, on vérifie si les permissions n'ont pas changés depuis le moment ou le JWT a été signé
         //Si c'est le cas alors le token n'est plus valide
         if (employe.permissions.sort().toString() != jwt_payload.permissions.sort().toString()){
-            return done(null, false, {error : `les permissions de l'utilisateur n'existe pas`});
+            return done(null, false, {error : `les permissions de l'utilisateur ont étées changées, le token n'est plus valide`});
         }
         return done(null, employe);
     } catch(error) {

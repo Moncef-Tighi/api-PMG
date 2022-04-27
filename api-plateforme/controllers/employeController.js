@@ -64,7 +64,19 @@ export const changeMyPassword = catchAsync( async function(request, response, ne
 });
 
 export const changeAnyPassword = catchAsync(async function(request, response, next) {
+    const newPassword = request.body.password;
+    if (!newPassword) return next(createError(400, `aucun mot de passe n'a été spécifié`));
+    const id_employe = request.body.id_employe;
+    if (!id_employe) return next(createError(400, `aucun employé n'a été spécifié`));
+
+    const password = await hashPassword(newPassword);
     
+    await model.changePassword(id_employe, password);
+    return response.status(200).json({
+        status:'ok',
+        message: "Le mot de passe de l'employé a bien été changé."
+    })
+
 })
 
 export const disableEmploye = catchAsync( async function(request, response) {
