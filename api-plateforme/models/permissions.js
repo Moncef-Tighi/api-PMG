@@ -7,7 +7,7 @@ export const findRoleId = async function(nom) {
     return response.rows[0];
 }
 
-export const addRole = async function(id_employe, id_role) {
+export const addPermission = async function(id_employe, id_role) {
     const sql = `INSERT INTO permissions(id_employe,id_role) VALUES ($1,$2)`;
     const values = [id_employe,  id_role];
     const response = await db.query(sql, values)

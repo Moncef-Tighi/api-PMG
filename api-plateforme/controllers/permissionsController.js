@@ -23,7 +23,7 @@ export const idFromEmailAndRole = catchAsync(async function(request, response , 
 
 export const addPermission = catchAsync( async function(request, response) {
 
-    await model.addRole(request.body.id_employe, request.body.id_role);
+    await model.addPermission(request.body.id_employe, request.body.id_role);
     return response.status(200).json({
             status: "ok",
             message: "La nouvelle permission a bien été ajoutée",
