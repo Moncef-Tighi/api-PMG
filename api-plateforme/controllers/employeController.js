@@ -51,10 +51,24 @@ export const createEmploye = catchAsync( async function(request, response, next)
 
 });
 
-export const modifyEmploye = catchAsync( async function(request, response) {
+export const modifyEmploye = catchAsync( async function(request, response, next) {
 
-    
-    return response.status(200).send("ok");
+    const id_employe = request.body.id_employe;
+    const email = request.body.email;
+    const nom = request.body.nom;
+    const prenom= request.body.prenom;
+    const poste = request.body.poste;
+    if (!email || !nom || !id_employe) {
+        return next(createError(400, `Impossible de modifier l'employé : une information obligatoire n'a pas été fournit.`))
+    }
+    const data = await model.changeEmploye(id_employe, email, nom, prenom, poste);
+    delete data.password;
+    return response.status(201).json({
+        status: "ok",
+        message : "L'employé a bien été modifié",
+        body : data
+    });
+
 
 });
 

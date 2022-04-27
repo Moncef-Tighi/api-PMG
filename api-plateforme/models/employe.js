@@ -20,10 +20,17 @@ export const oneEmploye = async function(id) {
     GROUP BY employé.id_employe,email, nom, prenom, poste,activé
     `;
     const values = [id];
-    const response = await db.query(sql, values)
+    const response = await db.query(sql, values);
 
     return response.rows[0];
 
+}
+
+export const findEmployeId = async function(email) {
+    const sql = ` SELECT id_employe FROM employé WHERE email= $1 `
+    const values = [email];
+    const response = await db.query(sql, values)
+    return response.rows[0];
 }
 
 export const employeLogin = async function(email) {
@@ -51,11 +58,17 @@ export const newEmploye = async function(email, password, nom, prenom="", poste=
     return response.rows[0];
 }
 
-export const findEmployeId = async function(email) {
-    const sql = ` SELECT id_employe FROM employé WHERE email= $1 `
-    const values = [email];
+export const changeEmploye = async function(id,email,nom,prenom="",poste=""){
+    const sql = `
+    UPDATE employé 
+    SET email=$2, nom=$3, prenom=$4, poste=$5
+    WHERE id_employe=$1
+    RETURNING *
+    `
+    const values = [id,email, nom, prenom, poste];
     const response = await db.query(sql, values)
     return response.rows[0];
+
 }
 
 export const changePassword = async function(id, password) {

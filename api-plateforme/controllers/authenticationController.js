@@ -61,7 +61,6 @@ export const AuthStrategy = async function(jwt_payload, done) {
         if (!employe || !employe.activé) return done(null, false, `le token est invalide ou expiré`);
 
         //Ici, on vérifie si les permissions n'ont pas changés depuis le moment ou le JWT a été signé
-        //Si c'est le cas alors le token n'est plus valide
         if (employe.permissions.sort().toString() != jwt_payload.permissions.sort().toString()){
             return done(null, false, {error : `les permissions de l'utilisateur ont étées changées, le token n'est plus valide`});
         }
