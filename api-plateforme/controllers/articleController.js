@@ -2,6 +2,8 @@ import { catchAsync } from './errorController.js';
 import * as model from '../models/article';
 import createError from 'http-errors';
 
+
+
 export const listeArticle = catchAsync( async function(request, response) {
     //Côté client
     return response.status(200).json({
