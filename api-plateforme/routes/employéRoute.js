@@ -6,6 +6,7 @@ const router = express.Router();
 
 router.use(protect)
     //Route qui permet à un employé de changer son propre mot de passe.
+    router.get("/profile", controllers.profile);
     router.patch("/my_password", controllers.changeMyPassword);
 
     router.use(restrict('admin'))

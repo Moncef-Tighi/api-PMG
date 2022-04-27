@@ -26,6 +26,18 @@ export const findEmploye = catchAsync( async function(request, response,next) {
 
 })
 
+export const profile = catchAsync( async function(request, response,next) {
+
+    const employe= await model.oneEmploye(request.user.id_employe);
+
+    return response.status(200).json({
+        status: 'ok',
+        body : employe
+    });
+
+})
+
+
 const hashPassword = async function(clearTextPassword) {
     const salt = await genSalt(10);
     return await hash(clearTextPassword, salt);
