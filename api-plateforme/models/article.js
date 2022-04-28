@@ -61,7 +61,7 @@ export const insertArticle = async function(code_article, libelle=null, marque=n
 export const insertTaille = async function(code_article, dimension, code_barre) {
 
     const sql = `
-    INSERT INTO articlse_taille(code_article,dimension, code_barre)
+    INSERT INTO article_taille(code_article,dimension, code_barre)
     VALUES
     ($1,$2,$3)
     `
@@ -70,4 +70,16 @@ export const insertTaille = async function(code_article, dimension, code_barre) 
     const response = await db.query(sql, values)
     return response.rows[0];
 
+}
+
+export const activationArticle = async function(code_article, activation) {
+    //Fonction utilisée pour activer ET désactiver un article
+    const sql = `
+        UPDATE article SET activé=$2 
+        WHERE code_article=$1
+        RETURNING *
+    `
+    const values = [code_article, activation];
+    const response = await db.query(sql, values)
+    return response.rows[0];
 }

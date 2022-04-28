@@ -20,7 +20,7 @@ const addStockToArticles = function(articles, articlesDispo) {
 }
 
 export const listeArticle = catchAsync( async function(request, response) {
-    //EndPoint pour l'API client
+    //EndPoint pour l'API client, on réccupère l'article depuis la plateforme et le stock depuis CEGID
 
     const articles = await model.readAllArticles();
     const codeArticles = articles.map(article=> article.code_article);
@@ -37,7 +37,7 @@ export const listeArticle = catchAsync( async function(request, response) {
 });
 
 export const unArticle = catchAsync( async function(request, response) {
-    //EndPoint pour l'API client
+    //EndPoint pour l'API client, on réccupère l'article depuis la plateforme et le stock depuis CEGID
 
     const id = request.params.id;
     if (!id) return next(createError(400, `Impossible de trouver le code article`))
@@ -91,10 +91,12 @@ export const articleEtat = catchAsync( async function(request, response) {
     const articlesPlateforme = await model.readArticles(codeArticles);
     let result = []
     articles.forEach(article=> {
+
         let output={};
         const found = articlesPlateforme.find(art=> art.code_article === article.code_article);
+
         if (found) {
-            if (found.activé===false) output = {code_article : article.code_article, status : "Désactivé"}
+            if (found["activé"]===false) output = {code_article : article.code_article, status : "Désactivé"}
             else if (article.stock<3) output = {code_article : article.code_article, status : "Hors Stock"}
             else output = {code_article : article.code_article, status : "En Vente"}
         }
@@ -119,17 +121,24 @@ export const updatePrixArticle = catchAsync( async function(request, response) {
 });
 
 export const disableArticle = catchAsync( async function(request, response) {
+    const code_article = request.params.id
+    const resultat = await model.activationArticle(code_article, false);
 
     return response.status(200).json({
         status: 'ok',
+        resultat
     });
+
 
 });
 
 export const enableArticle = catchAsync( async function(request, response) {
+    const code_article = request.params.id
+    const resultat = await model.activationArticle(code_article, true);
 
     return response.status(200).json({
         status: 'ok',
+        resultat
     });
 
 });
