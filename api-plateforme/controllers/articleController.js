@@ -8,21 +8,22 @@ const addStockToArticles = function(articles, articlesDispo) {
     for(const [code_article, stock] of Object.entries(articlesDispo)) {
         let article;
         try {
-            article = articles.find(art=> art.code_article=code_article);
+            article = articles.find(art=> art.code_article===code_article);
         } catch(error) {
             article = articles
         }
         article.stock=stock;
-        //On a besoin de destructurer l'article, sinon le push le copie sur chaque case de l'array
+        //On a besoin de destructurer l'article, sinon le push le copie sur chaque case de l'array au lieu de le mettre à la fin
         output.push({ ...article});
     }
     return output
 }
 
 export const listeArticle = catchAsync( async function(request, response) {
-    
+    //EndPoint pour l'API client
+
     const articles = await model.readAllArticles();
-    const codeArticles = articles.map(article=> article.code_article)
+    const codeArticles = articles.map(article=> article.code_article);
     const disponibilite = await model.checkDisponibilite(codeArticles);
 
     const result = addStockToArticles(articles, disponibilite.articles);
@@ -36,6 +37,7 @@ export const listeArticle = catchAsync( async function(request, response) {
 });
 
 export const unArticle = catchAsync( async function(request, response) {
+    //EndPoint pour l'API client
 
     const id = request.params.id;
     if (!id) return next(createError(400, `Impossible de trouver le code article`))
@@ -77,7 +79,7 @@ export const ajoutArticle = catchAsync(async function(request, response) {
 })
 
 export const articleEtat = catchAsync( async function(request, response) {
-    //Est-ce que l'article est mis en vente sur la plateforme ? Si oui, est-il activé ?
+    //Est-ce que l'article est mis en vente sur la plateforme ? Si oui, est-il activé ? Si il est activé, est-il en stock ?
 
     return response.status(200).json({
         status: 'ok',
