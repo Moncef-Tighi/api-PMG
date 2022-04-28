@@ -14,6 +14,7 @@ import employeRouter from './employéRoute.js';
 import permissionsRouter from './permissionsRouter.js';
 import authenticationRouter from './authenticationRoute.js';
 import roleRouter from "./roleRoute.js";
+import articleRouter from './articleRoute.js';
 
 const router = express.Router();
 
@@ -41,6 +42,7 @@ passport.use('jwt', new Strategy(authStrategyOptions, AuthStrategy));
 router.use('/employes', employeRouter);
 router.use('/permissions', permissionsRouter);
 router.use('/roles', roleRouter);
+router.use('/articles', articleRouter);
 router.use('/connexion', authenticationRouter);
 
 export default router
