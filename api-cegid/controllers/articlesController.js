@@ -99,8 +99,7 @@ export const ArticlesDisponible = catchAsync( async function(request, response,n
     }
     const dataRecord = await model.disponibilitéArticle(articles);
     let resultat = {};
-    articles.forEach(article => {
-        //Ce code est complexe parce que le return de la query peut être soit : Undefined, un objet ou un array d'objet
+    for (const article of articles) {
         if (!dataRecord) return resultat[article] = 0;
         if (dataRecord instanceof Array) {
             dataRecord.forEach(code => {
@@ -111,7 +110,9 @@ export const ArticlesDisponible = catchAsync( async function(request, response,n
             if (article===dataRecord?.GA_CODEARTICLE) return resultat[article] =  data.recordset[0].GA_CODEARTICLE
         }
         if (!(article in resultat)) return resultat[article] = 0;
-    });
+
+    }
+
     return response.status(200).json({
         status : "ok",
         body : {
