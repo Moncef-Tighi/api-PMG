@@ -79,10 +79,31 @@ export const ajoutArticle = catchAsync(async function(request, response) {
 })
 
 export const articleEtat = catchAsync( async function(request, response) {
+    //Requête utilisé côté plateforme
     //Est-ce que l'article est mis en vente sur la plateforme ? Si oui, est-il activé ? Si il est activé, est-il en stock ?
 
+    const articles = request.body.articles;
+    if (!articles || ! articles instanceof Array) {
+        return next(createError(400, "Erreur : Une liste d'article n'a pas été fournit dans le body de la requête") )
+    }
+    const codeArticles = articles.map(article=> article.code_article);
+    
+    const articlesPlateforme = await model.readArticles(codeArticles);
+    let result = []
+    articles.forEach(article=> {
+        let output={};
+        const found = articlesPlateforme.find(art=> art.code_article === article.code_article);
+        if (found) {
+            if (found.activé===false) output = {code_article : article.code_article, status : "Désactivé"}
+            else if (article.stock<3) output = {code_article : article.code_article, status : "Hors Stock"}
+            else output = {code_article : article.code_article, status : "En Vente"}
+        }
+        else output = {code_article : article.code_article, status : "CEGID"}
+        result.push(output);
+    })
     return response.status(200).json({
         status: 'ok',
+        body : result
     });
 
 });
