@@ -6,7 +6,12 @@ import createError from 'http-errors';
 const addStockToArticles = function(articles, articlesDispo) {
     const output=[];
     for(const [code_article, stock] of Object.entries(articlesDispo)) {
-        let article = articles.find(art=> art.code_article=code_article);
+        let article;
+        try {
+            article = articles.find(art=> art.code_article=code_article);
+        } catch(error) {
+            article = articles
+        }
         article.stock=stock;
         //On a besoin de destructurer l'article, sinon le push le copie sur chaque case de l'array
         output.push({ ...article});
@@ -31,9 +36,18 @@ export const listeArticle = catchAsync( async function(request, response) {
 });
 
 export const unArticle = catchAsync( async function(request, response) {
-    //Côté client
+
+    const id = request.params.id;
+    if (!id) return next(createError(400, `Impossible de trouver le code article`))
+    const article = await model.readOneArticle(id);
+    if (!article) return next(createError(404, `Impossible de trouver l'article demandé`));
+    const disponibilite = await model.checkDisponibilite([article.code_article]);
+
+    const result = addStockToArticles(article, disponibilite.articles);
+
     return response.status(200).json({
         status: 'ok',
+        body : result
     });
 
 });

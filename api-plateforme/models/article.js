@@ -20,6 +20,18 @@ export const readAllArticles = async function() {
 
 }
 
+export const readOneArticle = async function(code_article) {
+    const sql = `
+        SELECT article.code_article, prix_vente, libelle, array_agg(dimension) as "dimension"  FROM article 
+        INNER JOIN article_taille ON article.code_article=article_taille.code_article
+        WHERE article.code_article = $1
+        GROUP BY article.code_article, prix_vente, libelle
+    `
+    const values = [code_article];
+    const response = await db.query(sql, values);
+    return response.rows[0];
+
+}
 
 export const insertArticle = async function(code_article, libelle=null, marque=null, type=null, date_creation=null, prix_vente, description=null, tags=null){
     const sql = `
