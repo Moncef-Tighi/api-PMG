@@ -6,12 +6,7 @@ const query= new Query('-GA_DATEMODIF');
 
 export const getAllArticles = async function(parametres,having={}) {
     
-    //Cette requête est l'ancienne requête. Elle contient pas le dernier tarif, mais elle est largement plus rapide.
-    //Il y a quelque chose de bizarre : le requête sans tarif à 2300 résultat, celle avec en a 40000. Impossible d'être sûr pourquoi.
 
-        // const sql = `
-    
-    // ` 
     const sql = `
     SELECT DISTINCT
     GA_CODEARTICLE, 

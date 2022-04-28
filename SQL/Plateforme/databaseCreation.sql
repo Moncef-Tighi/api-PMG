@@ -45,16 +45,16 @@ CREATE TABLE article (
     date_creation TIMESTAMP,
     prix_vente REAL NOT NULL,
     libelle VARCHAR(100),
-    familleNiv1 VARCHAR(100),
-    familleNiv2 VARCHAR(100),
+    marque VARCHAR(100),
+    type VARCHAR(100),
     description TEXT,
     tags VARCHAR(100),
     activé BOOLEAN DEFAULT true
 );
 
-CREATE TABLE taille (
+CREATE TABLE article_taille (
+    code_article VARCHAR(255) NOT NULL,
     code_barre VARCHAR(255) PRIMARY KEY,
-    code_article VARCHAR(255),
     dimension VARCHAR(25) NOT NULL,
     CONSTRAINT fk_article FOREIGN KEY (code_article) REFERENCES article(code_article)
 );
