@@ -3,11 +3,29 @@ import * as model from '../models/article.js';
 import createError from 'http-errors';
 
 
+const addStockToArticles = function(articles, articlesDispo) {
+    const output=[];
+    for(const [code_article, stock] of Object.entries(articlesDispo)) {
+        let article = articles.find(art=> art.code_article=code_article);
+        article.stock=stock;
+        //On a besoin de destructurer l'article, sinon le push le copie sur chaque case de l'array
+        output.push({ ...article});
+    }
+    return output
+}
 
 export const listeArticle = catchAsync( async function(request, response) {
-    //Côté client
+    
+    const articles = await model.readAllArticles();
+    const codeArticles = articles.map(article=> article.code_article)
+    const disponibilite = await model.checkDisponibilite(codeArticles);
+
+    const result = addStockToArticles(articles, disponibilite.articles);
+
+
     return response.status(200).json({
-        status: 'ok',
+        status: "ok",
+        body : result
     });
 
 });
