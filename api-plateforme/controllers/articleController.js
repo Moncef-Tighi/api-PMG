@@ -4,6 +4,8 @@ import createError from 'http-errors';
 
 
 const addStockToArticles = function(articles, articlesDispo) {
+    //Fonction utilitaire qui combine les infos de l'article extraite de la plateforme 
+    //Avec les informations de stock extraite de l'API Cegid
     const output=[];
     for(const [code_article, stock] of Object.entries(articlesDispo)) {
         let article;
@@ -55,6 +57,7 @@ export const unArticle = catchAsync( async function(request, response) {
 });
 
 export const ajoutArticle = catchAsync(async function(request, response) {
+    //On importe l'article depuis l'API Cegid et on le place dans la plateforme.
     
     const code_article= request.body.code_article;
     const libelle= request.body.libelle;
@@ -142,5 +145,3 @@ export const enableArticle = catchAsync( async function(request, response) {
     });
 
 });
-
-
