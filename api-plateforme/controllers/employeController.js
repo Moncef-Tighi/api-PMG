@@ -2,7 +2,7 @@ import { catchAsync } from './errorController.js';
 import * as model from '../models/employe.js';
 import {hash, genSalt} from 'bcrypt';
 import createError from 'http-errors';
-
+import newAction from './historiqueController.js';
 
 
 export const listEmployes = catchAsync( async function(request, response) {
@@ -54,6 +54,8 @@ export const createEmploye = catchAsync( async function(request, response, next)
     }
     const password = await hashPassword(request.body.password);
     const data = await model.newEmploye(email, password, nom, prenom, poste);
+    newAction(request.user.id_employe,data.id_employe,"employe", "ajout",
+    `${request.user.nom} ${request.user.prenom} a créé l'employé ${nom} ${prenom}`)
     delete data.password;
     return response.status(201).json({
         status: "ok",

@@ -31,13 +31,12 @@ const signJwt = function(employe) {
 };
 
 export const connexion = catchAsync( async function(request, response, next) {
-    
+
     const email = request.body.email;
     const password = request.body.password;
     if (!email | !password) return next(createError(400, `Email ou mot de passe introuvable`))
     const employe = await model.employeLogin(email);
     if (!employe) return next(createError(400, `Email incorrecte ou employé inexistant`));
-
     if (await compare(password, employe.password)) {
         const token = signJwt(employe)
         return response.status(200).json({

@@ -1,19 +1,21 @@
 import { catchAsync } from './errorController.js';
-import * as model from '../models/permissions.js';
+import * as model from '../models/historique.js';
 import createError from 'http-errors';
 
 //Fonction plutôt que controller ?
-//Sauvgarder les actions via des middleware plutôt ? ça pourrait être malin.
 
-export const nouvelleAction = catchAsync(async function(request,response, next) {
-    
-    
-    return response.status(200).json({
-        status: "ok",
-        message: "",
-    });
 
-});
+const newAction = async function(employe, action_sur,categorie,type,description){
+    if (!action_sur || !categorie) throw new Error("Impossible de logger une nouvelle action. Une information est manquante")
+    if (!employe) throw new Error("L'employé effectuant l'action n'a pas été fournit");
+    console.log({
+        employe, action_sur : String(action_sur), categorie, type, description
+    })
+    await model.createAction(employe, String(action_sur), categorie, type, description)
+    return
+};
+
+export default newAction
 
 export const listeAction = catchAsync(async function(request,response, next) {
     //Il faut que cette requête soit filtrée    
