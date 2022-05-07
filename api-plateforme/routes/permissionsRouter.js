@@ -1,9 +1,11 @@
 import express from "express";
 import * as controllers from '../controllers/permissionsController.js';
-
+import { protect, restrict } from "../controllers/authenticationController.js";
 const router = express.Router();
 
-router.post("/ajouter", controllers.idFromEmailAndRole , controllers.addPermission);
-router.delete("/supprimer", controllers.idFromEmailAndRole , controllers.removePermission);
+router.use(protect)
+router.use(restrict("admin"))
+router.post("/ajouter", controllers.emailAndRoleAndId , controllers.newPermission);
+router.delete("/supprimer", controllers.emailAndRoleAndId , controllers.removePermission);
 
 export default router;

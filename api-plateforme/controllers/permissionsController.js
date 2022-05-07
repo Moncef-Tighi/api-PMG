@@ -2,12 +2,37 @@ import { catchAsync } from './errorController.js';
 import * as model from '../models/permissions.js';
 import * as employe from '../models/employe.js';
 import createError from 'http-errors';
-
-export const idFromEmailAndRole = catchAsync(async function(request, response , next) {
-    //Cette fonction existe juste pour permettre d'écrire la requête avec l'ID ou avec le nom
-    //C'était pertinant dans ce cas parce qu'on peut l'utiliser plusieurs fois 
-    //Là où ça serait overkill pour une seule fonction
+import newAction from './historiqueController.js';
+// export const idFromEmailAndRole = catchAsync(async function(request, response , next) {
+//     //Cette fonction existe juste pour permettre d'écrire la requête avec l'ID ou avec le nom
+//     //C'était pertinant dans ce cas parce qu'on peut l'utiliser plusieurs fois 
+//     //Là où ça serait overkill pour une seule fonction
     
+
+//     next();
+// });
+
+export const emailAndRoleAndId = catchAsync(async function(request, response , next) {
+
+    //ça peut sembler overkill de réccupérer l'id, l'email et le nom du role pour chaque requête
+    //Mais c'est ce qu'il y a de mieux pour améliorer la lisibilité et les options
+    //à la fois côté programmation et côté historique des actions.
+    //Toute fois, la requête n'a vraiment besoin que de l'id de l'employé et du rôle pour enregistrer le changement
+    
+    if (!request.body.email){
+        const id=request.body.id_employe
+        if (!id) return(next(createError(404, `aucun employé n'a été trouvé`)))
+        const result = await employe.findEmploye(email);
+        if (!result) return(next(createError(404,  `l'employé' indiqué n'existe pas.`)));    
+        request.body.email=result.email;
+    }
+    if (!request.body.role) {
+        const role=request.body.id_role
+        if (!role) return(next(createError(404, `aucun rôle n'a été trouvé`)))
+        const result= await model.findRole(role);
+        if (!result) return(next(createError(404,  `le role indiqué n'existe pas.`)));
+        request.body.role=result.nom_role;
+    }
     if (!request.body.id_employe){
         const email=request.body.email
         if (!email) return(next(createError(404, `aucun employé n'a été trouvé`)))
@@ -25,9 +50,15 @@ export const idFromEmailAndRole = catchAsync(async function(request, response , 
     next();
 });
 
-export const addPermission = catchAsync( async function(request, response) {
+
+
+export const newPermission = catchAsync( async function(request, response) {
 
     await model.addPermission(request.body.id_employe, request.body.id_role);
+
+    newAction(request.user.id_employe,request.body.id_employe,"employe", "admin",
+    `${request.user.nom} ${request.user.prenom} a ajouté la permission ${request.body.role} à ${request.body.email} `)
+    
     return response.status(200).json({
             status: "ok",
             message: "La nouvelle permission a bien été ajoutée",
@@ -37,6 +68,10 @@ export const addPermission = catchAsync( async function(request, response) {
 
 export const removePermission = catchAsync(async function(request,response) {
     await model.deletePermission(request.body.id_employe, request.body.id_role);
+
+    newAction(request.user.id_employe,request.body.id_employe,"employe", "admin",
+    `${request.user.nom} ${request.user.prenom} a retiré la permission ${request.body.role} à ${request.body.email} `)
+    
     return response.status(200).json({
         status: "ok",
         message: "La permission a bien été retirée",
