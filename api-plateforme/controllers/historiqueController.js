@@ -8,9 +8,8 @@ import createError from 'http-errors';
 const newAction = async function(employe, action_sur,categorie,type,description){
     if (!action_sur || !categorie) throw new Error("Impossible de logger une nouvelle action. Une information est manquante")
     if (!employe) throw new Error("L'employé effectuant l'action n'a pas été fournit");
-    console.log({
-        employe, action_sur : String(action_sur), categorie, type, description
-    })
+
+    
     await model.createAction(employe, String(action_sur), categorie, type, description)
     return
 };
