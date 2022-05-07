@@ -7,7 +7,7 @@ import newAction from './historiqueController.js';
 
 export const listEmployes = catchAsync( async function(request, response) {
 
-    const employes= await model.allEmploye();
+    const employes= await model.allEmploye(request.query);
     return response.status(200).json({
         status: 'ok',
         body : employes

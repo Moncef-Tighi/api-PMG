@@ -1,5 +1,6 @@
 import db from "./database.js";
 import axios from 'axios';
+import QueryPostGre from "../util/query.js";
 
 export const checkDisponibilite = async function(articles) {
     const result = await axios.post(`${process.env.API_CEGID}/articles/disponible`, {
@@ -8,14 +9,19 @@ export const checkDisponibilite = async function(articles) {
     return result.data.body;
 }
 
-export const readAllArticles = async function() {
+export const readAllArticles = async function(param) {
+    const query= new QueryPostGre("-date_ajout")
     const sql = `
         SELECT article.code_article, prix_vente, libelle, array_agg(dimension) as "dimension"  FROM article 
         INNER JOIN article_taille ON article.code_article=article_taille.code_article
+        ${query.where(param)}
         GROUP BY article.code_article, prix_vente, libelle
-    `
+        ${query.sort(param)}
+        ${query.paginate(param)}
 
-    const response = await db.query(sql)
+        `
+
+    const response = await db.query(sql, query.sanitize())
     return response.rows;
 
 }

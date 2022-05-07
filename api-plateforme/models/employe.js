@@ -1,12 +1,20 @@
 import db from "./database.js";
+import QueryPostGre from "../util/query.js";
 
+export const allEmploye = async function(param="") {
+    const query= new QueryPostGre("date_creation")
 
-export const allEmploye = async function() {
-    const response = await db.query(`SELECT employé.id_employe,email, nom, prenom, poste, activé,
+    const sql = `SELECT employé.id_employe,email, nom, prenom, poste, activé,
     array_agg(nom_role) as "permissions" FROM employé
     INNER JOIN permissions ON employé.id_employe = permissions.id_employe
     INNER JOIN roles ON permissions.id_role = roles.id_role
-    GROUP BY employé.id_employe,email, nom, prenom, poste,activé`);
+    ${query.where(param)}
+    GROUP BY employé.id_employe,email, nom, prenom, poste,activé
+    ${query.sort(param)}
+    ${query.paginate(param)}`;
+    const values = query.sanitize();
+
+    const response = await db.query(sql, values);
     return response.rows;
 
 }

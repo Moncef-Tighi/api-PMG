@@ -24,7 +24,7 @@ const addStockToArticles = function(articles, articlesDispo) {
 export const listeArticle = catchAsync( async function(request, response) {
     //EndPoint pour l'API client, on réccupère l'article depuis la plateforme et le stock depuis CEGID
 
-    const articles = await model.readAllArticles();
+    const articles = await model.readAllArticles(request.query);
     const codeArticles = articles.map(article=> article.code_article);
     const disponibilite = await model.checkDisponibilite(codeArticles);
 

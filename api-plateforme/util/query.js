@@ -103,6 +103,9 @@ class Query {
                                 this.inputs[`${this.inputParam}${i}`]=params[y];
                                 i++;
                             }
+                            console.log(y);
+                            //Cette condition fixe un bug dans un cas très spécifique
+                            if(y<3) i--
                             result+=`${field} IN (${inOperator.slice(0,-1)})`;
                         }
                     result+=" AND ";
@@ -192,14 +195,14 @@ class QueryPostGre extends Query {
         // ATTENTION ! Impossible de paginé avec cette méthode sans Order By
         if (!queryString.sort) return "";
         const page=Number(queryString.page) || 1
-        let pageSize = Number(queryString.pagesize) || 10;
+        let pageSize = Number(queryString.pagesize) || 100;
         if (pageSize>1000) pageSize=1000
-        return ` LIMIT ${(page-1) * pageSize} OFFSET ${pageSize}`
+        return ` LIMIT ${pageSize} OFFSET ${(page-1) * pageSize}`
     }
 
     sanitize() {
-        const values=[]
-        return this.inputs
+        if (Object.values(this.inputs).length===0) return null
+        return Object.values(this.inputs)
     }
 
 
@@ -216,12 +219,11 @@ const query2= new QueryPostGre("",["invalidField"]);
 
 //Des querry qui doivent être valides pour WHERE: 
 
-console.log(query1.where(qs.parse("marque=nike&marque=adidas&a[gt]=10")))
-console.log(query2.having(qs.parse("marque=adidas,nike&stock[gt]=10&stock[lte]=20")));
-console.log(query2.where(qs.parse("stock[lt]=10&b=20&a[gt]=10")));
-console.log(query1.where(qs.parse("GA_CODEARTICLE= 000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZv")))
-console.log(query1.sanitize())
-
+// console.log(query1.where(qs.parse("marque=nike&marque=adidas&a[gt]=10")))
+// console.log(query2.having(qs.parse("marque=adidas,nike&stock[gt]=10&stock[lte]=20")));
+// console.log(query2.where(qs.parse("stock[lt]=10&b=20&a[gt]=10")));
+// console.log(query1.where(qs.parse("GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZv")))
+// console.log(query1.sanitize());
 
 // console.log(query2.where("stock[lt]=10&[or]&stock[gt]=20"));
 // console.log(query2.where("stock=10[or]stock=20[or]a>10"));
