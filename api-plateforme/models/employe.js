@@ -33,6 +33,13 @@ export const findEmployeId = async function(email) {
     return response.rows[0];
 }
 
+export const findEmploye = async function(id) {
+    const sql = ` SELECT id_employe FROM employé WHERE id_employe= $1 `
+    const values = [id];
+    const response = await db.query(sql, values)
+    return response.rows[0];
+}
+
 export const employeLogin = async function(email) {
     const sql = `SELECT employé.id_employe, password, email,
     array_agg(nom_role) as "permissions" FROM employé

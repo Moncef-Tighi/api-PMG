@@ -76,6 +76,8 @@ export const modifyEmploye = catchAsync( async function(request, response, next)
         return next(createError(400, `Impossible de modifier l'employé : une information obligatoire n'a pas été fournit.`))
     }
     const data = await model.changeEmploye(id_employe, email, nom, prenom, poste);
+    newAction(request.user.id_employe,data.id_employe,"employe", "modification",
+    `${request.user.nom} ${request.user.prenom} a modifié l'employé ${nom} ${prenom}`)
     delete data.password;
     return response.status(201).json({
         status: "ok",
@@ -107,6 +109,8 @@ export const changeAnyPassword = catchAsync(async function(request, response, ne
     const password = await hashPassword(newPassword);
 
     await model.changePassword(id_employe, password);
+    newAction(request.user.id_employe,id_employe,"employe", "admin",
+    `${request.user.nom} ${request.user.prenom} a modifier le mot de passe d'un employé`)
     return response.status(200).json({
         status:'ok',
         message: "Le mot de passe de l'employé a bien été changé."
@@ -119,6 +123,8 @@ export const disableEmploye = catchAsync( async function(request, response) {
     if (!id_employe) return next(createError(400, `aucun employé n'a été spécifié`));
 
     await model.activationEmploye(id_employe, false);
+    newAction(request.user.id_employe,id_employe,"employe", "admin",
+    `${request.user.nom} ${request.user.prenom} a désactivé un employé`)
 
     return response.status(200).json({
         status: "ok",
@@ -132,6 +138,8 @@ export const enableEmploye = catchAsync(async function(request, response) {
     if (!id_employe) return next(createError(400, `aucun employé n'a été spécifié`));
 
     await model.activationEmploye(id_employe, true);
+    newAction(request.user.id_employe,id_employe,"employe", "admin",
+    `${request.user.nom} ${request.user.prenom} a activé le compte d'un employé`)
 
     return response.status(200).json({
         status: "ok",
