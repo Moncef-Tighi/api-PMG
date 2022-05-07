@@ -31,11 +31,17 @@ CREATE TABLE permissions (
 
 CREATE TABLE historique_actions (
 	id_action INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    --id_employe : l'employé ayant effectué l'action.
     id_employe INT NOT NULL,
+    --Action_sur : ID de l'objet affecté par l'action.
+    --On peut join en utilisant la catégorie pour savoir à quel table l'objet affecté appartient
+    action_sur text NOT NULL,
+    --Catégorie : Employé, Commande, Permissions...
+    categorie text,
+    --Type : Création, supression, modification...
+    type text,
     date_creation TIMESTAMP NOT NULL,
     description text,
-    categorie VARCHAR(25),
-    type VARCHAR(25),
     CONSTRAINT fk_employe FOREIGN KEY (id_employe) REFERENCES employé(id_employe)
 );
 

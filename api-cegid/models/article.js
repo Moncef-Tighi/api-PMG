@@ -128,7 +128,6 @@ export const emplacementArticle = async function(article) {
 export const disponibilitéArticle = async function(articles) {
 
     if (typeof articles === 'string') articles = [articles]
-    console.log(articles);
     const sql = `
     SELECT
     GA_CODEARTICLE,
