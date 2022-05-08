@@ -13,7 +13,7 @@ export const allEmploye = async function(param="", permissions="") {
     ${permissions ? permissions : ""}
     ${query.sort(param)}
     ${query.paginate(param)}`;
-    console.log(sql);
+
     const values = query.sanitize();
 
     const response = await db.query(sql, values);

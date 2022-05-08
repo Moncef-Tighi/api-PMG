@@ -12,7 +12,9 @@ export const checkDisponibilite = async function(articles) {
 export const readAllArticles = async function(param) {
     const query= new QueryPostGre("-date_ajout")
     const sql = `
-        SELECT article.code_article, prix_vente, libelle, array_agg(dimension) as "dimension"  FROM article 
+        SELECT article.code_article, prix_vente, libelle, array_agg(dimension) as "dimension"  
+        , date_ajout, marque, type, description, tags
+        FROM article 
         INNER JOIN article_taille ON article.code_article=article_taille.code_article
         ${query.where(param)}
         GROUP BY article.code_article, prix_vente, libelle

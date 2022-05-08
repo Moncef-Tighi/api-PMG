@@ -3,6 +3,9 @@ import * as qs from 'qs';
 
 class Query {
     
+    param="@param";
+    inputParam="param"
+
     constructor(defaultSort, excluedFields=[]) {
         this.defaultSort = defaultSort;
         this.excluedFields = excluedFields;
@@ -79,25 +82,25 @@ class Query {
                 if (param in this.operators) {
                     if (!fields[param]) throw this.errorHandeler( `Erreur de syntax, aucune valeur n'a été trouvé pour ${field}[${param}]`);
                     if (param === 'like') {
-                        result +=`${field} LIKE '%' + @param${i} + '%' `;
+                        result +=`${field} LIKE '%' + ${this.param}${i} + '%' `;
                         //On est obligé d'inclure les " % " Après parce que le parser de MSSQL ne les gère pas
                     }
                     else {
-                        result+=`${field} ${this.operators[param]} @param${i}`; 
+                        result+=`${field} ${this.operators[param]} ${this.param}${i}`; 
                     }
-                    this.inputs[`param${i}`]= fields[param];
+                    this.inputs[`${this.inputParam}${i}`]= fields[param];
                 }
                 else {
                         const params = this.queryString[field]
                         if (typeof params === 'string' || params instanceof String) {
-                            result+=`${field}=@param${i}`;
-                            this.inputs[`param${i}`]=params;
+                            result+=`${field}=${this.param}${i}`;
+                            this.inputs[`${this.inputParam}${i}`]=params;
                         }else{
                             //TODO: Remplacer la vraie value par le @ du prepared statement
                             let inOperator = "";
-                            for (let y=0; y<params.length;y++) {
-                                inOperator+= `@param${i},`;
-                                this.inputs[`param${i}`]=params[y];
+                            for (var y=0; y<params.length;y++) {
+                                inOperator+= `${this.param}${i},`;
+                                this.inputs[`${this.inputParam}${i}`]=params[y];
                                 i++;
                             }
                             result+=`${field} IN (${inOperator.slice(0,-1)})`;
@@ -107,7 +110,7 @@ class Query {
                 }
                 result+= " AND ";
             }
-            i++;
+            //i++;
         }
         if (result === " WHERE ") return "";
         return result.slice(0,-4);
@@ -179,6 +182,7 @@ class Query {
     }
 
 }
+
 
 const query1= new Query("GA_CODEARTICLE",["b"]);
 
