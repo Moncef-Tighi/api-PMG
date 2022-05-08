@@ -1,9 +1,9 @@
 import { catchAsync } from './errorController.js';
 import * as model from '../models/article.js';
 import createError from 'http-errors';
+import * as wooCommerce from '../models/wooCommerce.js';
 
-
-const addStockToArticles = function(articles, articlesDispo) {
+const addStockToArticles = async function(articles, articlesDispo) {
     //Fonction utilitaire qui combine les infos de l'article extraite de la plateforme 
     //Avec les informations de stock extraite de l'API Cegid
     const output=[];
@@ -14,6 +14,9 @@ const addStockToArticles = function(articles, articlesDispo) {
         } catch(error) {
             article = articles
         }
+
+        if (stock>=process.env.MINSTOCK) await wooCommerce.updateDisponibilite(code_article, "instock")
+        else await wooCommerce.updateDisponibilite(code_article, "outofstock")
         article.stock=stock;
         //On a besoin de destructurer l'article, sinon le push le copie sur chaque case de l'array au lieu de le mettre à la fin
         output.push({ ...article});
@@ -28,7 +31,7 @@ export const listeArticle = catchAsync( async function(request, response) {
     const codeArticles = articles.map(article=> article.code_article);
     const disponibilite = await model.checkDisponibilite(codeArticles);
 
-    const result = addStockToArticles(articles, disponibilite.articles);
+    const result = await addStockToArticles(articles, disponibilite.articles);
 
 
     return response.status(200).json({
@@ -47,7 +50,7 @@ export const unArticle = catchAsync( async function(request, response) {
     if (!article) return next(createError(404, `Impossible de trouver l'article demandé`));
     const disponibilite = await model.checkDisponibilite([article.code_article]);
 
-    const result = addStockToArticles(article, disponibilite.articles);
+    const result = await addStockToArticles(article, disponibilite.articles);
 
     return response.status(200).json({
         status: 'ok',
@@ -114,11 +117,21 @@ export const articleEtat = catchAsync( async function(request, response) {
 });
 
 
-export const updatePrixArticle = catchAsync( async function(request, response) {
+export const updatePrixArticle = catchAsync( async function(request, response, next) {
     //Utilisé pour la page comparaison de prix
 
+    const newPrix = request.body.prix;
+    const article= request.body.code_article;
+    if (!newPrix || newPrix<10 || !article) return next(createError(400, "Erreur : un prix ou un article valide n'a pas été trouvé"))
+    const rowCount= await model.updatePrix(article, newPrix);
+    if (rowCount===0) return response.status(404).json({
+        status: "error",
+        message : "Aucun article n'a été affecté par la modification"
+    })
+    await wooCommerce.updatePrix(article, newPrix);
     return response.status(200).json({
         status: 'ok',
+        ligne_affecté: rowCount
     });
 
 });

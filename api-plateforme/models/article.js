@@ -80,6 +80,21 @@ export const insertTaille = async function(code_article, dimension, code_barre) 
 
 }
 
+export const updatePrix = async function(code_article, prix) {
+
+    const sql = `
+    UPDATE article
+    SET prix_vente=$1
+    WHERE code_article=$2
+    `
+
+    const values = [prix, code_article];
+    const response = await db.query(sql, values)
+
+    return response.rowCount;
+
+}
+
 export const activationArticle = async function(code_article, activation) {
     //Fonction utilisée pour activer ET désactiver un article
     const sql = `

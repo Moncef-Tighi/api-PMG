@@ -1,25 +1,35 @@
 import db from './mySql.js'
 
-const updateDisponibilite= async function(codeArticle) {
+export const updateDisponibilite= async function(codeArticle, status) {
     try {
         const [rows, fields] = await db.execute(`
         UPDATE  wp_posts
         INNER JOIN wp_postmeta ON wp_postmeta.post_id=wp_posts.ID AND wp_postmeta.meta_key="_stock_status"
-        SET wp_postmeta.meta_value="outofstock"
+        SET wp_postmeta.meta_value=?
         WHERE wp_posts.post_type ="product" AND wp_postmeta.post_id = (
             SELECT post_id from wp_postmeta WHERE wp_postmeta.meta_value=?
         )
-        `, [codeArticle])
-        console.log(rows, fields)
+        `, [status, codeArticle])
+        return rows.changedRows
     } catch(error) {
         console.log(error);
     }
 }
 
-updateDisponibilite();
+export const updatePrix = async function(codeArticle, prix) {
+    try {
+        const [rows, fields] = await db.execute(`
+        UPDATE  wp_posts
+        INNER JOIN wp_postmeta ON wp_postmeta.post_id=wp_posts.ID AND wp_postmeta.meta_key="_price"
+        SET wp_postmeta.meta_value=?
+        WHERE wp_posts.post_type ="product" AND wp_postmeta.post_id = (
+            SELECT post_id from wp_postmeta WHERE wp_postmeta.meta_value=?
+        )
+        `, [prix, codeArticle])
 
-const updatePrix = async function() {
-    
+        return rows.changedRows
+    } catch(error) {
+        console.log(error);
+    }
+
 }
-
-export default updateDisponibilite

@@ -8,6 +8,7 @@ router.get('/liste', controllers.listeArticle);
 router.get('/:id', controllers.unArticle);
 router.post('/status', controllers.articleEtat);
 router.post('/insertion', controllers.ajoutArticle);
+router.patch('/prix', controllers.updatePrixArticle);
 router.patch('/activer/:id', controllers.enableArticle);
 router.patch('/desactiver/:id', controllers.disableArticle);
 router.use(protect);
