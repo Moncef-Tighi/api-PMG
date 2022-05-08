@@ -7,7 +7,12 @@ import newAction from './historiqueController.js';
 
 export const listEmployes = catchAsync( async function(request, response) {
 
-    const employes= await model.allEmploye(request.query);
+    let permissions="";
+    if (request.query.permissions) {
+        permissions = `HAVING '${request.query.permissions}' = ANY(ARRAY_AGG(nom_role))`
+        delete request.query.permissions
+    }
+    const employes= await model.allEmploye(request.query, permissions);
     return response.status(200).json({
         status: 'ok',
         body : employes

@@ -1,7 +1,7 @@
 import db from "./database.js";
 import QueryPostGre from "../util/query.js";
 
-export const allEmploye = async function(param="") {
+export const allEmploye = async function(param="", permissions="") {
     const query= new QueryPostGre("date_creation")
 
     const sql = `SELECT employé.id_employe,email, nom, prenom, poste, activé,
@@ -10,8 +10,10 @@ export const allEmploye = async function(param="") {
     INNER JOIN roles ON permissions.id_role = roles.id_role
     ${query.where(param)}
     GROUP BY employé.id_employe,email, nom, prenom, poste,activé
+    ${permissions ? permissions : ""}
     ${query.sort(param)}
     ${query.paginate(param)}`;
+    console.log(sql);
     const values = query.sanitize();
 
     const response = await db.query(sql, values);
