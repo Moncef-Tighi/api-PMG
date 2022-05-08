@@ -1,5 +1,4 @@
 import db from "./postGreSql.js";
-import wordpress from './mySql.js';
 import axios from 'axios';
 import QueryPostGre from "../util/query.js";
 
