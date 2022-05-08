@@ -1,4 +1,4 @@
-import db from "./database.js";
+import db from "./postGreSql.js";
 
 export const createAction = async function(id_employe, action_sur,categorie,type,description ){
     const sql = `

@@ -1,4 +1,4 @@
-import db from "./database.js";
+import db from "./postGreSql.js";
 
 export const findRoleId = async function(nom) {
     const sql = ` SELECT id_role FROM roles WHERE nom_role= $1 `

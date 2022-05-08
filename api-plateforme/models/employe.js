@@ -1,4 +1,4 @@
-import db from "./database.js";
+import db from "./postGreSql.js";
 import QueryPostGre from "../util/query.js";
 
 export const allEmploye = async function(param="", permissions="") {

@@ -1,4 +1,4 @@
-import db from "./database.js";
+import db from "./postGreSql.js";
 
 
 export const readRoles = async function() {
