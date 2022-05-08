@@ -1,0 +1,29 @@
+# Config PostGre (DB de la platforme)
+#####################
+PG_HOST=(IP OR DNS)
+PG_USER=
+PG_DATABASE=
+PG_PASSWORD=
+PG_PORT=5432
+#####################
+
+# Config MySQL (DB utilisée par WordPress)
+####################
+MY_HOST=(IP OR DNS)
+MY_USER=
+MY_PASSWORD=
+MY_DATABASE=
+####################
+
+# Si le stock d'un article est inférieur à cette valeur, il sera marqué comme hors-stock
+MINSTOCK=2
+
+#Défini quand est-ce qu'un employé sera automatiquement déconnecté
+JWT_EXPIRATION=1d
+
+#La plateforme fait des requêtes à l'API CEGID, il faut donc l'URL de l'API
+API_CEGID=
+
+PORT=4000
+
+

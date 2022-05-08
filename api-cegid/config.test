@@ -1,0 +1,9 @@
+PORT=
+
+#Configuration de l'accés à la base de donnée de CEGID
+#########################
+DB_USER=
+DB_PWD=
+DB_NAME=BNG
+DB_ADDRESS=(HOST OR IP)
+#########################
