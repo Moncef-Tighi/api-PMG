@@ -7,7 +7,7 @@
     left: 50%;
     transform: translate(-50%, -50%);
     background: #FFFFFF;
-    border-top: solid var(--main) 10px;
+    border-top: solid var(--main) 9px;
     border-radius: 10px;
     box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
 }
@@ -23,15 +23,24 @@
     padding: 10px;
     height: 100%;
 }
-h1 {
+h1{
     color: var(--main-accent);
     padding: 5px;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    margin-top: 10px;
     margin-left: 13px;
 }
+
+h3 {
+    height: 15px;
+    color: var(--main);
+    font-style: italic;
+    font-size: 14px;
+    padding: 5px;
+}
+
+
 label {
-    margin-top: 20px;
+    margin-top: 15px;
 }
 
 form {
