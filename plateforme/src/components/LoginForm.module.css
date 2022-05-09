@@ -1,0 +1,37 @@
+
+.wrapper {
+    position: absolute;
+    width: 400px;
+    height: 500px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #FFFFFF;
+    border-top: solid var(--main) 10px;
+    border-radius: 10px;
+}
+
+.positionning {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    padding: 10px;
+    height: 100%;
+}
+h1 {
+    color: var(--main-accent);
+    padding: 5px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: 13px;
+}
+label {
+    margin-top: 20px;
+}
+
+form {
+    width: 92%;
+    margin: auto;
+}
