@@ -4,12 +4,6 @@
   Si il y a un besoin d'une class/style global on l'ajoute juste sur ce fichier
 */
 
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
-
   /*
       Tout le CSS en dessous fait partie de Tailwind, il nettoie certaines des bizarreries de CSS
       Pour permettre d'avoir un résultat plus logique et éviter certains problèmes communs
@@ -197,4 +191,9 @@ code {
 
 body {
   background-color: var(--background-main);
+  font-family: "Roboto", 'Poppins' ;
+}
+
+h1,h2,h3 {
+  font-family: 'Poppins', "Roboto";
 }
