@@ -1,8 +1,8 @@
+import LoginForm from "../components/LoginForm"
 
 const LoginPage = function() {
-    console.log("ok");
     return (
-        <div>LoginPage</div>
+        <LoginForm/>
         )
 }
 
