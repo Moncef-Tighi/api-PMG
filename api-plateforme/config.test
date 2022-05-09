@@ -1,3 +1,6 @@
+#La plateforme fait des requêtes à l'API CEGID, il faut donc l'URL de l'API
+API_CEGID=
+
 # Config PostGre (DB de la platforme)
 #####################
 PG_HOST=(IP OR DNS)
@@ -20,9 +23,6 @@ MINSTOCK=2
 
 #Défini quand est-ce qu'un employé sera automatiquement déconnecté
 JWT_EXPIRATION=1d
-
-#La plateforme fait des requêtes à l'API CEGID, il faut donc l'URL de l'API
-API_CEGID=
 
 PORT=4000
 
