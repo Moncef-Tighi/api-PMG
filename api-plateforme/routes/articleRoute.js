@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get('/liste', controllers.listeArticle);
 router.get('/:id', controllers.unArticle);
-router.post('/status', controllers.articleEtat);
+router.get('/status', controllers.articleEtat);
 router.post('/insertion', controllers.ajoutArticle);
 router.patch('/prix', controllers.updatePrixArticle);
 router.patch('/activer/:id', controllers.enableArticle);
