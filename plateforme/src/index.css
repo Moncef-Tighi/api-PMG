@@ -171,3 +171,30 @@ code {
 
 
 /* ------------------------------------------------------------------------------------ */
+
+
+
+
+
+/*
+  Couleurs : 
+*/
+
+:root {
+  --main: #E92129 ;
+  --main-accent: #DF161D;
+  --main-primary: #EE585D;
+  --main-secondary: #F8B5B7 ;
+  --main-hover: #FDEDED; 
+
+  --green-text: #3DB95F;
+  --blue-text: #0469DE ;
+  --icon-color: #262626;
+
+  --background-main: #E5E5E5;
+  --background-secondary: #FFFFFF;
+}
+
+body {
+  background-color: var(--background-main);
+}
