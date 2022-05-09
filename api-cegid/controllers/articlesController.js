@@ -34,7 +34,7 @@ export const listArticles = catchAsync( async function(request, response,next){
 export const unArticle = catchAsync(async function(request, response, next) {
 
     const infoArticle = await model.infoArticle(request.params.article);
-    if (infoArticle.length===0) return next(createError(404, "Aucun article avec ce code n'a été trouvé"))
+    if (infoArticle.length===0) return next(createError(400, "Aucun article avec ce code n'a été trouvé"))
     const taille = await model.dispoArticleTaille(request.params.article);
 
     //TODO : L'URL sera très certainement invalide en PROD
@@ -100,19 +100,17 @@ export const ArticlesDisponible = catchAsync( async function(request, response,n
     const dataRecord = await model.disponibilitéArticle(articles);
     let resultat = {};
     for (const article of articles) {
-        if (!dataRecord) return resultat[article] = 0;
+        if (!dataRecord) resultat[article] = 0;
         if (dataRecord instanceof Array) {
             dataRecord.forEach(code => {
                 if (article===code.GA_CODEARTICLE) return resultat[article] =  code['stockNet']
             })
         }
         else {
-            if (article===dataRecord?.GA_CODEARTICLE) return resultat[article] =  data.recordset[0].GA_CODEARTICLE
+            if (article===dataRecord?.GA_CODEARTICLE) resultat[article] =  data.recordset[0].GA_CODEARTICLE
         }
-        if (!(article in resultat)) return resultat[article] = 0;
-
+        if (!(article in resultat))  resultat[article] = 0;
     }
-
     return response.status(200).json({
         status : "ok",
         body : {
