@@ -1,8 +1,11 @@
+import { Outlet } from "react-router-dom"
 
 const EmployesListe = function() {
 
     return (
-        <div>EmployesListe</div>
+        <div>EmployesListe
+            <Outlet/>
+        </div>
         )
 }
 
