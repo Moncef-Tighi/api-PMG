@@ -9,7 +9,10 @@
     background: #FFFFFF;
     border-top: solid var(--main) 10px;
     border-radius: 10px;
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
 }
+
+
 
 .positionning {
     position: absolute;
@@ -34,4 +37,14 @@ label {
 form {
     width: 92%;
     margin: auto;
+}
+
+@media only screen and (max-width: 400px) {
+    .wrapper {
+        width: 90%;
+    }
+    .positionning {
+        margin: 0;
+        width: 100%;
+    }
 }

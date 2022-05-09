@@ -1,5 +1,5 @@
 import classes from "./LoginForm.module.css";
-import {InputLabel, OutlinedInput, InputAdornment,IconButton} from '@mui/material';
+import {InputLabel, OutlinedInput, InputAdornment,IconButton, Button} from '@mui/material';
 import {Visibility, VisibilityOff, AccountCircle } from '@mui/icons-material'
 import { useState } from "react";
 
@@ -47,10 +47,11 @@ const LoginForm = function() {
                     </InputAdornment>}
                     />
             
-
+                    <Button color="primary" variant="contained" size="large" sx={ {marginTop: "50px"}} >
+                        Confirmer</Button>
                 </form>
 
-                
+
             </div> 
         </main>
         )

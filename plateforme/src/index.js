@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter} from 'react-router-dom'
-import theme from '../theme';
+import theme from './theme';
 import { ThemeProvider } from '@mui/private-theming';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
