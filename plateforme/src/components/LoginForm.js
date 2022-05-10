@@ -3,10 +3,14 @@ import {InputLabel, OutlinedInput, InputAdornment,IconButton, Button} from '@mui
 import {Visibility, VisibilityOff, AccountCircle} from '@mui/icons-material'
 import { useState } from "react";
 import axios from 'axios';
+import {useNavigate} from 'react-router-dom';
 
 const LoginForm = function() {
     const [showPassword, setPasswordVisibility]=useState(false);
     const [error, setError] = useState("");
+    const navigate= useNavigate();
+
+    console.log(JSON.parse(atob(localStorage.getItem("token").split(".")[1])).permissions);
 
     const handleClickShowPassword = () => {
         setPasswordVisibility(!showPassword);
@@ -27,15 +31,17 @@ const LoginForm = function() {
                 email: email.value,
                 password: password.value
             })
-            console.log(response);        
             setError("");
+            localStorage.setItem('token', response.data.token);
+            navigate("/accueil");
         } catch(error) {
             if (error.response) {
-                if (error.response.status===401) setError(error.response.data.message);
+                if (error.response.status===401) return setError(error.response.data.message);
             } else {
-                setError("Impossible de se connecter au serveur");
+                return setError("Impossible de se connecter au serveur");
             }
         }
+
     }
     
 
