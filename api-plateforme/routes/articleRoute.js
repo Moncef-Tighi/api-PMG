@@ -5,6 +5,7 @@ import * as controllers from '../controllers/articleController.js';
 const router = express.Router();
 
 router.get('/liste', controllers.listeArticle);
+router.get('/vente', controllers.ventesArticle);
 router.get('/:id', controllers.unArticle);
 router.get('/status', controllers.articleEtat);
 router.post('/insertion', controllers.ajoutArticle);

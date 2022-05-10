@@ -84,6 +84,15 @@ export const ajoutArticle = catchAsync(async function(request, response) {
     })
 })
 
+export const ventesArticle = catchAsync( async function(request, response) {
+    const ventes = await wooCommerce.totalVentes();
+
+    return response.status(200).json({
+        status : "ok",
+        body : ventes    
+    })
+})
+
 export const articleEtat = catchAsync( async function(request, response) {
     //Requête utilisé côté plateforme
     //Est-ce que l'article est mis en vente sur la plateforme ? Si oui, est-il activé ? Si il est activé, est-il en stock ?
