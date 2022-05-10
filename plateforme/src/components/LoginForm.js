@@ -1,16 +1,16 @@
 import classes from "./LoginForm.module.css";
 import {InputLabel, OutlinedInput, InputAdornment,IconButton, Button} from '@mui/material';
 import {Visibility, VisibilityOff, AccountCircle} from '@mui/icons-material'
-import { useState } from "react";
+import { useState, useContext } from "react";
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
+import AuthContext from '../state/AuthContext';
 
 const LoginForm = function() {
     const [showPassword, setPasswordVisibility]=useState(false);
     const [error, setError] = useState("");
+    const authContext = useContext(AuthContext);
     const navigate= useNavigate();
-
-    console.log(JSON.parse(atob(localStorage.getItem("token").split(".")[1])).permissions);
 
     const handleClickShowPassword = () => {
         setPasswordVisibility(!showPassword);
@@ -32,7 +32,7 @@ const LoginForm = function() {
                 password: password.value
             })
             setError("");
-            localStorage.setItem('token', response.data.token);
+            authContext.login(response.data.token);
             navigate("/accueil");
         } catch(error) {
             if (error.response) {
