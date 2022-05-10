@@ -39,7 +39,6 @@ form.addEventListener('submit',event => {
     if (page) result+= `page=${page}&`
     result+=`sort=${ordre}${sort}`
     
-    console.log(result);
     window.location.href = decodeURI(`${window.location.href.split('?')[0]}?${result}`);
 
 })
