@@ -1,6 +1,6 @@
 import classes from "./LoginForm.module.css";
 import {InputLabel, OutlinedInput, InputAdornment,IconButton, Button} from '@mui/material';
-import {Visibility, VisibilityOff, AccountCircle } from '@mui/icons-material'
+import {Visibility, VisibilityOff, AccountCircle} from '@mui/icons-material'
 import { useState } from "react";
 import axios from 'axios';
 
@@ -73,7 +73,8 @@ const LoginForm = function() {
                     />
             
                     <Button color="primary" variant="contained" 
-                    size="large" sx={ {marginTop: "40px", backgroundColor: "#E92129"}} type="submit">
+                    size="large" sx={ {marginTop: "40px"}} type="submit"
+                    >
                         Confirmer</Button>
                 </form>
 

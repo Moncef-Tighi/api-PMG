@@ -29,7 +29,6 @@ function App() {
         </Route>
         <Route path='admin/permissions' element={<Permissions />}/>
         <Route path='admin/historique' element={<Historique />}/>
-
         
     </Routes>
   );
