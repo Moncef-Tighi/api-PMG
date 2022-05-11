@@ -4,10 +4,8 @@ import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import DraftsIcon from '@mui/icons-material/Drafts';
-import SendIcon from '@mui/icons-material/Send';
 
+import {Article, ContactPhone, LocalOffer, Height, Person, ManageAccounts, History} from '@mui/icons-material';
 
 const Navigation = function() {
 
@@ -16,24 +14,52 @@ const Navigation = function() {
             <h1>Menu</h1>
             <List
             sx={{ width: '100%'}}
-            component="nav"
-            aria-labelledby="nested-list-subheader">
-            <ListItemButton sx={{ width: '100%', maxHeight: "60px"}}>
-                <ListItemIcon><SendIcon  sx={{width:'1.4em', height: '1.4em', color: '#262626'}}/> </ListItemIcon>
-                <ListItemText primary="send email" />
-            </ListItemButton>
-            <ListItemButton sx={{ width: '100%', maxHeight: "60px"}}>
-                <ListItemIcon>
-                <DraftsIcon  sx={{width:'1.4em', height: '1.4em', color: '#262626'}}/>
-                </ListItemIcon>
-                <ListItemText primary="Drafts" />
-            </ListItemButton>
-            <ListItemButton sx={{ width: '100%', maxHeight: "60px"}}>
-                <ListItemIcon>
-                <InboxIcon  sx={{width:'1.4em', height: '1.4em', color: '#262626'}}/>
-                </ListItemIcon>
-                <ListItemText primary="Inbox" />
-            </ListItemButton>
+            component="ul">
+                <ListItemButton sx={{ width: '100%', height: "60px"}} color="primary" >
+                    <ListItemIcon><Article  sx={{width:'1.3em', height: '1.3em', color: '#262626'}}/> </ListItemIcon>
+                    <ListItemText primary="Articles" />
+                </ListItemButton>
+                <ListItemButton sx={{ width: '100%', height: "60px"}}>
+                    <ListItemIcon>
+                    <ContactPhone  sx={{width:'1.3em', height: '1.3em', color: '#262626'}}/>
+                    </ListItemIcon>
+                    <ListItemText primary="Commandes" />
+                </ListItemButton>
+                <ListItemButton sx={{ width: '100%', height: "60px"}}>
+                    <ListItemIcon>
+                    <LocalOffer  sx={{width:'1.3em', height: '1.3em', color: '#262626'}}/>
+                    </ListItemIcon>
+                    <ListItemText primary="Prix" />
+                </ListItemButton>
+
+                <ListItemButton sx={{ width: '100%', height: "60px"}}>
+                    <ListItemIcon>
+                    <Height  sx={{width:'1.3em', height: '1.3em', color: '#262626'}}/>
+                    </ListItemIcon>
+                    <ListItemText primary="Dimension" />
+                </ListItemButton>
+
+                <ListItemButton sx={{ width: '100%', height: "60px"}}>
+                    <ListItemIcon>
+                    <Person  sx={{width:'1.3em', height: '1.3em', color: '#262626'}}/>
+                    </ListItemIcon>
+                    <ListItemText primary="Employés" />
+                </ListItemButton>
+
+                <ListItemButton sx={{ width: '100%', height: "60px"}}>
+                    <ListItemIcon>
+                    <ManageAccounts  sx={{width:'1.3em', height: '1.3em', color: '#262626'}}/>
+                    </ListItemIcon>
+                    <ListItemText primary="Permissions" />
+                </ListItemButton>
+
+                <ListItemButton sx={{ width: '100%', height: "60px"}}>
+                    <ListItemIcon>
+                    <History  sx={{width:'1.3em', height: '1.3em', color: '#262626'}}/>
+                    </ListItemIcon>
+                    <ListItemText primary="Historique" />
+                </ListItemButton>
+
             </List>
 
         </nav>
