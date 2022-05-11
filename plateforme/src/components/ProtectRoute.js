@@ -1,18 +1,21 @@
 // import { useNavigate } from "react-router-dom";
 
-import { useEffect, useLayoutEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import useDidMountEffect from "../hooks/useDidMountEffect";
+import { useEffect, useRef} from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 
 const ProtectRoute = function(props) {
     const navigate = useNavigate();
+    const firstRender= useRef(true);
     useEffect( ()=> {
-        //ATTENTION ! Plus tard il faudra une page "unAuthorized" plutôt que de dévier vers l'accueil    
-        if (!props.login) navigate("/connexion");
-    }, [])
-    
+        if (firstRender.current) firstRender.current = false; 
+        //ATTENTION ! Plus tard il faudra une page "unAuthorized" plutôt que de dévier vers l'accueil   
+        else {
+            if (!props.login) navigate("/connexion");
+        } 
+    }, [firstRender, navigate, props.login])
+
     return (
-        <>{props.children}</>
+        <><Outlet/></>
     )
 
 }

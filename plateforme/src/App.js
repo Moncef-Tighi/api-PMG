@@ -1,7 +1,6 @@
 import './App.css';
 import AuthContext from "./state/AuthContext";
 import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 
 import {Route, Routes} from 'react-router-dom'
@@ -17,21 +16,22 @@ import ProtectRoute from './components/ProtectRoute';
 
 function App() {
   const authContext = useContext(AuthContext);
+
   useEffect(() => {
       authContext.checkLogin();
-      }, []  )
-    const permissions = authContext.permissions;
-    const login = authContext.isLoggedIn;
-    console.log(login);
+  }, [authContext]  )
+  const permissions = authContext.permissions;
+  const login = authContext.isLoggedIn;
   return (
     <Routes>
         <Route path='' element={<LoginPage />} />
         <Route path='connexion' element={<LoginPage />} />
         <Route element={<ProtectRoute login={login}/>}>
-          <Route path='accueil' element={<Restrict permissions={permissions}><Accueil /></Restrict>} />
-          <Route path='ecommerce' element={<Restrict allow={['modification']}><Ecommerce /></Restrict>}/>
-          <Route path='ecommerce/liste' element={<Ecommerce />}/>
-      
+          <Route path='accueil' element={<Accueil />} />
+          <Route element={<Restrict permissions={permissions} allow={["modification"]}/>}>
+            <Route path='ecommerce' element={<Ecommerce />}/>
+            <Route path='ecommerce/liste' element={<Ecommerce />}/>
+          </Route>
           <Route path='ecommerce/fiche/:article' element={<Ecommerce />}/>
           <Route path='ecommerce/commande' element={<Ecommerce />}/>
           <Route path='ecommerce/prix' element={<Ecommerce />}/>
