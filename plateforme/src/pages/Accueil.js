@@ -1,21 +1,7 @@
 import Navigation from "../components/Navigation"
 import Layout from "../components/Layout"
 import { ThemeProvider } from "@emotion/react"
-import { red } from '@mui/material/colors';
-import { createTheme } from '@mui/material/styles';
-
-const theme = createTheme({
-    palette: {
-      primary: red,
-      PMG : {
-        main : ""
-      },
-      action: {
-          active: "red"
-      }
-    },
-  });
-  
+import theme from "../theme"
 
 const Accueil = function() {
 

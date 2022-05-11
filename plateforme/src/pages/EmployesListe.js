@@ -1,11 +1,18 @@
-import { Outlet } from "react-router-dom"
+import Navigation from "../components/Navigation"
+import Layout from "../components/Layout"
+import { ThemeProvider } from "@emotion/react"
+import theme from "../theme"
 
 const EmployesListe = function() {
 
     return (
-        <div>EmployesListe
-            <Outlet/>
-        </div>
+        <ThemeProvider theme={theme}>
+            <Layout/>
+            <div class='container'>
+                <Navigation/>
+                <section class='main_page'>EmployesListe</section>
+            </div>
+        </ThemeProvider>
         )
 }
 

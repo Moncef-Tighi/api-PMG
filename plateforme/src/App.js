@@ -27,10 +27,9 @@ function App() {
         <Route path='' element={<LoginPage />} />
         <Route path='connexion' element={<LoginPage />} />
         <Route element={<ProtectRoute login={login}/>}>
-          <Route path='accueil' element={<Accueil />} />
+          <Route path='ecommerce' element={<Accueil />} />
           <Route element={<Restrict permissions={permissions} allow={["modification"]}/>}>
-            <Route path='ecommerce' element={<Ecommerce />}/>
-            <Route path='ecommerce/liste' element={<Ecommerce />}/>
+            <Route path='ecommerce/article' element={<Ecommerce />}/>
           </Route>
           <Route path='ecommerce/fiche/:article' element={<Ecommerce />}/>
           <Route path='ecommerce/commande' element={<Ecommerce />}/>
