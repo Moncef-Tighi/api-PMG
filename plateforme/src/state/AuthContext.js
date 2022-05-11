@@ -56,7 +56,6 @@ export const AuthContextProvider = (props) => {
     const checkLogin = () => {
         if (isLoggedIn) return true
         const token = localStorage.getItem('token');
-        
         if (!token) return false;
         loginHandeler(token);
         setLogin(true);
