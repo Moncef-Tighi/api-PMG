@@ -1,0 +1,38 @@
+header {
+    box-sizing: border-box;
+    justify-content: space-between;
+    position: absolute;
+    width: 100%;
+    height: 10%;
+    left: 0px;
+    top: 0px;   
+    display: flex;
+    background: #FFFFFF;
+    border: 1px solid #F9F9F9;
+    padding: 13px;
+    align-items: center;
+
+}
+
+header>div {
+    display: flex;
+}
+
+.icon {
+    width: 43px;
+    margin-right: 19px;
+}
+
+h2 {
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 30px;
+
+}
+
+h4 {
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 20px;
+    color: #A60000;
+}

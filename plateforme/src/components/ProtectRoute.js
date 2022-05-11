@@ -8,7 +8,6 @@ const ProtectRoute = function(props) {
     const firstRender= useRef(true);
     useEffect( ()=> {
         if (firstRender.current) firstRender.current = false; 
-        //ATTENTION ! Plus tard il faudra une page "unAuthorized" plutôt que de dévier vers l'accueil   
         else {
             if (!props.login) navigate("/connexion");
         } 

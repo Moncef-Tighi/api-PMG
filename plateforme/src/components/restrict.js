@@ -10,6 +10,7 @@ const Restrict = function(props) {
     useEffect( ()=> {
         if (firstRender.current) firstRender.current = false; 
         else {
+            //ATTENTION ! Plus tard il faudra une page "unAuthorized" plutôt que de dévier vers l'accueil   
             if ( !(props.permissions.find(permission => props.allow.includes(permission))) ) navigate('/accueil');
         }
     })

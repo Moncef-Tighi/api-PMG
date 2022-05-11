@@ -1,8 +1,12 @@
+import Layout from "../components/Layout"
 
 const Accueil = function() {
 
     return (
-        <div>Accueil</div>
+        <>
+            <Layout/>
+            <div>Accueil</div>
+        </>
         )
 }
 
