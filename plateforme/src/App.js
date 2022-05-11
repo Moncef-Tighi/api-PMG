@@ -16,12 +16,13 @@ import Restrict from './components/restrict';
 import ProtectRoute from './components/ProtectRoute';
 
 function App() {
-
   const authContext = useContext(AuthContext);
-  authContext.checkLogin();
-  const permissions = authContext.permissions;
-  const login = authContext.isLoggedIn;
-  console.log(login);
+  useEffect(() => {
+      authContext.checkLogin();
+      }, []  )
+    const permissions = authContext.permissions;
+    const login = authContext.isLoggedIn;
+    console.log(login);
   return (
     <Routes>
         <Route path='' element={<LoginPage />} />
