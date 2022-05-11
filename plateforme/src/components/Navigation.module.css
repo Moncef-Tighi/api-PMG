@@ -1,7 +1,12 @@
 nav {
     position: fixed;
-    width: 20vw;
-    height: 100%;
+    width: 19vw;
     background-color: white;
     overflow: hidden;
+    border-radius: 0px 10px 10px 0px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    height: 85vh;
+    padding: 10px;
 }
