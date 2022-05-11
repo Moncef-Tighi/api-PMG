@@ -189,10 +189,6 @@
   --background-secondary: #FFFFFF;
 }
 
-html {
-  overflow: hidden;
-}
-
 body {
   background-color: var(--background-main);
   font-family: "Roboto", 'Poppins' ;
@@ -204,16 +200,16 @@ h1,h2,h3 {
 
 .container {
   position: absolute;
-    top: 83px;
-    width: 98%;
-    min-height: 89vh;
-    overflow: hidden;
-    display: grid;
-    grid-template-columns: 18vw auto;
-    grid-column-gap: 20px;
+  top: 100px;
+  width: 100%;
+  min-height: 80vh;
 }
 
 .main_page {
-  width: 100%;
+  width: 75%;
+  margin: auto;
+  margin-left: 22.5%;
   background-color: white;
+  overflow-y: auto;
+  min-height: 80vh;
 }
