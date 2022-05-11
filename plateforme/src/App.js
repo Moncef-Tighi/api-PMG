@@ -18,7 +18,7 @@ function App() {
         <Route path='connexion' element={<LoginPage />} />
         <Route path='accueil' element={<Restrict><Accueil /></Restrict>} />
 
-        <Route path='ecommerce' element={<Ecommerce />}/>
+        <Route path='ecommerce' element={<Restrict allow={['modification']}><Ecommerce /></Restrict>}/>
         <Route path='ecommerce/liste' element={<Ecommerce />}/>
         
         <Route path='ecommerce/fiche/:article' element={<Ecommerce />}/>

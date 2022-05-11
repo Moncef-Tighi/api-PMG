@@ -23,7 +23,7 @@ import { useState } from "react";
 // }
 
 const AuthContext= React.createContext({
-    //On initialise avec des data par défaut pour avoir une meilleure autocomplétion
+    //On initialise avec des data par défaut pour avoir une meilleure autocomplétion, techniquement c'est pas obligé
     token : '',
     isLoggedIn : '',
     login : (token) => {},
@@ -54,6 +54,7 @@ export const AuthContextProvider = (props) => {
     } 
 
     const checkLogin = () => {
+        if (isLoggedIn) return true
         const token = localStorage.getItem('token');
         
         if (!token) return false;

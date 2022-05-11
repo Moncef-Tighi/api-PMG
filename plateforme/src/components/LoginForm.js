@@ -48,7 +48,7 @@ const LoginForm = function() {
     return (
         <main className={classes.wrapper}>
             <div className={classes.positionning}>
-                <img src="logo-pmg.png"></img>
+                <img src="logo-pmg.png" alt="logo"></img>
                 <h1>S'identifier</h1>
                 <h3>{error}</h3>
                 <form onSubmit={login}>
