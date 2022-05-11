@@ -1,6 +1,6 @@
 import './App.css';
 import AuthContext from "./state/AuthContext";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 
 
 import {Route, Routes} from 'react-router-dom'

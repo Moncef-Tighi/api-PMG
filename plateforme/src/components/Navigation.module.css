@@ -9,4 +9,6 @@ nav {
     align-items: flex-start;
     height: 85vh;
     padding: 10px;
+    box-shadow: rgb(60 64 67 / 50%) 1px 1px 5px 1px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+
 }

@@ -213,3 +213,8 @@ h1,h2,h3 {
   overflow-y: auto;
   min-height: 80vh;
 }
+
+a {
+  text-decoration: none;
+  color: #262626;
+}
