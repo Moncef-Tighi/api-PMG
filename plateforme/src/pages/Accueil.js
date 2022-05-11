@@ -1,3 +1,4 @@
+import Navigation from "../components/Navigation"
 import Layout from "../components/Layout"
 
 const Accueil = function() {
@@ -5,7 +6,10 @@ const Accueil = function() {
     return (
         <>
             <Layout/>
-            <div>Accueil</div>
+            <div class='container'>
+                <Navigation/>
+                <section class='main_page'>Accueil</section>
+            </div>
         </>
         )
 }
