@@ -32,9 +32,11 @@ const LoginForm = function() {
                 password: password.value
             })
             setError("");
-            authContext.login(response.data.token);
-            navigate("/accueil");
+
+            authContext.login(response.data.token, response.data.employe);
+            navigate("/ecommerce");
         } catch(error) {
+            console.log(error);
             if (error.response) {
                 if (error.response.status===401) return setError(error.response.data.message);
             } else {

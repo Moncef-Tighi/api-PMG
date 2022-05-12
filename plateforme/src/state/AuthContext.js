@@ -22,9 +22,16 @@ import { useState } from "react";
 //     return <AuthContext.Provider VALUE={contextValue}>{props.children}</AuthContext.Provider>
 // }
 
+const emptyEmploye= {
+    nom : "",
+    prenom : "",
+    poste : ""
+} 
+
 const AuthContext= React.createContext({
     //On initialise avec des data par défaut pour avoir une meilleure autocomplétion, techniquement c'est pas obligé
     token : '',
+    employe: emptyEmploye ,
     isLoggedIn : '',
     login : (token) => {},
     checkLogin: ()=>{},
@@ -36,19 +43,28 @@ export const AuthContextProvider = (props) => {
     //C'est ce component qui gère la state     
 
     const [token, setToken] = useState(null);
+    const [employe, setEmploye] = useState(emptyEmploye);
     const [permissions, setPermissions]= useState([]);
     const [isLoggedIn, setLogin]= useState(null);
 
-    const loginHandeler = (token)=> {
-        localStorage.setItem('token', token);
+    const setInfoToConText = function(token, employe) {
         setToken(token);
+        setEmploye(employe);
         setPermissions(JSON.parse(atob(token.split(".")[1])).permissions);
         setLogin(true);
+    }
+
+    const loginHandeler = (token, employe)=> {
+        localStorage.setItem('token', token);
+        localStorage.setItem('employe', JSON.stringify(employe));
+        setInfoToConText(token, employe);
     } 
 
     const logoutHandeler = () => {
         setToken(null);
+        setEmploye(null);
         localStorage.setItem("token", "");
+        localStorage.setItem("employe", {});
         setLogin(false);
         Navigate('/connexion');
     } 
@@ -56,14 +72,16 @@ export const AuthContextProvider = (props) => {
     const checkLogin = () => {
         if (isLoggedIn) return true
         const token = localStorage.getItem('token');
+        const employe = JSON.parse(localStorage.getItem('employe'));
         if (!token) return false;
-        loginHandeler(token);
+        setInfoToConText(token, employe);
         setLogin(true);
         return true;
     }
 
     const contextValue = {
         token,
+        employe,
         isLoggedIn,
         login : loginHandeler,
         logout : logoutHandeler,
