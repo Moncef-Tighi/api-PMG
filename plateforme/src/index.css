@@ -209,7 +209,7 @@ h1,h2,h3 {
   width: 75%;
   margin: auto;
   margin-left: 22.5%;
-  background-color: white;
+  /* background-color: white; */
   overflow-y: auto;
   min-height: 80vh;
 }
