@@ -39,9 +39,11 @@ export const connexion = catchAsync( async function(request, response, next) {
     if (!employe) return next(createError(401, `Email incorrecte ou employé inexistant`));
     if (await compare(password, employe.password)) {
         const token = signJwt(employe)
+        delete employe.password;
         return response.status(200).json({
             status:"ok",
-            token
+            token,
+            employe
         });
     } else {
         return next(createError(401, `Mot de passe incorrect`))

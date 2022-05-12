@@ -51,7 +51,7 @@ export const findEmploye = async function(id) {
 }
 
 export const employeLogin = async function(email) {
-    const sql = `SELECT employé.id_employe, password, email,
+    const sql = `SELECT employé.id_employe, password, email, nom, prenom, poste,
     array_agg(nom_role) as "permissions" FROM employé
     INNER JOIN permissions ON employé.id_employe = permissions.id_employe
     INNER JOIN roles ON permissions.id_role = roles.id_role
