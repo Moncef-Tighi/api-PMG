@@ -1,17 +1,27 @@
+import { useTheme } from '@mui/material/styles';
+import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
+import TableFooter from '@mui/material/TableFooter';
+import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { DataGrid } from '@mui/x-data-grid';
+import IconButton from '@mui/material/IconButton';
+import FirstPageIcon from '@mui/icons-material/FirstPage';
+import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
+import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
+import LastPageIcon from '@mui/icons-material/LastPage';
+import { TableHead } from '@mui/material';
+
 import { useEffect, useState } from "react";
 import axios from 'axios';
 
-const query= async function(params="") {
+const query= async function(params="", page=1) {
     try {
-        const response = await axios.get(`http://localhost:5000/api/v1/articles?${params}`)
+        console.log(`http://localhost:5000/api/v1/articles?pagesize=50&page=${page}&${params}`)
+        const response = await axios.get(`http://localhost:5000/api/v1/articles?pagesize=50&page=${page}&${params}`)
         return response.data
     }
     catch(error) {
@@ -28,22 +38,90 @@ function dateToYMD(dateString) {
     return '' + (d <= 9 ? '0' + d : d) + '/' + (m<=9 ? '0' + m : m) + '/' + y ;
 }
 
+function TablePaginationActions(props) {
+    const theme = useTheme();
+
+    const { count, page, rowsPerPage, onPageChange } = props;
+  
+    const handleFirstPageButtonClick = (event) => {
+      onPageChange(event, 0);
+    };
+  
+    const handleBackButtonClick = (event) => {
+      onPageChange(event, page);
+    };
+  
+    const handleNextButtonClick = (event) => {
+        console.log(page);
+      onPageChange(event, page + 2);
+    };
+  
+    const handleLastPageButtonClick = (event) => {
+      onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
+    };
+  
+    return (
+      <Box sx={{ flexShrink: 0, ml: 2.5 }}>
+        <IconButton
+          onClick={handleFirstPageButtonClick}
+          disabled={page === 0}
+          aria-label="first page"
+        >
+          {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
+        </IconButton>
+        <IconButton
+          onClick={handleBackButtonClick}
+          disabled={page === 0}
+          aria-label="previous page"
+        >
+          {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
+        </IconButton>
+        <IconButton
+          onClick={handleNextButtonClick}
+          disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+          aria-label="next page"
+        >
+          {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
+        </IconButton>
+        <IconButton
+          onClick={handleLastPageButtonClick}
+          disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+          aria-label="last page"
+        >
+          {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
+        </IconButton>
+      </Box>
+    );
+  }
+
+
+
+
+
 
 const ListeArticle = function(props) {
     const [tableData, updateTable] = useState({body : {articles : []}})
+    const [page, setPage] = useState(1);
 
     useEffect(()=> {
         const fetch = async () => {
-            const data = await query(props.query)
+            const data = await query(props.query, page)
             updateTable(data);
         }
         fetch();
-    }, []);
-
+    }, [page]);
+    console.log(tableData);
     const article = tableData.body.articles
     
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+      };
+    
+
+
+    
     return (
-        <TableContainer component={Paper} sx={{marginTop: "20px"}} className="shadow">
+        <TableContainer component={Paper} sx={{marginTop: "30px", marginBottom: "30px"}} className="shadow">
         <Table stickyHeader size="small" className="shadow">
         <TableHead>
             <TableRow>
@@ -74,6 +152,18 @@ const ListeArticle = function(props) {
             </TableRow>
             ))}
         </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TablePagination
+              colSpan={6}
+              count={tableData.totalSize}
+              page={tableData.page - 1}
+              onPageChange={handleChangePage}
+              ActionsComponent={TablePaginationActions}
+              rowsPerPage={50}
+            />
+          </TableRow>
+        </TableFooter>
         </Table>
         </TableContainer>
     )
