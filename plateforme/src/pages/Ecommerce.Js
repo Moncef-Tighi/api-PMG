@@ -1,23 +1,11 @@
 import Page from "./Page"
 import { Button, InputLabel, TextField, NativeSelect, FormControl } from "@mui/material"
-import { useEffect, useState } from "react";
-import axios from 'axios';
 import classes from './Ecommerce.module.css';
 import ListeArticle from "../components/ListeArticle";
 
-const query= async function(params="") {
-    try {
-        const response = await axios.get(`http://localhost:5000/api/v1/articles?${params}`)
-        return response.data
-    }
-    catch(error) {
-        console.log(error);
-    }
-}
 
 const Ecommerce = function() {
 
-    const [tableData, updateTable] = useState({body : {articles : []}})
 
     const basicSearch= function(event) {
         event.preventDefault();
@@ -26,13 +14,6 @@ const Ecommerce = function() {
         console.log(recherche.value)
     }
     
-    useEffect(()=> {
-        const fetch = async () => {
-            const data = await query()
-            updateTable(data);
-        }
-        fetch();
-    }, []);
 
 
     return (
@@ -52,7 +33,7 @@ const Ecommerce = function() {
                 </form>
             </aside>
 
-            <ListeArticle data={tableData}/>
+            <ListeArticle query={""}/>
             
         </Page>
 

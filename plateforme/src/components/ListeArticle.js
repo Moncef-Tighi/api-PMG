@@ -6,6 +6,20 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { DataGrid } from '@mui/x-data-grid';
+import { useEffect, useState } from "react";
+import axios from 'axios';
+
+const query= async function(params="") {
+    try {
+        const response = await axios.get(`http://localhost:5000/api/v1/articles?${params}`)
+        return response.data
+    }
+    catch(error) {
+        console.log(error);
+    }
+}
+
+
 function dateToYMD(dateString) {
     const date = new Date(dateString);
     var d = date.getDate();
@@ -13,11 +27,24 @@ function dateToYMD(dateString) {
     var y = date.getFullYear();
     return '' + (d <= 9 ? '0' + d : d) + '/' + (m<=9 ? '0' + m : m) + '/' + y ;
 }
+
+
 const ListeArticle = function(props) {
-    const article = props.data.body.articles
+    const [tableData, updateTable] = useState({body : {articles : []}})
+
+    useEffect(()=> {
+        const fetch = async () => {
+            const data = await query(props.query)
+            updateTable(data);
+        }
+        fetch();
+    }, []);
+
+    const article = tableData.body.articles
+    
     return (
-        <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} size="small" >
+        <TableContainer component={Paper} sx={{marginTop: "20px"}} className="shadow">
+        <Table stickyHeader size="small" className="shadow">
         <TableHead>
             <TableRow>
             <TableCell>Code Article</TableCell>
@@ -29,13 +56,12 @@ const ListeArticle = function(props) {
             <TableCell align="right">Date modification</TableCell>
             </TableRow>
         </TableHead>
-        <TableBody>
+        <TableBody  className="shadow">
             {article.map((row) => (
             <TableRow
                 key={row.GA_CODEARTICLE}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
-                <TableCell component="th" scope="row"  sx={{maxWidth: "50px"}}>
+                <TableCell component="th" scope="row"  sx={{maxWidth: "25px"}}>
                 {row.GA_CODEARTICLE}
                 </TableCell>
                 <TableCell align="right" sx={{maxWidth: "50px"}}>{row.marque}</TableCell>
@@ -43,7 +69,7 @@ const ListeArticle = function(props) {
                 <TableCell align="right" sx={{maxWidth: "100px"}}>{row.GA_LIBELLE}</TableCell>
                 <TableCell align="right" sx={{maxWidth: "25px"}}>{row.GA_PVTTC}</TableCell>
                 <TableCell align="right" sx={{maxWidth: "25px"}}>{row.stock}</TableCell>
-                <TableCell align="right" sx={{maxWidth: "50px"}}>{dateToYMD(row.GA_DATEMODIF)}</TableCell>
+                <TableCell align="right" sx={{maxWidth: "40px"}}>{dateToYMD(row.GA_DATEMODIF)}</TableCell>
 
             </TableRow>
             ))}
