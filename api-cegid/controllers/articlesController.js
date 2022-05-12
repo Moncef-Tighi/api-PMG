@@ -8,6 +8,15 @@ export const listArticles = catchAsync( async function(request, response,next){
         having['SUM(GQ_PHYSIQUE-GQ_RESERVECLI+GQ_RESERVEFOU-GQ_PREPACLI)']=request.query.stock;
         delete request.query.stock;
     }
+    if(request.query.marque) {
+        having['MAX(a.CC_LIBELLE)']=request.query.marque;
+        delete request.query.marque
+    }
+    if(request.query.type) {
+        having['MAX(b.CC_LIBELLE)']=request.query.type;
+        delete request.query.type
+    }
+
     const [articles, length] = await model.getAllArticles(request.query, having);
 
     if (articles.length===0) return (next(createError(404, 'Aucun article ne correspond à cette recherche')))

@@ -18,15 +18,10 @@ import { TableHead } from '@mui/material';
 import { useEffect, useState } from "react";
 import axios from 'axios';
 
-const query= async function(params="", page=1) {
-    try {
-        console.log(`http://localhost:5000/api/v1/articles?pagesize=50&page=${page}&${params}`)
-        const response = await axios.get(`http://localhost:5000/api/v1/articles?pagesize=50&page=${page}&${params}`)
-        return response.data
-    }
-    catch(error) {
-        console.log(error);
-    }
+const query= async function(params, page=1) {
+    console.log(`http://localhost:5000/api/v1/articles?pagesize=50&page=${page}${params}`)
+    const response = await axios.get(`http://localhost:5000/api/v1/articles?pagesize=50&page=${page}&${params}`)
+    return response.data
 }
 
 
@@ -105,11 +100,22 @@ const ListeArticle = function(props) {
 
     useEffect(()=> {
         const fetch = async () => {
-            const data = await query(props.query, page)
-            updateTable(data);
+            try {
+                const data = await query(props.query, page)
+                updateTable(data);
+            } catch(error) {
+                updateTable({
+                    body: {
+                        articles : []
+                    },
+                    totalSize: 0,
+                    page : 1
+                })
+                console.log(error);
+            }
         }
         fetch();
-    }, [page]);
+    }, [page, props.query]);
     console.log(tableData);
     const article = tableData.body.articles
     
@@ -134,7 +140,7 @@ const ListeArticle = function(props) {
             <TableCell align="right">Date modification</TableCell>
             </TableRow>
         </TableHead>
-        <TableBody  className="shadow">
+        <TableBody>
             {article.map((row) => (
             <TableRow
                 key={row.GA_CODEARTICLE}
@@ -142,12 +148,12 @@ const ListeArticle = function(props) {
                 <TableCell component="th" scope="row"  sx={{maxWidth: "25px"}}>
                 {row.GA_CODEARTICLE}
                 </TableCell>
-                <TableCell align="right" sx={{maxWidth: "50px"}}>{row.marque}</TableCell>
-                <TableCell align="right" sx={{maxWidth: "50px"}}>{row.type}</TableCell>
-                <TableCell align="right" sx={{maxWidth: "100px"}}>{row.GA_LIBELLE}</TableCell>
-                <TableCell align="right" sx={{maxWidth: "25px"}}>{row.GA_PVTTC}</TableCell>
+                <TableCell align="right" sx={{maxWidth: "50px"}}>{row.marque.toLowerCase()}</TableCell>
+                <TableCell align="right" sx={{maxWidth: "50px"}}>{row.type.toLowerCase()}</TableCell>
+                <TableCell align="right" sx={{maxWidth: "100px"}}>{row.GA_LIBELLE.toLowerCase()}</TableCell>
                 <TableCell align="right" sx={{maxWidth: "25px"}}>{row.stock}</TableCell>
                 <TableCell align="right" sx={{maxWidth: "40px"}}>{dateToYMD(row.GA_DATEMODIF)}</TableCell>
+                <TableCell align="right" sx={{maxWidth: "25px"}}>{row.GA_PVTTC}</TableCell>
 
             </TableRow>
             ))}
@@ -155,12 +161,13 @@ const ListeArticle = function(props) {
         <TableFooter>
           <TableRow>
             <TablePagination
-              colSpan={6}
               count={tableData.totalSize}
               page={tableData.page - 1}
               onPageChange={handleChangePage}
               ActionsComponent={TablePaginationActions}
               rowsPerPage={50}
+              labelRowsPerPage=""
+              rowsPerPageOptions={-1}
             />
           </TableRow>
         </TableFooter>
