@@ -15,7 +15,6 @@ const Restrict = function(props) {
         }
     })
 
-    //ATTENTION ! Plus tard il faudra une page "unAuthorized" plutôt que de dévier vers l'accueil    
     return (
         <><Outlet/></>
     )

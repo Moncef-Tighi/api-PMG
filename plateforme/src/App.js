@@ -1,7 +1,7 @@
 import './App.css';
 import AuthContext from "./state/AuthContext";
 import { useContext, useEffect } from "react";
-
+import React from 'react';
 
 import {Route, Routes} from 'react-router-dom'
 import LoginPage from './pages/LoginPage';
