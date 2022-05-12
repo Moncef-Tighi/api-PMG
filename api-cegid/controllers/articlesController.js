@@ -93,6 +93,7 @@ export const ArticleDepot = catchAsync( async function(request, response,next){
 
 export const ArticlesDisponible = catchAsync( async function(request, response,next){
 
+    console.log(request.body);
     const articles = request.body.articles
     if (!articles || ! articles instanceof Array) {
         return next(createError(400, "Erreur : Une liste d'article n'a pas été fournit dans le body de la requête") )
