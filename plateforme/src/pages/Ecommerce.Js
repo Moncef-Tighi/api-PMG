@@ -7,12 +7,23 @@ import { useState } from "react";
 
 const Ecommerce = function() {
     const [query, setQuery] = useState("");
+    const [sortBy, changeSort] = useState("");
 
     const basicSearch= function(event) {
 
         event.preventDefault();
         const {select, recherche}= event.currentTarget.elements
         setQuery(`&${select.value}[like]=${recherche.value}`)
+    }
+
+    const SortHandler = function(event, field) {
+        if (field===sortBy) {
+            const newQuery= query.replace('-', '+')
+            console.log(newQuery);
+            return setQuery(newQuery);
+        }
+        setQuery(query+`&sort=-${field}`);
+        changeSort(field);
     }
     
     return (
@@ -32,7 +43,7 @@ const Ecommerce = function() {
                 </form>
             </aside>
 
-            <ListeArticle query={query}/>
+            <ListeArticle query={query} SortHandler={SortHandler} sortBy={sortBy} />
             
         </Page>
 

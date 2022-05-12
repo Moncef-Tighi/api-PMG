@@ -13,6 +13,8 @@ import FirstPageIcon from '@mui/icons-material/FirstPage';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LastPageIcon from '@mui/icons-material/LastPage';
+import { TableSortLabel } from '@mui/material';
+
 import { TableHead } from '@mui/material';
 
 import { useEffect, useState } from "react";
@@ -91,6 +93,28 @@ function TablePaginationActions(props) {
 
 
 
+/*
+  SORTING
+*/
+
+function descendingComparator(a, b, orderBy) {
+    if (b[orderBy] < a[orderBy]) {
+      return -1;
+    }
+    if (b[orderBy] > a[orderBy]) {
+      return 1;
+    }
+    return 0;
+  }
+  
+function getComparator(order, orderBy) {
+return order === 'desc'
+    ? (a, b) => descendingComparator(a, b, orderBy)
+    : (a, b) => -descendingComparator(a, b, orderBy);
+}
+
+  
+
 
 
 
@@ -123,21 +147,61 @@ const ListeArticle = function(props) {
         setPage(newPage);
       };
     
-
-
-    
     return (
         <TableContainer component={Paper} sx={{marginTop: "30px", marginBottom: "30px"}} className="shadow">
         <Table stickyHeader size="small" className="shadow">
         <TableHead>
             <TableRow>
-            <TableCell>Code Article</TableCell>
+            <TableCell color='primary'>Code Article</TableCell>
             <TableCell align="right">Marque</TableCell>
             <TableCell align="right">Type</TableCell>
             <TableCell align="right">Libelle</TableCell>
-            <TableCell align="right">Prix initial</TableCell>
-            <TableCell align="right">Stock</TableCell>
-            <TableCell align="right">Date modification</TableCell>
+            <TableCell align="right" sortDirection={props.sortBy==='stock' ? props.orderBy : "asc"}>
+                Stock
+                <TableSortLabel
+                    active={props.sortBy === 'stock'}
+                    direction={props.sortBy === 'stock' ? props.orderBy : 'asc'}
+                    onClick={(event)=> props.SortHandler(event, 'stock')}
+                    >
+                    {props.sortBy === 'stock' ? (
+                        <Box component="span" sx={ props.sortBy === 'stock' ? {display : "none"}: {}}>
+                        {props.orderBy === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                        </Box>
+                    ) : null}
+                </TableSortLabel>
+
+            </TableCell>
+            <TableCell align="right" sortDirection={props.sortBy==='GA_DATEMODIF' ? props.orderBy : "asc"}>
+                Date modification
+                <TableSortLabel
+                    active={props.sortBy === 'GA_DATEMODIF'}
+                    direction={props.sortBy === 'GA_DATEMODIF' ? props.orderBy : 'asc'}
+                    onClick={(event)=> props.SortHandler(event, 'GA_DATEMODIF')}
+                    >
+                    {props.sortBy === 'GA_DATEMODIF' ? (
+                        <Box component="span" sx={ props.sortBy === 'GA_DATEMODIF' ? {display : "none"}: {}}>
+                        {props.orderBy === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                        </Box>
+                    ) : null}
+                </TableSortLabel>
+    
+            </TableCell>
+            <TableCell align="right" sortDirection={props.sortBy==='GA_PVTTC' ? props.orderBy : "asc"}>
+                Prix initial
+                <TableSortLabel
+                    active={props.sortBy === 'GA_PVTTC'}
+                    direction={props.sortBy === 'GA_PVTTC' ? props.orderBy : 'asc'}
+                    onClick={(event)=> props.SortHandler(event, 'GA_PVTTC')}
+                    >
+                    {props.sortBy === 'GA_PVTTC' ? (
+                        <Box component="span" sx={ props.sortBy === 'GA_PVTTC' ? {display : "none"}: {}}>
+                        {props.orderBy === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                        </Box>
+                    ) : null}
+                </TableSortLabel>
+
+            </TableCell>
+
             </TableRow>
         </TableHead>
         <TableBody>
@@ -145,7 +209,7 @@ const ListeArticle = function(props) {
             <TableRow
                 key={row.GA_CODEARTICLE}
             >
-                <TableCell component="th" scope="row"  sx={{maxWidth: "25px"}}>
+                <TableCell component="th" scope="row" sx={{maxWidth: "25px"}}>
                 {row.GA_CODEARTICLE}
                 </TableCell>
                 <TableCell align="right" sx={{maxWidth: "50px"}}>{row.marque.toLowerCase()}</TableCell>
