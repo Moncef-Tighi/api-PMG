@@ -41,7 +41,7 @@ export const listeArticle = catchAsync( async function(request, response) {
 
 });
 
-export const unArticle = catchAsync( async function(request, response) {
+export const unArticle = catchAsync( async function(request, response, next) {
     //EndPoint pour l'API client, on réccupère l'article depuis la plateforme et le stock depuis CEGID
 
     const id = request.params.id;
@@ -93,7 +93,7 @@ export const ventesArticle = catchAsync( async function(request, response) {
     })
 })
 
-export const articleEtat = catchAsync( async function(request, response) {
+export const articleEtat = catchAsync( async function(request, response, next) {
     //Requête utilisé côté plateforme
     //Est-ce que l'article est mis en vente sur la plateforme ? Si oui, est-il activé ? Si il est activé, est-il en stock ?
 
@@ -106,7 +106,7 @@ export const articleEtat = catchAsync( async function(request, response) {
     const articlesPlateforme = await model.readArticles(codeArticles);
     let result = []
     articles.forEach(article=> {
-
+        console.log(article);
         let output={};
         const found = articlesPlateforme.find(art=> art.code_article === article.code_article);
 

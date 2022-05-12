@@ -8,9 +8,10 @@ try {
         password: process.env.MY_PASSWORD,
         database: process.env.MY_DATABASE
     });
+    await db.execute(`SELECT 1+1`);
     console.log("Connexion à la base de donnée de WordPress réussie");
 } catch(error) {
-    console.error(error);
+    console.error(`Impossible de se connecter à la base de donnée de WordPress : ${error}`);
 }
 
 export default db
