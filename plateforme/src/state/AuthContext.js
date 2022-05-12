@@ -1,5 +1,4 @@
 import React from "react"
-import { Navigate } from "react-router-dom";
 import { useState } from "react";
 
 //Empty context 
@@ -64,9 +63,8 @@ export const AuthContextProvider = (props) => {
         setToken(null);
         setEmploye(null);
         localStorage.setItem("token", "");
-        localStorage.setItem("employe", {});
+        localStorage.setItem("employe", JSON.stringify(emptyEmploye));
         setLogin(false);
-        Navigate('/connexion');
     } 
 
     const checkLogin = () => {

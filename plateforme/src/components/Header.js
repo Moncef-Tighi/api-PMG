@@ -3,11 +3,15 @@ import { useContext, useEffect, useState } from 'react';
 import classes from './Header.module.css';
 import icon from './pmg-icon.svg'
 import AuthContext from '../state/AuthContext';
+import { IconButton } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const Header = function() {
     const [nom, setNom] = useState(null)
     const [prenom, setPrenom] = useState(null)
     const [poste, setPoste] = useState(null)
+    const navigate= useNavigate();
+
 
     const authContext = useContext(AuthContext)
     const employe = authContext.employe;
@@ -15,18 +19,23 @@ const Header = function() {
         setNom(employe.nom)
         setPrenom(employe.prenom)
         setPoste(employe.poste)
-    }, [employe] )
+    }, [employe.nom,employe.prenom, employe.poste] )
+
+    const logoutHandeler = function() {
+        authContext.logout()
+        navigate('/connexion');
+    };
 
     return (
         <header>
             <div>
-                <img className={classes.icon} src={icon}></img>
+                <img className={classes.icon} src={icon} alt="small-logo"></img>
                 <div className={classes.name}>
                     <h2>{nom} {prenom}</h2>
                     <h4>{poste}</h4>
                 </div>
             </div>
-            <LogoutIcon/>
+            <IconButton onClick={logoutHandeler}><LogoutIcon/></IconButton>
         </header>
     )
 }
