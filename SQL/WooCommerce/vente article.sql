@@ -1,0 +1,1 @@
+SELECT sku, onsale, total_sales FROM wp_wc_product_meta_lookup

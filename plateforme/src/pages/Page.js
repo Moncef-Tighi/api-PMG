@@ -8,9 +8,9 @@ const Page = function(props) {
     return (
         <ThemeProvider theme={theme}>
             <Header/>
-            <div class='container'>
+            <div className='container'>
                 <Navigation/>
-                <section class='main_page'>
+                <section className='main_page'>
                     {props.children}
                 </section>
             </div>

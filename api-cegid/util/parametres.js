@@ -138,7 +138,7 @@ class Query {
         if (!queryString.sort) return "";
         const page=Number(queryString.page) || 1
         let pageSize = Number(queryString.pagesize) || 100;
-        if (pageSize>1000) pageSize=1000
+        if (pageSize>5000) pageSize=1000
         return ` OFFSET ${(page-1) * pageSize} ROWS FETCH NEXT ${pageSize} ROWS ONLY `
     }
 
