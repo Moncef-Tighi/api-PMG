@@ -1,11 +1,10 @@
-import Page from "./Page"
 
 const EmployesListe = function() {
 
     return (
-        <Page>
+        <div>
             EmployesListe
-        </Page>
+        </div>
 
         )
 }

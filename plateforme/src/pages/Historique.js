@@ -1,11 +1,10 @@
-import Page from "./Page"
 
 const Historique = function() {
 
     return (
-        <Page>
+        <div>
             Historique
-        </Page>
+        </div>
 
         )
 }

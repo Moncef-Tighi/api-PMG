@@ -1,4 +1,3 @@
-import Page from "./Page"
 import { Button, InputLabel, TextField, NativeSelect, FormControl } from "@mui/material"
 import classes from './Ecommerce.module.css';
 import ListeArticle from "../components/ListeArticle";
@@ -27,7 +26,7 @@ const Ecommerce = function() {
     }
     
     return (
-        <Page>
+        <>
             <aside>
                 <form className={classes.form} onSubmit={basicSearch}>
                     <NativeSelect id="select" variant='outlined'>
@@ -44,9 +43,7 @@ const Ecommerce = function() {
             </aside>
 
             <ListeArticle query={query} SortHandler={SortHandler} sortBy={sortBy} />
-            
-        </Page>
-
+        </>  
         )
 }
 

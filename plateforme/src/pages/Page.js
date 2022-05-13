@@ -2,8 +2,9 @@ import Navigation from "../components/Navigation"
 import Header from "../components/Header"
 import { ThemeProvider } from "@emotion/react"
 import theme  from "../theme"
+import { Outlet } from "react-router-dom"
 
-const Page = function(props) {
+const Page = function() {
 
     return (
         <ThemeProvider theme={theme}>
@@ -11,7 +12,7 @@ const Page = function(props) {
             <div className='container'>
                 <Navigation/>
                 <section className='main_page'>
-                    {props.children}
+                    <Outlet/>
                 </section>
             </div>
         </ThemeProvider>

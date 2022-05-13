@@ -1,11 +1,10 @@
-import Page from "./Page"
 
 const Permissions = function() {
 
     return (
-        <Page>
+        <div>
             Permissions
-        </Page>
+        </div>
 
         )
 }

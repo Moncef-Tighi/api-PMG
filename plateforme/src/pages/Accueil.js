@@ -3,9 +3,7 @@ import Page from "./Page"
 const Accueil = function() {
 
     return (
-            <Page>
-                Ecommerce
-            </Page>
+            <div>Accueil</div>
         )
 }
 
