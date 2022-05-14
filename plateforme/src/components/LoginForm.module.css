@@ -25,13 +25,11 @@
 }
 h1{
     color: var(--main-accent);
-    padding: 5px;
-    margin-top: 10px;
     margin-left: 13px;
 }
 
 h3 {
-    height: 15px;
+    height: 35px;
     color: var(--main);
     font-style: italic;
     font-size: 14px;
