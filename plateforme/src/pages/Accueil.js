@@ -1,4 +1,3 @@
-import Page from "./Page"
 
 const Accueil = function() {
 

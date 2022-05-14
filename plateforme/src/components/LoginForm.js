@@ -39,8 +39,9 @@ const LoginForm = function() {
             console.log(error);
             if (error.response) {
                 if (error.response.status===401) return setError(error.response.data.message);
+                return setError("Le serveur n'est pas accessible. Veuillez réessayer plus tard");
             } else {
-                return setError("Impossible de se connecter au serveur");
+                return setError("Impossible de se connecter : Une erreur inconnue a eu lieu");
             }
         }
 
