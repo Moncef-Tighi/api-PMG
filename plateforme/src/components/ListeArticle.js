@@ -8,6 +8,7 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { TableSortLabel } from '@mui/material';
+import classes from './ListeArticle.module.css';
 
 import { TableHead } from '@mui/material';
 
@@ -58,13 +59,16 @@ return order === 'desc'
 const ListeArticle = function(props) {
     const [tableData, updateTable] = useState({body : {articles : []}})
     const [page, setPage] = useState(1);
+    const [error, setError] = useState(null);
 
     useEffect(()=> {
         const fetch = async () => {
             try {
                 const data = await query(props.query, page)
                 updateTable(data);
+                setError(null);
             } catch(error) {
+                console.log(error.code);
                 updateTable({
                     body: {
                         articles : []
@@ -72,7 +76,8 @@ const ListeArticle = function(props) {
                     totalSize: 0,
                     page : 1
                 })
-                console.log(error);
+                if (error.code=="ERR_NETWORK") return setError(`Impossible de se connecter au serveur`);
+                setError(`Erreur : ${error.message}`);
             }
         }
         fetch();
@@ -85,6 +90,8 @@ const ListeArticle = function(props) {
       };
     
     return (
+        <>
+        {error ? <aside className={classes.error}>{error}</aside>: "" }
         <TableContainer component={Paper} sx={{marginTop: "30px", marginBottom: "30px"}} className="shadow">
         <Table stickyHeader size="small" className="shadow">
         <TableHead>
@@ -174,6 +181,7 @@ const ListeArticle = function(props) {
         </TableFooter>
         </Table>
         </TableContainer>
+        </>
     )
 }
 
