@@ -3,8 +3,8 @@ import classes from './Ecommerce.module.css';
 import ListeArticle from "../components/Articles/ListeArticle";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-
+import {Search} from '@mui/icons-material';
+import { InputAdornment } from "@mui/material";
 const Ecommerce = function() {
     const [query, setQuery] = useState("");
     const [sortBy, changeSort] = useState("");
@@ -36,9 +36,18 @@ const Ecommerce = function() {
                         <option value="type">Type</option>
                         <option value="GA_LIBELLE">Libelle</option>
                     </NativeSelect>
-                    <TextField id='recherche' size="small" required variant="outlined" sx={{display: "block", marginLeft: "10px", width:"100%"}} />
+                    <TextField id='recherche' size="small" required variant="outlined" sx={{display: "block", marginLeft: "10px", width:"100%"}} 
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start">
+                            <Search />
+                            </InputAdornment>
+                        ),
+                        }}
+                    >
+                    </TextField>
                     <Button color="primary" size="small" variant="contained" type="submit">
-                    Confirmer
+                        Rechercher
                     </Button>
                 </form>
             </aside>

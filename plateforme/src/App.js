@@ -18,7 +18,6 @@ import ProtectRoute from './components/ProtectRoute';
 const Accueil = React.lazy(() => import('./pages/Accueil'));
 const Ecommerce = React.lazy(() => import('./pages/Ecommerce'));
 const EmployesListe = React.lazy(() => import('./pages/EmployesListe'));
-const AddEmployes = React.lazy(() => import('./pages/AddEmployes'));
 const Permissions = React.lazy(() => import('./pages/Permissions'));
 const Historique = React.lazy(() => import('./pages/Historique'));
 const FicheArticle = React.lazy(() => import('./pages/FicheArticle'));
@@ -47,9 +46,7 @@ function App() {
           <Route path='ecommerce/prix' element={<Ecommerce />}/>
           <Route path='ecommerce/dimension' element={<Ecommerce />}/>
 
-          <Route path='admin/employes' element={<EmployesListe />}>
-            <Route path='ajout' element={<AddEmployes />} />
-          </Route>
+          <Route path='admin/employes' element={<EmployesListe />} />
           <Route path='admin/permissions' element={<Permissions />}/>
           <Route path='admin/historique' element={<Historique />}/>
         </Route>          

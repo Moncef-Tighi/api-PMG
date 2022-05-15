@@ -1,9 +1,18 @@
 import { Button, TextField, NativeSelect } from "@mui/material"
-import classes from './Ecommerce.module.css';
+import classes from './EmployesListe.module.css';
 import { useState } from "react";
+import {Search} from '@mui/icons-material';
+import { InputAdornment } from "@mui/material";
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import AddEmployes from "../components/Employés/AddEmployes";
 
 const EmployesListe = function() {
     const [query, setQuery] = useState("");
+    const [openModal, setOpen] = useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+  
+
 
     const basicSearch= function(event) {
 
@@ -22,11 +31,28 @@ const EmployesListe = function() {
                         <option value="poste">Poste</option>
                         <option value="email">E-Mail</option>
                     </NativeSelect>
-                    <TextField id='recherche' size="small" required variant="outlined" sx={{display: "block", marginLeft: "10px", width:"100%"}} />
+                    <TextField id='recherche' size="small" required variant="outlined" sx={{display: "block", marginLeft: "10px", width:"100%"}} 
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start">
+                            <Search />
+                            </InputAdornment>
+                        ),
+                        }}
+                    >
+                    </TextField>                    
                     <Button color="primary" size="small" variant="contained" type="submit">
-                    Confirmer
+                        Rechercher
                     </Button>
                 </form>
+
+                    <Button color="primary" size="small" variant="contained"
+                     startIcon={<AddCircleOutlineIcon />} onClick={handleOpen}> 
+                        Ajouter
+                    </Button>
+
+                    <AddEmployes open={openModal} onClose={handleClose}/>
+
             </aside>
 
         </>  
