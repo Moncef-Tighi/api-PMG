@@ -1,5 +1,5 @@
-import Navigation from "../components/Navigation"
-import Header from "../components/Header"
+import Navigation from "../components/Layout/Navigation"
+import Header from "../components/Layout/Header"
 import { ThemeProvider } from "@emotion/react"
 import theme  from "../theme"
 import { Outlet } from "react-router-dom"

@@ -2,7 +2,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { useContext, useEffect, useState } from 'react';
 import classes from './Header.module.css';
 import icon from './pmg-icon.svg'
-import AuthContext from '../state/AuthContext';
+import AuthContext from '../../state/AuthContext';
 import { IconButton } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom"
-import TailleTable from "../components/TailleTable";
+import TailleTable from "../components/Articles/TailleTable";
 import classes from './FicheArticle.module.css';
 
 const query = async function(code_article) {
@@ -12,20 +12,20 @@ const query = async function(code_article) {
 }
 
 const emptyArticle = {
-        "GA2_LIBREARTE": "SP17",
-        "GA_DATECREATION": "2017-04-02T09:06:10.000Z",
-        "GA_LIBELLE": "Arizona BF SFB Desert Soil Black",
-        "GFM_NATURETYPE": "VTE",
-        "GFM_PERTARIF": "PRX",
-        "GFM_TYPETARIF": "RETAIL",
-        "GF_DATEDEBUT": "2017-03-01T00:00:00.000Z",
-        "GF_DATEFIN": "2021-12-31T00:00:00.000Z",
-        "dernierTarif": "2021-02-01T20:20:20.000Z",
-        "descriptionTarif": "PRIX DE VENTE DETAILS-TARIF FIX",
-        marque: "BIRKENSTOCK",
-        prixActuel: 3300,
-        prixInitial: 7400,
-        type: "FOOTWEAR"
+        "GA2_LIBREARTE": "",
+        "GA_DATECREATION": "",
+        "GA_LIBELLE": "",
+        "GFM_NATURETYPE": "",
+        "GFM_PERTARIF": "",
+        "GFM_TYPETARIF": "",
+        "GF_DATEDEBUT": "",
+        "GF_DATEFIN": "",
+        "dernierTarif": "",
+        "descriptionTarif": "",
+        marque: "",
+        prixActuel: 0,
+        prixInitial: 0,
+        type: ""
 }
 
 const FicheArticle = function() {

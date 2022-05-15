@@ -13,7 +13,6 @@ import Page from './pages/Page'
 // import Historique from './pages/Historique';
 import Restrict from './components/restrict';
 import ProtectRoute from './components/ProtectRoute';
-import FicheArticle from "./pages/FicheArticle";
 // const LoginPage = React.lazy(() => import('./pages/LoginPage'));
 //const Page = React.lazy(() => import('./pages/Page'));
 const Accueil = React.lazy(() => import('./pages/Accueil'));
@@ -22,6 +21,7 @@ const EmployesListe = React.lazy(() => import('./pages/EmployesListe'));
 const AddEmployes = React.lazy(() => import('./pages/AddEmployes'));
 const Permissions = React.lazy(() => import('./pages/Permissions'));
 const Historique = React.lazy(() => import('./pages/Historique'));
+const FicheArticle = React.lazy(() => import('./pages/FicheArticle'));
 
 function App() {
   const authContext = useContext(AuthContext);

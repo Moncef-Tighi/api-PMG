@@ -1,3 +1,6 @@
+import { useEffect, useState } from "react";
+
+
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -8,15 +11,14 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { TableSortLabel } from '@mui/material';
-import classes from './ListeArticle.module.css';
-import { useSearchParams } from 'react-router-dom';
 import { TableHead } from '@mui/material';
 
+import { useSearchParams } from 'react-router-dom';
+import classes from './ListeArticle.module.css';
 import { Link } from 'react-router-dom';
 
-import { useEffect, useState } from "react";
 import axios from 'axios';
-import { TablePaginationActions } from './TablePaginationActions';
+import { TablePaginationActions } from '../TablePaginationActions';
 
 function dateToYMD(dateString) {
     const date = new Date(dateString);
@@ -192,26 +194,3 @@ const ListeArticle = function(props) {
 }
 
 export default ListeArticle
-
-
-
-// console.log(props);
-// const columns = [
-//     { field: 'GA_CODEARTICLE', headerName: 'Code Article', width: 50 },
-//     { field: 'marque', headerName: 'Marque', width: 50 },
-//     { field: 'type', headerName: 'Type', width: 50 },
-//     { field: 'GA_LIBELLE', headerName: 'Libelle', width: 100 },
-//     { field: 'GA_PVTTC', headerName: 'Prix initial', width: 25 },
-//     { field: 'stock', headerName: 'Stock', width: 25 },
-//     { field: 'GA_DATEMODIF', headerName: 'Date Modificaiton', width: 50},
-//   ];
-  
-// console.log(props);
-// const article = props.data.body.articles
-// return(
-//     <DataGrid
-//     rows={article}
-//     columns={columns}
-//     pageSize={100}
-//   />
-//   )

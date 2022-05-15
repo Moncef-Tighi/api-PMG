@@ -1,6 +1,6 @@
 import { Button, InputLabel, TextField, NativeSelect, FormControl } from "@mui/material"
 import classes from './Ecommerce.module.css';
-import ListeArticle from "../components/ListeArticle";
+import ListeArticle from "../components/Articles/ListeArticle";
 import { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 

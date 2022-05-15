@@ -47,7 +47,12 @@ export const unArticle = catchAsync( async function(request, response, next) {
     const id = request.params.id;
     if (!id) return next(createError(400, `Impossible de trouver le code article`))
     const article = await model.readOneArticle(id);
-    if (!article) return next(createError(404, `Impossible de trouver l'article demandé`));
+    if (!article) return response.status(200).json({
+        status: 'ok',
+        message : "Aucun article n'a été trouvé",
+        body : []
+    });
+;
     const disponibilite = await model.checkDisponibilite([article.code_article]);
 
     const result = await addStockToArticles(article, disponibilite.articles);
