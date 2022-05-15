@@ -20,7 +20,6 @@ export function TablePaginationActions(props) {
   };
 
   const handleNextButtonClick = (event) => {
-    console.log(page);
     onPageChange(event, page + 2);
   };
 

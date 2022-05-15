@@ -9,19 +9,12 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { TableSortLabel } from '@mui/material';
 import classes from './ListeArticle.module.css';
-
+import { useSearchParams } from 'react-router-dom';
 import { TableHead } from '@mui/material';
 
 import { useEffect, useState } from "react";
 import axios from 'axios';
 import { TablePaginationActions } from './TablePaginationActions';
-
-const query= async function(params, page=1) {
-    console.log(`http://localhost:5000/api/v1/articles?pagesize=50&page=${page}${params}`)
-    const response = await axios.get(`http://localhost:5000/api/v1/articles?pagesize=50&page=${page}&${params}`)
-    return response.data
-}
-
 
 function dateToYMD(dateString) {
     const date = new Date(dateString);
@@ -55,11 +48,21 @@ return order === 'desc'
 
 
 
-
 const ListeArticle = function(props) {
-    const [tableData, updateTable] = useState({body : {articles : []}})
+    const [searchParams, setSearchParams] = useSearchParams({});
+    
+    const [tableData, updateTable] = useState({body : {articles : []}, totalSize: 0, page : 1})
     const [page, setPage] = useState(1);
     const [error, setError] = useState(null);
+
+
+
+    const query= async function(params, page=1) {
+        console.log(`http://localhost:5000/api/v1/articles?pagesize=50&page=${page}${params}`)
+        const response = await axios.get(`http://localhost:5000/api/v1/articles?pagesize=50&page=${page}&${params}`)
+        return response.data
+    }
+    
 
     useEffect(()=> {
         const fetch = async () => {
@@ -68,7 +71,7 @@ const ListeArticle = function(props) {
                 updateTable(data);
                 setError(null);
             } catch(error) {
-                console.log(error.code);
+                console.log(error);
                 updateTable({
                     body: {
                         articles : []
@@ -76,7 +79,8 @@ const ListeArticle = function(props) {
                     totalSize: 0,
                     page : 1
                 })
-                if (error.code=="ERR_NETWORK") return setError(`Impossible de se connecter au serveur`);
+                if (error.code==="ERR_NETWORK") return setError(`Impossible de se connecter au serveur`);
+                if (error.code==="ERR_BAD_RESPONSE") return setError(`La base de donnée de CEGID mets trop de temps à répondre`);
                 setError(`Erreur : ${error.message}`);
             }
         }

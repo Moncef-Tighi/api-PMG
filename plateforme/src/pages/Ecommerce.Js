@@ -2,17 +2,18 @@ import { Button, InputLabel, TextField, NativeSelect, FormControl } from "@mui/m
 import classes from './Ecommerce.module.css';
 import ListeArticle from "../components/ListeArticle";
 import { useState } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 
 
 const Ecommerce = function() {
     const [query, setQuery] = useState("");
     const [sortBy, changeSort] = useState("");
-
+    const navigate = useNavigate();
     const basicSearch= function(event) {
 
         event.preventDefault();
         const {select, recherche}= event.currentTarget.elements
-        setQuery(`&${select.value}[like]=${recherche.value}`)
+        setQuery(`${select.value}[like]=${recherche.value}`)
     }
 
     const SortHandler = function(event, field) {
