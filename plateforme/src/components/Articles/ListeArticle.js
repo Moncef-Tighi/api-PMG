@@ -10,6 +10,7 @@ import TableFooter from '@mui/material/TableFooter';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import { Skeleton } from "@mui/material";
 import { TableSortLabel } from '@mui/material';
 import { TableHead } from '@mui/material';
 
@@ -100,7 +101,7 @@ const ListeArticle = function(props) {
     return (
         <>
         {error ? <aside className={classes.error}>{error}</aside>: "" }
-        <TableContainer component={Paper} sx={{marginTop: "30px", marginBottom: "30px"}} className="shadow">
+        {tableData.body.articles?.length>0 ? (<TableContainer component={Paper} sx={{marginTop: "30px", marginBottom: "30px"}} className="shadow">
         <Table stickyHeader size="small" className="shadow">
         <TableHead>
             <TableRow>
@@ -189,6 +190,11 @@ const ListeArticle = function(props) {
         </TableFooter>
         </Table>
         </TableContainer>
+        ) : (<>
+            <Skeleton animation='pulse' width="100%" height={75} sx={{marginTop : '15px', bgcolor: 'grey.200' }} />
+            <Skeleton variant="rectangular"  animation="wave" width="100%" height="60vh" sx={{ bgcolor: 'grey.200' }} /> 
+            </>)
+            } 
         </>
     )
 }
