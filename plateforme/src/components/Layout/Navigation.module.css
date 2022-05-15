@@ -20,3 +20,17 @@ nav {
     text-decoration: underline;
     color: var(--main ) ;
 }
+
+.activeLink {
+    text-decoration: none;
+    background-color: var(--main);
+    font-size: 30px;
+    display: block;
+    color: white;
+    border-radius: 10px;
+    transition: ease-in, color, 1s;
+}
+
+.activeLink svg {
+    color: white;
+}
