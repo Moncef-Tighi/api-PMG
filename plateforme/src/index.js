@@ -7,13 +7,13 @@ import reportWebVitals from './reportWebVitals';
 import {BrowserRouter} from 'react-router-dom'
 import { AuthContextProvider } from './state/AuthContext';
 
-ReactDOM.render(<AuthContextProvider>
-  <BrowserRouter>
-      <App />
-  </BrowserRouter>
-</AuthContextProvider>
-, 
-document.getElementById('root'));
+ReactDOM.render(
+  <AuthContextProvider>
+    <BrowserRouter>
+        <App />
+    </BrowserRouter>
+  </AuthContextProvider>
+,  document.getElementById('root'));
 
 
 //REACT 18

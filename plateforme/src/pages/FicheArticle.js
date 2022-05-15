@@ -59,7 +59,8 @@ const FicheArticle = function() {
     return (
         <>
             {error === "loading" ? <div>Loading...</div> : "" }
-            <section>
+            <h1 style={{fontSize: "2.5em"}}>{article.GA_LIBELLE}</h1>
+            <section className={classes.fiche}>
             <div>
                 <h4>Prix Initial : {article.prixInitial } DA</h4>
                 <h2>Prix Actuel : {article.prixActuel } DA</h2>
@@ -84,7 +85,7 @@ const FicheArticle = function() {
                     <li><b>PerTarif : </b>{ article.GFM_PERTARIF }</li>
                 </ul>
             </div>
-            
+
                 <TailleTable tailles={taille} stock={stock}/>
 
             </section>

@@ -22,7 +22,12 @@ export const DepotTable = function ({ taille, stock }) {
 
         <>
             <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
-                <TableCell>
+                <TableCell component="th" scope="row">
+                    {taille.GA_CODEBARRE}
+                </TableCell>
+                <TableCell align="right">{taille.dimension}</TableCell>
+                <TableCell align="right">{taille.stockNet}</TableCell>
+                <TableCell align='right'>
                     <IconButton
                         aria-label="expand row"
                         size="small"
@@ -31,14 +36,9 @@ export const DepotTable = function ({ taille, stock }) {
                         {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                     </IconButton>
                 </TableCell>
-                <TableCell component="th" scope="row">
-                    {taille.GA_CODEBARRE}
-                </TableCell>
-                <TableCell align="right">{taille.dimension}</TableCell>
-                <TableCell align="right">{taille.stockNet}</TableCell>
             </TableRow>
             <TableRow>
-                <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+                <TableCell style={{ padding: 0 }} colSpan={6}>
                     <Collapse in={open} timeout="auto" unmountOnExit>
                         <Box sx={{ margin: 1 }}>
                             <Table size="small" aria-label="purchases">
@@ -50,8 +50,6 @@ export const DepotTable = function ({ taille, stock }) {
                                 </TableHead>
                                 <TableBody>
                                     {Object.keys(find).map(depot => {
-                                        console.log(depot);
-                                        console.log(find[depot]);
                                         return (<TableRow key={depot}>
                                             <TableCell component="th" scope="row">
                                                 {depot}
