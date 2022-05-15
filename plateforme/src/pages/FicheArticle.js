@@ -1,19 +1,17 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom"
+import TailleTable from "../components/TailleTable";
 import classes from './FicheArticle.module.css';
 
 const query = async function(code_article) {
 
     const article = await axios.get(`http://localhost:5000/api/v1/articles/${code_article}`);
     const detail_stock = await axios.get(article.data.details_stock);
-    console.log(detail_stock);
-    return {article : article.data.body, stock : detail_stock.data.body}
+    return {article : article.data.body.info, taille : article.data.body.taille ,stock : detail_stock.data.body.depots}
 }
 
 const emptyArticle = {
-    article: {     
-        info: {        
         "GA2_LIBREARTE": "SP17",
         "GA_DATECREATION": "2017-04-02T09:06:10.000Z",
         "GA_LIBELLE": "Arizona BF SFB Desert Soil Black",
@@ -28,21 +26,22 @@ const emptyArticle = {
         prixActuel: 3300,
         prixInitial: 7400,
         type: "FOOTWEAR"
-        },
-        taille : []
-    }
 }
 
 const FicheArticle = function() {
     const {code_article} = useParams();
     const [error, setError] = useState("loading");
     const [article, setArticle] =  useState(emptyArticle);
-    console.log(article);
+    const [stock, setStock] =  useState([]);
+    const [taille, setTaille] =  useState([]);
+
     useEffect(()=> {
         const fetch = async () => {
             try {
-                const data = await query(code_article)
-                setArticle(data);
+                const {article, taille, stock} = await query(code_article)
+                setTaille(taille);
+                setStock(stock);
+                setArticle(article);
                 setError(null);
             } catch(error) {
                 console.log(error);
@@ -60,7 +59,32 @@ const FicheArticle = function() {
     return (
         <>
             {error === "loading" ? <div>Loading...</div> : "" }
-            <section>Fiche Article</section>
+            <section>
+            <h4>Prix Initial : {article.prixInitial } DA</h4>
+            <h2>Prix Actuel : {article.prixActuel } DA</h2>
+            <div>
+                <h3>Informations Article : </h3>
+                <ul>
+                    <li><b>Marque : </b>{article.marque  }</li>
+                    <li><b>Type : </b>{article.type  }</li>
+                    <li><b>Date création : </b>{article.GA_DATECREATION.toLocaleString()  }</li>
+                    <li><b>LibreARTE : </b>{article.GA2_LIBREARTE  }</li>
+                </ul>
+                <h3>Informations Tarif :</h3>
+                <ul>
+                    <li><b>Date du Tarif : </b>{ article.dernierTarif }</li>
+                    <li><b>Description Tarif : </b>{ article.descriptionTarif }</li>
+                    <li><b>Début Tarif : </b>{ article.GF_DATEDEBUT.toLocaleString() }</li>
+                    <li><b>Fin Tarif : </b>{ article.GF_DATEFIN.toLocaleString() }</li>
+                    <li><b>Type Tarif : </b>{ article.GFM_TYPETARIF }</li>
+                    <li><b>Nature Tarif : </b>{ article.GFM_NATURETYPE }</li>
+                    <li><b>PerTarif : </b>{ article.GFM_PERTARIF }</li>
+                </ul>
+            </div>
+
+                <TailleTable tailles={taille} stock={stock}/>
+
+            </section>
         </>
         )
 }
