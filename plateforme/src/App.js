@@ -13,6 +13,7 @@ import Page from './pages/Page'
 // import Historique from './pages/Historique';
 import Restrict from './components/restrict';
 import ProtectRoute from './components/ProtectRoute';
+import FicheArticle from "./pages/FicheArticle";
 // const LoginPage = React.lazy(() => import('./pages/LoginPage'));
 //const Page = React.lazy(() => import('./pages/Page'));
 const Accueil = React.lazy(() => import('./pages/Accueil'));
@@ -38,6 +39,7 @@ function App() {
         <Route element={<Page/>}>
           <Route path='ecommerce' element={<Accueil />} />
           <Route element={<Restrict permissions={permissions} allow={["modification"]}/>}>
+            <Route path='ecommerce/article/:code_article' element={<FicheArticle />}/>
             <Route path='ecommerce/article' element={<Ecommerce />}/>
           </Route>
           <Route path='ecommerce/fiche/:article' element={<Ecommerce />}/>

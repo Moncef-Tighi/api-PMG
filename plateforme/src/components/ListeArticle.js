@@ -12,6 +12,8 @@ import classes from './ListeArticle.module.css';
 import { useSearchParams } from 'react-router-dom';
 import { TableHead } from '@mui/material';
 
+import { Link } from 'react-router-dom';
+
 import { useEffect, useState } from "react";
 import axios from 'axios';
 import { TablePaginationActions } from './TablePaginationActions';
@@ -158,7 +160,7 @@ const ListeArticle = function(props) {
                 key={row.GA_CODEARTICLE}
             >
                 <TableCell component="th" scope="row" sx={{maxWidth: "25px"}}>
-                {row.GA_CODEARTICLE}
+                <Link to={`${row.GA_CODEARTICLE}`}>{row.GA_CODEARTICLE}</Link>
                 </TableCell>
                 <TableCell align="right" sx={{maxWidth: "50px"}}>{row.marque.toLowerCase()}</TableCell>
                 <TableCell align="right" sx={{maxWidth: "50px"}}>{row.type.toLowerCase()}</TableCell>

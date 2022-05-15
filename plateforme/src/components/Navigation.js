@@ -16,13 +16,13 @@ const Navigation = function() {
             <List
             sx={{ width: '100%'}}
             component="ul">
-                <NavLink to="/ecommerce/article">
+                <NavLink to="/ecommerce/article" className={classes.navLink}>
                     <ListItemButton sx={{ width: '100%', height: "60px"}} color="primary" >
                         <ListItemIcon><Article  sx={{width:'1.3em', height: '1.3em', color: '#262626'}}/> </ListItemIcon>
                         <ListItemText primary="Articles" />
                     </ListItemButton>
                 </NavLink>
-                <NavLink  to="/ecommerce/commande">
+                <NavLink  to="/ecommerce/commande" className={classes.navLink}>
                     <ListItemButton sx={{ width: '100%', height: "60px"}}>
                         <ListItemIcon>
                         <ContactPhone  sx={{width:'1.3em', height: '1.3em', color: '#262626'}}/>
@@ -30,7 +30,7 @@ const Navigation = function() {
                         <ListItemText primary="Commandes" />
                     </ListItemButton>
                 </NavLink>
-                <NavLink to="/ecommerce/prix">
+                <NavLink to="/ecommerce/prix" className={classes.navLink}> 
                     <ListItemButton sx={{ width: '100%', height: "60px"}}>
                         <ListItemIcon>
                         <LocalOffer  sx={{width:'1.3em', height: '1.3em', color: '#262626'}}/>
@@ -39,7 +39,7 @@ const Navigation = function() {
                     </ListItemButton>
                 </NavLink>
 
-                <NavLink to="/ecommerce/dimension">
+                <NavLink to="/ecommerce/dimension" className={classes.navLink}>
                     <ListItemButton sx={{ width: '100%', height: "60px"}}>
                         <ListItemIcon>
                         <Height  sx={{width:'1.3em', height: '1.3em', color: '#262626'}}/>
@@ -47,7 +47,7 @@ const Navigation = function() {
                         <ListItemText primary="Dimension" />
                     </ListItemButton>
                 </NavLink>
-                <NavLink to="/admin/employes">
+                <NavLink to="/admin/employes" className={classes.navLink}>
                     <ListItemButton sx={{ width: '100%', height: "60px"}}>
                         <ListItemIcon>
                         <Person  sx={{width:'1.3em', height: '1.3em', color: '#262626'}}/>
@@ -55,7 +55,7 @@ const Navigation = function() {
                         <ListItemText primary="Employés" />
                     </ListItemButton>
                 </NavLink>
-                <NavLink to="/admin/permissions">
+                <NavLink to="/admin/permissions" className={classes.navLink}>
                     <ListItemButton sx={{ width: '100%', height: "60px"}}>
                         <ListItemIcon>
                         <ManageAccounts  sx={{width:'1.3em', height: '1.3em', color: '#262626'}}/>
@@ -63,7 +63,7 @@ const Navigation = function() {
                         <ListItemText primary="Permissions" />
                     </ListItemButton>
                 </NavLink>
-                <NavLink  to="/admin/historique">
+                <NavLink  to="/admin/historique" className={classes.navLink}>
                     <ListItemButton sx={{ width: '100%', height: "60px"}}>
                         <ListItemIcon>
                         <History  sx={{width:'1.3em', height: '1.3em', color: '#262626'}}/>

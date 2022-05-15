@@ -212,9 +212,10 @@ h1,h2,h3 {
   /* background-color: white; */
   overflow-y: auto;
   min-height: 80vh;
+  box-shadow: rgb(60 64 67 / 30%) 1px 1px 2px 1px, rgb(60 64 67 / 15%) 1px 2px 3px 1px;
 }
 
 a {
-  text-decoration: none;
-  color: #262626;
+  text-decoration: underline;
+  color: var(--main-accent);
 }
