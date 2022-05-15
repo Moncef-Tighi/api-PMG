@@ -60,8 +60,11 @@ const FicheArticle = function() {
         <>
             {error === "loading" ? <div>Loading...</div> : "" }
             <section>
-            <h4>Prix Initial : {article.prixInitial } DA</h4>
-            <h2>Prix Actuel : {article.prixActuel } DA</h2>
+            <div>
+                <h4>Prix Initial : {article.prixInitial } DA</h4>
+                <h2>Prix Actuel : {article.prixActuel } DA</h2>
+                <img style={{width:"300px", height:"300px", backgroundColor: "lightgrey"}}></img>
+            </div>
             <div>
                 <h3>Informations Article : </h3>
                 <ul>
@@ -81,7 +84,7 @@ const FicheArticle = function() {
                     <li><b>PerTarif : </b>{ article.GFM_PERTARIF }</li>
                 </ul>
             </div>
-
+            
                 <TailleTable tailles={taille} stock={stock}/>
 
             </section>

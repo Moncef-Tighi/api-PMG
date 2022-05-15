@@ -2,4 +2,7 @@ section {
     background-color: white;
     border-radius: 10px;
     padding: 10px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(max(300px,30vw), 1fr));
+    grid-gap: 24px 40px;
 }

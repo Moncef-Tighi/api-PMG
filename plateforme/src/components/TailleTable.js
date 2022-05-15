@@ -14,7 +14,7 @@ import { DepotTable } from './DepotTable';
 const TailleTable = function({tailles, stock}) {
 
     return ( <>
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} sx={{width: "fit-content",marginTop: "30px", fontSize: "2em"}}>
         <Table aria-label="collapsible table">
         <TableHead>
             <TableRow>
