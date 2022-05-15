@@ -3,8 +3,8 @@ import { red } from "@mui/material/colors";
 const theme = createTheme({
     palette: {
       primary: red,
-      PMG : {
-        main : ""
+      primaryLighter : {
+        main : "#F8B5B7"
       }
     },
   });
