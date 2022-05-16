@@ -15,7 +15,7 @@ export default function useGet(url, defaultData=null){
                     setLoading(true)
                     const response = await axios.get(url)
                     setData(response.data)
-                }catch(err){
+                }catch(error){
                     if (defaultData) setData(defaultData)
                     if (error.code==="ERR_NETWORK") return setError(`Impossible de se connecter au serveur`);
                     if (error.code==="ERR_BAD_RESPONSE") return setError(`La base de donnée mets trop de temps à répondre`);
