@@ -10,22 +10,15 @@ const Ecommerce = function() {
     const [sortBy, changeSort] = useState("");
     const navigate = useNavigate();
     const basicSearch= function(event) {
-
         event.preventDefault();
         const {select, recherche}= event.currentTarget.elements
-        setQuery(`${select.value}[like]=${recherche.value}`)
+        console.log(recherche.value);
+        setQuery({
+            key : `${select.value}[like]`,
+            value :  recherche.value
+        })
     }
 
-    const SortHandler = function(event, field) {
-        if (field===sortBy) {
-            const newQuery= query.replace('-', '+')
-            console.log(newQuery);
-            return setQuery(newQuery);
-        }
-        setQuery(query+`&sort=-${field}`);
-        changeSort(field);
-    }
-    
     return (
         <>
             <aside>
@@ -52,7 +45,7 @@ const Ecommerce = function() {
                 </form>
             </aside>
 
-            <ListeArticle query={query} SortHandler={SortHandler} sortBy={sortBy} />
+            <ListeArticle query={query} sortBy={sortBy} />
         </>  
         )
 }

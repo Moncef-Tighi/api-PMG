@@ -59,7 +59,6 @@ const emptyTable= {
 }
 
 const ListeArticle = function(props) {
-    //const [page, setPage] = useState(1);
     const readURL = function() {
         let output="";
         for (const [key, value] of searchParams.entries()) {
@@ -67,8 +66,9 @@ const ListeArticle = function(props) {
         }
         return `${API_CEGID}/articles?${output}`;
     }
-    let [searchParams, setSearchParams] = useSearchParams({});
-    let [url, setUrl] = useState(readURL());
+
+    const [searchParams, setSearchParams] = useSearchParams({});
+    const [url, setUrl] = useState(readURL());
     const {data: tableData, loading, error} = useGet(url, emptyTable);
     const article = tableData.body.articles
 
@@ -76,6 +76,10 @@ const ListeArticle = function(props) {
         setUrl(() => readURL())
     }, [searchParams] )
     
+    useEffect( ()=> {
+        if (props.query.value) setSearchParams(`${props.query.key}=${props.query.value}`)
+    }, [props.query])
+
     const handleChangePage = async (event, newPage) => {
         const page = {page : newPage};
         setSearchParams({...page});
@@ -89,6 +93,7 @@ const ListeArticle = function(props) {
             totalSize={tableData.totalSize}
             page={tableData.page}
             handleChangePage={handleChangePage}
+            loading={loading}
         >
         <TableHead>
             <TableRow>
