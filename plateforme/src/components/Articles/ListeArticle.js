@@ -19,6 +19,7 @@ import { render } from "react-dom";
 
 import useGet from "../../hooks/useGet";
 import { API_CEGID } from "../../index";
+import TableHeadCustom from "../Table/TableHeadCustom";
 
 function dateToYMD(dateString) {
     const date = new Date(dateString);
@@ -58,32 +59,63 @@ const emptyTable= {
     page : 1
 }
 
-const ListeArticle = function(props) {
-    const readURL = function() {
-        let output="";
-        for (const [key, value] of searchParams.entries()) {
-            output+=`&${key}=${value}`
-        }
-        return `${API_CEGID}/articles?${output}`;
+const readURL = function(searchParams) {
+    let output="";
+    for (const [key, value] of searchParams.entries()) {
+        output+=`&${key}=${value}`
     }
+    return output;
+}
+
+const readURLObject = function(searchParams) {
+    let output={};
+    for (const [key, value] of searchParams.entries()) {
+        output[key]=value
+    }
+    return output;
+}
+
+const ListeArticle = function(props) {
 
     const [searchParams, setSearchParams] = useSearchParams({});
-    const [url, setUrl] = useState(readURL());
-    const {data: tableData, loading, error} = useGet(url, emptyTable);
+    const [url, setUrl] = useState(readURL(searchParams));
+    const {data: tableData, loading, error} = useGet(`${API_CEGID}/articles?${url}`, emptyTable);
     const article = tableData.body.articles
 
     useEffect( ()=> {
-        setUrl(() => readURL())
+        setUrl(() => readURL(searchParams))
     }, [searchParams] )
     
     useEffect( ()=> {
-        if (props.query.value) setSearchParams(`${props.query.key}=${props.query.value}`)
+        const key = props.query.key;
+        let param={}
+        param[key] = props.query.value
+        if (props.query.value) setSearchParams(param)
     }, [props.query])
 
     const handleChangePage = async (event, newPage) => {
-        const page = {page : newPage};
-        setSearchParams({...page});
-      };
+        let param=readURLObject(searchParams);
+        param["page"] = newPage;
+        setSearchParams(param);
+    };
+
+    const sortHandeler = function(event, key) {
+        let param=readURLObject(searchParams);
+        let order = "-"
+        if (param["sort"]===`-${key}`) order ="+"
+        param["sort"] = `${order}${key}`;
+        setSearchParams(param);
+    }
+
+    const header = [
+        { name: "Code Article", sort: false},
+        { name: "Marque", sort: false},
+        { name: "Type", sort: false},
+        { name: "Libelle", sort: false},
+        { name: "Stock", sort: true, trueName : "stock"},
+        { name: "Date Modification", sort: true , trueName : "GA_DATEMODIF"},
+        { name: "Prix Initial", sort: true , trueName : "GA_PVTTC"} ,
+    ]
     
     return (
         <>
@@ -95,60 +127,8 @@ const ListeArticle = function(props) {
             handleChangePage={handleChangePage}
             loading={loading}
         >
-        <TableHead>
-            <TableRow>
-            <TableCell color='primary'>Code Article</TableCell>
-            <TableCell align="right">Marque</TableCell>
-            <TableCell align="right">Type</TableCell>
-            <TableCell align="right">Libelle</TableCell>
-            <TableCell align="right" sortDirection={props.sortBy==='stock' ? props.orderBy : "asc"}>
-                Stock
-                <TableSortLabel
-                    active={props.sortBy === 'stock'}
-                    direction={props.sortBy === 'stock' ? props.orderBy : 'asc'}
-                    onClick={(event)=> props.SortHandler(event, 'stock')}
-                    >
-                    {props.sortBy === 'stock' ? (
-                        <Box component="span" sx={ props.sortBy === 'stock' ? {display : "none"}: {}}>
-                        {props.orderBy === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                        </Box>
-                    ) : null}
-                </TableSortLabel>
+        <TableHeadCustom header={header} sortHandeler={sortHandeler}/>
 
-            </TableCell>
-            <TableCell align="right" sortDirection={props.sortBy==='GA_DATEMODIF' ? props.orderBy : "asc"}>
-                Date modification
-                <TableSortLabel
-                    active={props.sortBy === 'GA_DATEMODIF'}
-                    direction={props.sortBy === 'GA_DATEMODIF' ? props.orderBy : 'asc'}
-                    onClick={(event)=> props.SortHandler(event, 'GA_DATEMODIF')}
-                    >
-                    {props.sortBy === 'GA_DATEMODIF' ? (
-                        <Box component="span" sx={ props.sortBy === 'GA_DATEMODIF' ? {display : "none"}: {}}>
-                        {props.orderBy === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                        </Box>
-                    ) : null}
-                </TableSortLabel>
-    
-            </TableCell>
-            <TableCell align="right" sortDirection={props.sortBy==='GA_PVTTC' ? props.orderBy : "asc"}>
-                Prix initial
-                <TableSortLabel
-                    active={props.sortBy === 'GA_PVTTC'}
-                    direction={props.sortBy === 'GA_PVTTC' ? props.orderBy : 'asc'}
-                    onClick={(event)=> props.SortHandler(event, 'GA_PVTTC')}
-                    >
-                    {props.sortBy === 'GA_PVTTC' ? (
-                        <Box component="span" sx={ props.sortBy === 'GA_PVTTC' ? {display : "none"}: {}}>
-                        {props.orderBy === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                        </Box>
-                    ) : null}
-                </TableSortLabel>
-
-            </TableCell>
-
-            </TableRow>
-        </TableHead>
         <TableBody>
             {article.map((row) => (
             <TableRow
@@ -157,9 +137,9 @@ const ListeArticle = function(props) {
                 <TableCell component="th" scope="row" sx={{maxWidth: "25px"}}>
                 <Link to={`${row.GA_CODEARTICLE}`}>{row.GA_CODEARTICLE}</Link>
                 </TableCell>
-                <TableCell align="right" sx={{maxWidth: "50px"}}>{row.marque.toLowerCase()}</TableCell>
-                <TableCell align="right" sx={{maxWidth: "50px"}}>{row.type.toLowerCase()}</TableCell>
-                <TableCell align="right" sx={{maxWidth: "100px"}}>{row.GA_LIBELLE.toLowerCase()}</TableCell>
+                <TableCell align="right" sx={{maxWidth: "50px"}}>{row.marque?.toLowerCase()}</TableCell>
+                <TableCell align="right" sx={{maxWidth: "50px"}}>{row.type?.toLowerCase()}</TableCell>
+                <TableCell align="right" sx={{maxWidth: "100px"}}>{row.GA_LIBELLE?.toLowerCase()}</TableCell>
                 <TableCell align="right" sx={{maxWidth: "25px"}}>{row.stock}</TableCell>
                 <TableCell align="right" sx={{maxWidth: "40px"}}>{dateToYMD(row.GA_DATEMODIF)}</TableCell>
                 <TableCell align="right" sx={{maxWidth: "25px"}}>{row.GA_PVTTC}</TableCell>
