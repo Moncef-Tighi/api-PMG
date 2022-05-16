@@ -12,3 +12,14 @@ SET wp_postmeta.meta_value=2500
 WHERE wp_posts.post_type ="product" AND wp_postmeta.post_id = (
     SELECT post_id from wp_postmeta WHERE wp_postmeta.meta_value="CODE ARTICLE"
 )
+
+--Query de rechange dans le cas ou le code article n'est pas stocké dans meta_value
+--mais il faudrait réccupérer le post_name qu'on a pas côté Plateforme
+--Quoi que, WooCommerce donne l'ID directement aussi
+
+UPDATE  wp_posts
+INNER JOIN wp_postmeta ON wp_postmeta.post_id=wp_posts.ID AND  wp_postmeta.meta_key="_price"
+SET wp_postmeta.meta_value=2500
+WHERE wp_posts.post_type ="product" AND wp_postmeta.post_id = (
+    SELECT post_id from wp_posts WHERE wp_posts.post_name="boys-knit-pants-60-cotton-40-polyester"
+)

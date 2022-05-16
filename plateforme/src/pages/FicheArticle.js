@@ -12,6 +12,7 @@ const query = async function(code_article) {
 }
 
 const emptyArticle = {
+        "GA_LIBELLE" : "",
         "GA2_LIBREARTE": "",
         "GA_DATECREATION": "",
         "GA_LIBELLE": "",
@@ -45,8 +46,8 @@ const FicheArticle = function() {
                 setError(null);
             } catch(error) {
                 console.log(error);
-                setArticle()
-                setError(error)
+                setArticle(emptyArticle);
+                if (error.code==="ERR_BAD_REQUEST") return setError(`Aucun Article avec ce code n'a été trouvé`);
                 if (error.code==="ERR_NETWORK") return setError(`Impossible de se connecter au serveur`);
                 if (error.code==="ERR_BAD_RESPONSE") return setError(`La base de donnée de CEGID mets trop de temps à répondre`);
                 setError(`Erreur : ${error.message}`);
@@ -58,7 +59,7 @@ const FicheArticle = function() {
 
     return (
         <>
-            {error === "loading" ? <div>Loading...</div> : "" }
+            {error  ? <div style={{color : "red"}}>{error}</div> : "" }
             <h1 style={{fontSize: "2.5em"}}>{article.GA_LIBELLE}</h1>
             <section className={classes.fiche}>
             <div>

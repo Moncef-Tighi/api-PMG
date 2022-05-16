@@ -52,8 +52,10 @@ const EmployesListe = function() {
             setOpen(false);
         } catch(error) {
             console.log(error);
-            if (error.response.data.message.startsWith("La création a échouée")) return setError("L'utilisateur ou l'email fournit existe déjà");
+            console.log(error.code);
             if (error.code==="ERR_BAD_REQUEST") return setError("Impossible de créer cet utilisateur");
+            if (error.code==="ERR_NETWORK") return setError("Erreur de connexion : Le serveur n'est pas accessible");
+            if (error.response.data?.message.startsWith("La création a échouée")) return setError("L'utilisateur ou l'email fournit existe déjà");
         }
     }
 
