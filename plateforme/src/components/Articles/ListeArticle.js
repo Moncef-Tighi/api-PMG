@@ -2,15 +2,9 @@ import { useEffect, useState } from "react";
 
 
 import Box from '@mui/material/Box';
-import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableFooter from '@mui/material/TableFooter';
-import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import { Skeleton } from "@mui/material";
 import { TableSortLabel } from '@mui/material';
 import { TableHead } from '@mui/material';
 
@@ -19,10 +13,10 @@ import classes from './ListeArticle.module.css';
 import { Link } from 'react-router-dom';
 
 import axios from 'axios';
-import { TablePaginationActions } from '../Table/TablePaginationActions';
 import TableCustom from "../Table/TableCustom";
 
-
+import useGet from "../../hooks/useGet";
+import { API_CEGID } from "../../index";
 
 function dateToYMD(dateString) {
     const date = new Date(dateString);
@@ -54,17 +48,25 @@ return order === 'desc'
 
   
 
-
+const emptyTable= {
+    body: {
+        articles : []
+    },
+    totalSize: 0,
+    page : 1
+}
 
 const ListeArticle = function(props) {
     const [searchParams, setSearchParams] = useSearchParams({});
     
-    const [tableData, updateTable] = useState({body : {articles : []}, totalSize: 0, page : 1})
+    //const [tableData, updateTable] = useState({body : {articles : []}, totalSize: 0, page : 1})
     const [page, setPage] = useState(1);
-    const [error, setError] = useState(null);
 
+    const [url, setUrl] = useState(`${API_CEGID}/articles?sort=-GA_DATEMODIF`);
 
+    const {data: tableData, loading, error} = useGet(url, emptyTable);
 
+    console.log(tableData);
     const query= async function(params, page=1) {
         console.log(`http://localhost:5000/api/v1/articles?pagesize=50&page=${page}${params}`)
         const response = await axios.get(`http://localhost:5000/api/v1/articles?pagesize=50&page=${page}&${params}`)
@@ -72,29 +74,28 @@ const ListeArticle = function(props) {
     }
     
 
-    useEffect(()=> {
-        const fetch = async () => {
-            try {
-                const data = await query(props.query, page)
-                updateTable(data);
-                setError(null);
-            } catch(error) {
-                console.log(error);
-                updateTable({
-                    body: {
-                        articles : []
-                    },
-                    totalSize: 0,
-                    page : 1
-                })
-                if (error.code==="ERR_NETWORK") return setError(`Impossible de se connecter au serveur`);
-                if (error.code==="ERR_BAD_RESPONSE") return setError(`La base de donnée de CEGID mets trop de temps à répondre`);
-                setError(`Erreur : ${error.message}`);
-            }
-        }
-        fetch();
-    }, [page, props.query]);
-    console.log(tableData);
+    // useEffect(()=> {
+    //     const fetch = async () => {
+    //         try {
+    //             const data = await query(props.query, page)
+    //             updateTable(data);
+    //             setError(null);
+    //         } catch(error) {
+    //             console.log(error);
+    //             updateTable({
+    //                 body: {
+    //                     articles : []
+    //                 },
+    //                 totalSize: 0,
+    //                 page : 1
+    //             })
+    //             if (error.code==="ERR_NETWORK") return setError(`Impossible de se connecter au serveur`);
+    //             if (error.code==="ERR_BAD_RESPONSE") return setError(`La base de donnée de CEGID mets trop de temps à répondre`);
+    //             setError(`Erreur : ${error.message}`);
+    //         }
+    //     }
+    //     fetch();
+    // }, [page, props.query]);
     const article = tableData.body.articles
     
     const handleChangePage = (event, newPage) => {
