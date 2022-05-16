@@ -2,13 +2,14 @@ import { Button, TextField, NativeSelect } from "@mui/material"
 import classes from './EmployesListe.module.css';
 import { useState } from "react";
 import {Search} from '@mui/icons-material';
-import { InputAdornment, Snackbar, Alert } from "@mui/material";
+import { InputAdornment } from "@mui/material";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import AddEmployes from "../components/Employés/AddEmployes";
 import axios from "axios";
 import { useContext } from 'react';
 import AuthContext from '../state/AuthContext';
 import { API_PLATEFORME } from '../index';
+import Notification from "../components/util/Util";
 
 const EmployesListe = function() {
     const [query, setQuery] = useState("");
@@ -16,7 +17,7 @@ const EmployesListe = function() {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const authContext = useContext(AuthContext);
-    const [openNotif, setNotif] = useState(false);
+    const [openNotif, setNotif] = useState("");
     const [error, setError] = useState("");
 
 
@@ -27,7 +28,7 @@ const EmployesListe = function() {
         setQuery(`${select.value}[like]=${recherche.value}`)
     }
     const closeNotif = (event, reason) => {
-        setNotif(false);
+        setNotif("");
         setError("");
     };
   
@@ -48,7 +49,7 @@ const EmployesListe = function() {
                     "Authorization" : `Bearer ${authContext.token}`
                 }
             })
-            setNotif(true);
+            setNotif("Le nouvel employé a bien été créé");
             setOpen(false);
         } catch(error) {
             console.log(error);
@@ -91,16 +92,9 @@ const EmployesListe = function() {
                     </Button>
 
                     <AddEmployes open={openModal} onClose={handleClose} createEmploye={createEmploye}/>
-                    <Snackbar open={openNotif} autoHideDuration={3000} onClose={closeNotif}>
-                        <Alert onClose={closeNotif} severity="success" sx={{ width: '100%' }}>
-                            L'employé a bien été créé
-                        </Alert>
-                    </Snackbar>
-                    <Snackbar open={error!==""} autoHideDuration={3000} onClose={closeNotif}>
-                        <Alert onClose={closeNotif} severity="error" sx={{ width: '100%' }}>
-                            {error}
-                        </Alert>
-                    </Snackbar>
+                    <Notification closeNotif={closeNotif} message={error} status="error"  />
+                    <Notification closeNotif={closeNotif} message={openNotif} status="success"  />
+
             </aside>
 
         </>  

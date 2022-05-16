@@ -19,7 +19,10 @@ import classes from './ListeArticle.module.css';
 import { Link } from 'react-router-dom';
 
 import axios from 'axios';
-import { TablePaginationActions } from '../TablePaginationActions';
+import { TablePaginationActions } from '../Table/TablePaginationActions';
+import TableCustom from "../Table/TableCustom";
+
+
 
 function dateToYMD(dateString) {
     const date = new Date(dateString);
@@ -101,8 +104,12 @@ const ListeArticle = function(props) {
     return (
         <>
         {error ? <aside className={classes.error}>{error}</aside>: "" }
-        {tableData.body.articles?.length>0 ? (<TableContainer component={Paper} sx={{marginTop: "30px", marginBottom: "30px"}} className="shadow">
-        <Table stickyHeader size="small" className="shadow">
+        <TableCustom
+            tableData={tableData.body.articles}
+            totalSize={tableData.totalSize}
+            page={tableData.page}
+            handleChangePage={handleChangePage}
+        >
         <TableHead>
             <TableRow>
             <TableCell color='primary'>Code Article</TableCell>
@@ -175,26 +182,7 @@ const ListeArticle = function(props) {
             </TableRow>
             ))}
         </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TablePagination
-              count={tableData.totalSize}
-              page={tableData.page - 1}
-              onPageChange={handleChangePage}
-              ActionsComponent={TablePaginationActions}
-              rowsPerPage={50}
-              labelRowsPerPage=""
-              rowsPerPageOptions={-1}
-            />
-          </TableRow>
-        </TableFooter>
-        </Table>
-        </TableContainer>
-        ) : (<>
-            <Skeleton animation='pulse' width="100%" height={75} sx={{marginTop : '15px', bgcolor: 'grey.200' }} />
-            <Skeleton variant="rectangular"  animation="wave" width="100%" height="60vh" sx={{ bgcolor: 'grey.200' }} /> 
-            </>)
-            } 
+        </TableCustom>
         </>
     )
 }
