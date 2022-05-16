@@ -15,6 +15,7 @@ import permissionsRouter from './permissionsRouter.js';
 import authenticationRouter from './authenticationRoute.js';
 import roleRouter from "./roleRoute.js";
 import articleRouter from './articleRoute.js';
+import wooCommerceRouter from './wooCommerceRoute.js'
 
 const router = express.Router();
 
@@ -44,5 +45,6 @@ router.use('/permissions', permissionsRouter);
 router.use('/roles', roleRouter);
 router.use('/articles', articleRouter);
 router.use('/connexion', authenticationRouter);
+router.use('/woocommerce', wooCommerceRouter);
 
 export default router
