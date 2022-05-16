@@ -1,5 +1,7 @@
 import { catchAsync } from "./errorController.js";
 import * as wooCommerce from '../models/wooCommerce.js';
+import * as cegid from "../models/article.js";
+import createError from 'http-errors';
 
 export const updatePrixArticle = catchAsync( async function(request, response, next) {
     //Utilisé pour la page comparaison de prix
@@ -18,3 +20,26 @@ export const updatePrixArticle = catchAsync( async function(request, response, n
     });
 
 });
+
+export const updateStock = catchAsync( async function(request, response, next) {
+
+    const article= request.body.code_article;
+
+    
+    //AVEC CEGID : 
+    
+    // const {articles} = await cegid.checkDisponibilite([article]);
+    // let result
+    // if (articles[article]>=process.env.MINSTOCK) result = await wooCommerce.updateDisponibilite(article, "instock")
+    // else result = await wooCommerce.updateDisponibilite(article, "outofstock");
+    
+    //MANUELLEMENT : 
+    
+    const status = request.body.status ? "instock" : "outofstock"
+    const result = await wooCommerce.updateDisponibilite(article, status)
+
+    return response.status(200).json({
+        status: 'ok',
+        ligne_affecté : result
+    });
+})
