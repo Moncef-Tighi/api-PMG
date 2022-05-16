@@ -1,4 +1,4 @@
-import { TableSortLabel,TableCell, TableHead, TableRow } from "@mui/material";
+import { TableSortLabel,TableCell, TableHead, TableRow, Box } from "@mui/material";
 import { useSearchParams } from "react-router-dom";
 
 const TableHeadCustom = function(props) {
@@ -6,23 +6,23 @@ const TableHeadCustom = function(props) {
     const [searchParams] =  useSearchParams({});
 
     const sort = searchParams.get('sort');
-    console.log(sort);
     return (
         <TableHead>
         <TableRow>
             {props.header.map(head => {
                 if (!head.sort) {
-                    return <TableCell>{head.name}</TableCell>
+                    return <TableCell align="center">{head.name}</TableCell>
                 }
                 return (
-                    <TableCell 
-                        sortDirection={sort.startsWith("+") ? "asc" : "desc"}>
-                        {head.name}
+                    <TableCell  align="center"
+                        sortDirection={sort?.startsWith("+") ? "asc" : "desc"}>
                         <TableSortLabel
-                            active={sort.substring(1)===head.name}
-                            direction={sort.startsWith("+") ? "asc" : "desc"}
+                            active={sort?.slice(1)===head.trueName}
+                            direction={sort?.startsWith("+") ? "asc" : "desc"}
                             onClick={(event)=> props.sortHandeler(event, head.trueName)}
-                        />
+                            >
+                            {head.name}
+                        </TableSortLabel>
                     </TableCell>
                 )
             })}

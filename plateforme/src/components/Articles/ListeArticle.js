@@ -20,6 +20,7 @@ import { render } from "react-dom";
 import useGet from "../../hooks/useGet";
 import { API_CEGID } from "../../index";
 import TableHeadCustom from "../Table/TableHeadCustom";
+import useSort from "../../hooks/useSort";
 
 function dateToYMD(dateString) {
     const date = new Date(dateString);
@@ -28,29 +29,6 @@ function dateToYMD(dateString) {
     const y = date.getFullYear();
     return '' + (d <= 9 ? '0' + d : d) + '/' + (m<=9 ? '0' + m : m) + '/' + y ;
 }
-
-/*
-  SORTING
-*/
-
-function descendingComparator(a, b, orderBy) {
-    if (b[orderBy] < a[orderBy]) {
-      return -1;
-    }
-    if (b[orderBy] > a[orderBy]) {
-      return 1;
-    }
-    return 0;
-  }
-  
-function getComparator(order, orderBy) {
-return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-  
-
 const emptyTable= {
     body: {
         articles : []
@@ -59,25 +37,10 @@ const emptyTable= {
     page : 1
 }
 
-const readURL = function(searchParams) {
-    let output="";
-    for (const [key, value] of searchParams.entries()) {
-        output+=`&${key}=${value}`
-    }
-    return output;
-}
-
-const readURLObject = function(searchParams) {
-    let output={};
-    for (const [key, value] of searchParams.entries()) {
-        output[key]=value
-    }
-    return output;
-}
-
 const ListeArticle = function(props) {
 
     const [searchParams, setSearchParams] = useSearchParams({});
+    const {readURL, handleChangePage,sortHandeler} = useSort();
     const [url, setUrl] = useState(readURL(searchParams));
     const {data: tableData, loading, error} = useGet(`${API_CEGID}/articles?${url}`, emptyTable);
     const article = tableData.body.articles
@@ -93,25 +56,11 @@ const ListeArticle = function(props) {
         if (props.query.value) setSearchParams(param)
     }, [props.query])
 
-    const handleChangePage = async (event, newPage) => {
-        let param=readURLObject(searchParams);
-        param["page"] = newPage;
-        setSearchParams(param);
-    };
-
-    const sortHandeler = function(event, key) {
-        let param=readURLObject(searchParams);
-        let order = "-"
-        if (param["sort"]===`-${key}`) order ="+"
-        param["sort"] = `${order}${key}`;
-        setSearchParams(param);
-    }
-
     const header = [
         { name: "Code Article", sort: false},
-        { name: "Marque", sort: false},
-        { name: "Type", sort: false},
         { name: "Libelle", sort: false},
+        { name: "Marque", sort: true, trueName : "marque"},
+        { name: "Type", sort: true, trueName : "type"},
         { name: "Stock", sort: true, trueName : "stock"},
         { name: "Date Modification", sort: true , trueName : "GA_DATEMODIF"},
         { name: "Prix Initial", sort: true , trueName : "GA_PVTTC"} ,
@@ -137,12 +86,12 @@ const ListeArticle = function(props) {
                 <TableCell component="th" scope="row" sx={{maxWidth: "25px"}}>
                 <Link to={`${row.GA_CODEARTICLE}`}>{row.GA_CODEARTICLE}</Link>
                 </TableCell>
-                <TableCell align="right" sx={{maxWidth: "50px"}}>{row.marque?.toLowerCase()}</TableCell>
-                <TableCell align="right" sx={{maxWidth: "50px"}}>{row.type?.toLowerCase()}</TableCell>
-                <TableCell align="right" sx={{maxWidth: "100px"}}>{row.GA_LIBELLE?.toLowerCase()}</TableCell>
-                <TableCell align="right" sx={{maxWidth: "25px"}}>{row.stock}</TableCell>
-                <TableCell align="right" sx={{maxWidth: "40px"}}>{dateToYMD(row.GA_DATEMODIF)}</TableCell>
-                <TableCell align="right" sx={{maxWidth: "25px"}}>{row.GA_PVTTC}</TableCell>
+                <TableCell align="left" sx={{maxWidth: "100px"}}>{row.GA_LIBELLE?.toLowerCase()}</TableCell>
+                <TableCell align="left" sx={{maxWidth: "50px"}}>{row.marque?.toLowerCase()}</TableCell>
+                <TableCell align="left" sx={{maxWidth: "50px"}}>{row.type?.toLowerCase()}</TableCell>
+                <TableCell align="center" sx={{maxWidth: "25px"}}>{row.stock}</TableCell>
+                <TableCell align="center" sx={{maxWidth: "40px"}}>{dateToYMD(row.GA_DATEMODIF)}</TableCell>
+                <TableCell align="center" sx={{maxWidth: "25px"}}>{row.GA_PVTTC}</TableCell>
 
             </TableRow>
             ))}

@@ -9,10 +9,8 @@ const TableCustom = function(props) {
         <>        
             {!props.loading ? (<TableContainer component={Paper} sx={{marginTop: "30px", marginBottom: "30px"}} className="shadow">
             <Table stickyHeader size="small" className="shadow">
-
-
                 {props.children}
-            
+
                 <TableFooter>
                     <TableRow>
                         <TablePagination
