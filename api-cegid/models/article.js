@@ -8,9 +8,9 @@ export const getAllArticles = async function(parametres,having={}) {
     
 
     const sql = `
-    SELECT DISTINCT
+    SELECT
     GA_CODEARTICLE, 
-    MAX(a.CC_LIBELLE) AS "marque",MAX(b.CC_LIBELLE) AS "type"
+    MAX(CC_LIBELLE) AS "marque",MAX(GA_FAMILLENIV2) AS "division"
     , MAX(GA_LIBELLE) AS "GA_LIBELLE"
     , MAX(GA_PVTTC) AS 'GA_PVTTC'
     ,SUM(GQ_PHYSIQUE-GQ_RESERVECLI+GQ_RESERVEFOU-GQ_PREPACLI) AS 'stock'
@@ -19,8 +19,7 @@ export const getAllArticles = async function(parametres,having={}) {
         
     FROM DISPO
     INNER JOIN ARTICLE ON GA_ARTICLE=GQ_ARTICLE AND GQ_CLOTURE <> 'X' AND GA_TYPEARTICLE = 'MAR' 
-    LEFT JOIN CHOIXCOD AS a ON a.CC_CODE=GA_FAMILLENIV1
-    LEFT JOIN CHOIXCOD AS b ON b.CC_CODE=GA_FAMILLENIV2    
+    LEFT JOIN CHOIXCOD ON CC_CODE=GA_FAMILLENIV1
     ${query.where(parametres)} 
     GROUP BY Ga_CODEARTICLE
     ${query.having(having)}
