@@ -10,6 +10,7 @@ import { useContext } from 'react';
 import AuthContext from '../state/AuthContext';
 import { API_PLATEFORME } from '../index';
 import Notification from "../components/util/Util";
+import ListeEmploye from "../components/Articles/ListeEmploye";
 
 const EmployesListe = function() {
     const [query, setQuery] = useState("");
@@ -90,6 +91,8 @@ const EmployesListe = function() {
                      startIcon={<AddCircleOutlineIcon />} onClick={handleOpen}> 
                         Ajouter
                     </Button>
+
+                    <ListeEmploye/>
 
                     <AddEmployes open={openModal} onClose={handleClose} createEmploye={createEmploye}/>
                     <Notification closeNotif={closeNotif} message={error} status="error"  />

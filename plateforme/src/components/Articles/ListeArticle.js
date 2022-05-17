@@ -1,26 +1,16 @@
 import { useEffect, useState } from "react";
-
-
-import Box from '@mui/material/Box';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
-import { TableSortLabel } from '@mui/material';
-import { TableHead } from '@mui/material';
-
 import { useSearchParams } from 'react-router-dom';
 import classes from './ListeArticle.module.css';
 import { Link } from 'react-router-dom';
-
-import axios from 'axios';
 import TableCustom from "../Table/TableCustom";
-import { render } from "react-dom";
-
-
 import useGet from "../../hooks/useGet";
 import { API_CEGID } from "../../index";
 import TableHeadCustom from "../Table/TableHeadCustom";
 import useSort from "../../hooks/useSort";
+
 
 function dateToYMD(dateString) {
     const date = new Date(dateString);

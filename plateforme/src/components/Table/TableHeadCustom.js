@@ -11,10 +11,10 @@ const TableHeadCustom = function(props) {
         <TableRow>
             {props.header.map(head => {
                 if (!head.sort) {
-                    return <TableCell align="center">{head.name}</TableCell>
+                    return <TableCell align="center" key={head.name}>{head.name}</TableCell>
                 }
                 return (
-                    <TableCell  align="center"
+                    <TableCell  align="center" key={head.name}
                         sortDirection={sort?.startsWith("+") ? "asc" : "desc"}>
                         <TableSortLabel
                             active={sort?.slice(1)===head.trueName}
