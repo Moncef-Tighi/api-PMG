@@ -71,7 +71,6 @@ export const newEmploye = async function(email, password, nom, prenom="", poste=
     ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP )
     RETURNING *
     `
-    console.log(password); 
     const values = [email, password, nom, prenom, poste];
     const response = await db.query(sql, values)
     return response.rows[0];
