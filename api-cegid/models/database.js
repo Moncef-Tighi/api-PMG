@@ -6,6 +6,10 @@ const config = {
     database: process.env.DB_NAME,
     server: process.env.DB_ADDRESS,
     options: {
+        cryptoCredentialsDetails: {
+            minVersion: 'TLSv1'
+        },
+        encrypt: true, 
         trustServerCertificate: true // à enlever en situation réel. Permet d'accepter les self-signed certificate
     },
 }

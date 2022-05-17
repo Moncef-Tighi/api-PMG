@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "cross-env NODE_ENV=development node -r dotenv/config app.js dotenv_config_path=./config.env",
-    "prod" : "node app.js",
+    "prod" : "cross-env NODE_ENV=production node -r dotenv/config app.js dotenv_config_path=./config.prod.env",
     "dev": "cross-env NODE_ENV=development CHOKIDAR_USEPOLLING=true nodemon -r dotenv/config app.js dotenv_config_path=./config.env"
   },
   "author": "Tighiouart Moncef",
