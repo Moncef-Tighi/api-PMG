@@ -71,7 +71,7 @@ const ListeEmploye = function(props) {
                 <TableCell align="left" sx={{maxWidth: "50px"}}>{row.prenom}</TableCell>
                 <TableCell align="center" sx={{maxWidth: "25px"}}>{row.poste}</TableCell>
                 <TableCell align="center" sx={{maxWidth: "40px"}}>{row.permissions?.toString()}</TableCell>
-                <TableCell align="center" sx={{maxWidth: "25px"}}>{row.activé ? "Oui" : "Non" }</TableCell>
+                <TableCell align="center" sx={{maxWidth: "25px"}}>{row.active ? "Oui" : "Non" }</TableCell>
 
             </TableRow>
             ))}

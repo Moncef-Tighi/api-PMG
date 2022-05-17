@@ -11,6 +11,16 @@ import { API_CEGID } from "../../index";
 import TableHeadCustom from "../Table/TableHeadCustom";
 import useSort from "../../hooks/useSort";
 
+Object.defineProperty(String.prototype, 'capitalize', {
+    value: function() {
+      return this.charAt(0).toUpperCase() + this.slice(1);
+    },
+    enumerable: false
+  });
+
+function numberWithDots(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
 
 function dateToYMD(dateString) {
     const date = new Date(dateString);
@@ -50,7 +60,7 @@ const ListeArticle = function(props) {
         { name: "Code Article", sort: false},
         { name: "Libelle", sort: false},
         { name: "Marque", sort: true, trueName : "marque"},
-        { name: "Type", sort: true, trueName : "type"},
+        { name: "Division", sort: true, trueName : "division"},
         { name: "Stock", sort: true, trueName : "stock"},
         { name: "Date Modification", sort: true , trueName : "GA_DATEMODIF"},
         { name: "Prix Initial", sort: true , trueName : "GA_PVTTC"} ,
@@ -77,11 +87,11 @@ const ListeArticle = function(props) {
                 <Link to={`${row.GA_CODEARTICLE}`}>{row.GA_CODEARTICLE}</Link>
                 </TableCell>
                 <TableCell align="left" sx={{maxWidth: "100px"}}>{row.GA_LIBELLE?.toLowerCase()}</TableCell>
-                <TableCell align="left" sx={{maxWidth: "50px"}}>{row.marque?.toLowerCase()}</TableCell>
-                <TableCell align="left" sx={{maxWidth: "50px"}}>{row.type?.toLowerCase()}</TableCell>
+                <TableCell align="left" sx={{maxWidth: "50px"}}>{row.marque?.toLowerCase().capitalize()}</TableCell>
+                <TableCell align="left" sx={{maxWidth: "50px"}}>{row.division}</TableCell>
                 <TableCell align="center" sx={{maxWidth: "25px"}}>{row.stock}</TableCell>
                 <TableCell align="center" sx={{maxWidth: "40px"}}>{dateToYMD(row.GA_DATEMODIF)}</TableCell>
-                <TableCell align="center" sx={{maxWidth: "25px"}}>{row.GA_PVTTC}</TableCell>
+                <TableCell align="center" sx={{maxWidth: "25px"}}>{numberWithDots(row.GA_PVTTC)}</TableCell>
 
             </TableRow>
             ))}
