@@ -9,5 +9,5 @@ export const createAction = async function(id_employe, action_sur,categorie,type
     `
     const values = [id_employe, action_sur, categorie,type,description];
     const response = await db.query(sql, values)
-    return response.rows[0];
+    return response;
 }

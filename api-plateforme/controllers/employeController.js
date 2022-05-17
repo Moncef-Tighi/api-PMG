@@ -15,6 +15,7 @@ export const listEmployes = catchAsync( async function(request, response) {
     const employes= await model.allEmploye(request.query, permissions);
     return response.status(200).json({
         status: 'ok',
+        totalSize : employes.length,
         body : employes
     });
 

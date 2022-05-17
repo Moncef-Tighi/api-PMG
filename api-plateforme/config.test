@@ -26,4 +26,32 @@ JWT_EXPIRATION=1d
 
 PORT=4000
 
+API_CEGID=http://192.168.150.18:5000/api/v1
+
+# Config PostGre (DB de la platforme)
+#####################
+PG_HOST=192.168.150.18
+PG_USER=Moncef
+PG_DATABASE=plateforme
+PG_PASSWORD=root
+PG_PORT=5432
+#####################
+
+# Config MySQL (DB utilisée par WordPress)
+####################
+MY_HOST=192.168.150.18
+MY_USER=API
+MY_PASSWORD=root
+MY_DATABASE=pmg-test
+####################
+
+# Si le stock d'un article est inférieur à cette valeur, il sera marqué comme hors-stock
+MINSTOCK=5
+
+#Défini quand est-ce qu'un employé sera automatiquement déconnecté
+JWT_EXPIRATION=2d
+
+PORT=4001
+OLD_IP=192.168.1.13
+
 
