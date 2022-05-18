@@ -9,12 +9,12 @@ export const listArticles = catchAsync( async function(request, response,next){
         delete request.query.stock;
     }
     if(request.query.marque) {
-        having['MAX(a.CC_LIBELLE)']=request.query.marque;
+        having['MAX(CC_LIBELLE)']=request.query.marque;
         delete request.query.marque
     }
     if(request.query.type) {
-        having['MAX(b.CC_LIBELLE)']=request.query.type;
-        delete request.query.type
+        request.query['MAX(GA_FAMILLENIV2)']=request.query.division;
+        delete request.query.division
     }
 
     const [articles, length] = await model.getAllArticles(request.query, having);
