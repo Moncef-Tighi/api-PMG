@@ -9,7 +9,7 @@ import TableCustom from "../Table/TableCustom";
 import useGet from "../../hooks/useGet";
 import { API_PLATEFORME } from "../../index";
 import TableHeadCustom from "../Table/TableHeadCustom";
-import useSort from "../../hooks/useSort";
+import useTable from "../../hooks/useTable";
 
 const emptyTable= {
     body: [],
@@ -20,7 +20,7 @@ const emptyTable= {
 const ListeEmploye = function(props) {
 
     const [searchParams, setSearchParams] = useSearchParams({});
-    const {readURL, handleChangePage,sortHandeler} = useSort();
+    const {readURL, handleChangePage,sortHandeler} = useTable();
     const [url, setUrl] = useState(readURL(searchParams));
     const {data: tableData, loading, error} = useGet(`${API_PLATEFORME}/employes?${url}`, emptyTable);
     const employes = tableData.body

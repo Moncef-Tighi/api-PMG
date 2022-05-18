@@ -1,15 +1,13 @@
-import { useEffect, useState } from "react";
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
-import { useSearchParams } from 'react-router-dom';
 import classes from './ListeArticle.module.css';
 import { Link } from 'react-router-dom';
 import TableCustom from "../Table/TableCustom";
 import useGet from "../../hooks/useGet";
 import { API_CEGID } from "../../index";
 import TableHeadCustom from "../Table/TableHeadCustom";
-import useSort from "../../hooks/useSort";
+import useTable from "../../hooks/useTable";
 
 Object.defineProperty(String.prototype, 'capitalize', {
     value: function() {
@@ -39,22 +37,11 @@ const emptyTable= {
 
 const ListeArticle = function(props) {
 
-    const [searchParams, setSearchParams] = useSearchParams({});
-    const {readURL, handleChangePage,sortHandeler} = useSort();
-    const [url, setUrl] = useState(readURL(searchParams));
+    const {url, handleChangePage,sortHandeler} = useTable(props.query);
     const {data: tableData, loading, error} = useGet(`${API_CEGID}/articles?${url}`, emptyTable);
     const article = tableData.body.articles
 
-    useEffect( ()=> {
-        setUrl(() => readURL(searchParams))
-    }, [searchParams] )
-    
-    useEffect( ()=> {
-        const key = props.query.key;
-        let param={}
-        param[key] = props.query.value
-        if (props.query.value) setSearchParams(param)
-    }, [props.query])
+
 
     const header = [
         { name: "Code Article", sort: false},

@@ -5,6 +5,9 @@ const config = {
     password: process.env.DB_PWD,
     database: process.env.DB_NAME,
     server: process.env.DB_ADDRESS,
+    pool: {
+        idleTimeoutMillis: 30000
+      },    
     options: {
         cryptoCredentialsDetails: {
             minVersion: 'TLSv1'

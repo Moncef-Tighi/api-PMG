@@ -1,9 +1,20 @@
 import { useSearchParams } from 'react-router-dom';
-
-const useSort = function(props) {
+import { useEffect, useState } from 'react';
+const useTable = function(query) {
 
 
     const [searchParams, setSearchParams] = useSearchParams({});
+
+    useEffect( ()=> {
+        setUrl(() => readURL(searchParams))
+    }, [searchParams] )
+    
+    useEffect( ()=> {
+        const key = query.key;
+        let param={}
+        param[key] = query.value
+        if (query.value) setSearchParams(param)
+    }, [query])
 
     const readURL = function(searchParams) {
         let output="";
@@ -20,6 +31,9 @@ const useSort = function(props) {
         }
         return output;
     }
+
+    const [url, setUrl] = useState(readURL(searchParams));
+
     const handleChangePage = async (event, newPage) => {
         let param=readURLObject(searchParams);
         param["page"] = newPage;
@@ -34,7 +48,7 @@ const useSort = function(props) {
         setSearchParams(param);
     }
 
-    return {readURL, readURLObject, handleChangePage,sortHandeler}
+    return {url, handleChangePage, sortHandeler}
 }
 
-export default useSort;
+export default useTable;
