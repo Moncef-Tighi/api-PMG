@@ -2,7 +2,7 @@ import db from "./postGreSql.js";
 import QueryPostGre from "../util/query.js";
 
 export const allEmploye = async function(param="", permissions="") {
-    const query= new QueryPostGre("date_creation")
+    const query= new QueryPostGre("date_creation") 
 
     const sql = `SELECT employee.id_employe,email, nom, prenom, poste, active,
     array_agg(nom_role) as "permissions" FROM "employee"
@@ -16,7 +16,7 @@ export const allEmploye = async function(param="", permissions="") {
 
     const values = query.sanitize();
     const response = await db.query(sql, values);
-    
+
     return response.rows;
 
 }
