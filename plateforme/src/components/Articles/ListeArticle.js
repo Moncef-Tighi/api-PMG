@@ -62,6 +62,8 @@ const ListeArticle = function(props) {
             page={tableData.page}
             handleChangePage={handleChangePage}
             loading={loading}
+            sx={{marginTop: '25px',
+            boxShadow: "#3c40434d 0px 1px 2px 0px,#3c404326 0px 1px 3px 1px"}}
         >
         <TableHeadCustom header={header} sortHandeler={sortHandeler}/>
 

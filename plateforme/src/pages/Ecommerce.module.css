@@ -1,7 +1,7 @@
 .form {
     background-color: white;
     padding: 15px;
-    border-radius: 10px;
+    border-radius: 5px;
     align-items: center;
     display: grid;
     grid-template-columns: 2fr 6fr 1.5fr;

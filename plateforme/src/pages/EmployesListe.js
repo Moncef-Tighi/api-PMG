@@ -67,10 +67,11 @@ const EmployesListe = function() {
 
     return (
         <>
-            <aside>
-                <form className={classes.form} onSubmit={basicSearch}>
+        <div className={classes.liste_emp}>
+            <aside className={classes.aside}>
+                <form onSubmit={basicSearch} style={{display : "flex", paddingLeft: "10px"}}>
                     <NativeSelect id="select" variant='outlined'>
-                        <option value="nom">Nom de famille</option>
+                        <option value="nom">Nom</option>
                         <option value="prenom">Prenom</option>
                         <option value="poste">Poste</option>
                         <option value="email">E-Mail</option>
@@ -78,30 +79,31 @@ const EmployesListe = function() {
                     <TextField id='recherche' size="small" required variant="outlined" sx={{display: "block", marginLeft: "10px", width:"100%"}} 
                     InputProps={{
                         startAdornment: (
-                            <InputAdornment position="start">
-                            <Search />
+                            <InputAdornment>
+                            <Search/>
                             </InputAdornment>
                         ),
                         }}
                     >
                     </TextField>                    
-                    <Button color="primary" size="small" variant="contained" type="submit">
+                    {/* <Button color="primary" size="small" variant="contained" type="submit">
                         Rechercher
-                    </Button>
+                    </Button> */}
                 </form>
 
-                    <Button color="primary" size="small" variant="contained"
-                     startIcon={<AddCircleOutlineIcon />} onClick={handleOpen}> 
-                        Ajouter
-                    </Button>
-
-                    <ListeEmploye query={query}/>
-
-                    <AddEmployes open={openModal} onClose={handleClose} createEmploye={createEmploye}/>
-                    <Notification closeNotif={closeNotif} message={error} status="error"  />
-                    <Notification closeNotif={closeNotif} message={openNotif} status="success"  />
-
+                <Button color="primary" size="small" variant="contained"
+                    startIcon={<AddCircleOutlineIcon />} onClick={handleOpen}> 
+                    Nouveau Employé
+                </Button>
             </aside>
+
+
+            <ListeEmploye query={query}/>
+        </div>
+            <AddEmployes open={openModal} onClose={handleClose} createEmploye={createEmploye}/>
+            <Notification closeNotif={closeNotif} message={error} status="error"  />
+            <Notification closeNotif={closeNotif} message={openNotif} status="success"  />
+
 
         </>  
 
