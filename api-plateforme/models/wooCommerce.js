@@ -37,7 +37,11 @@ export const updatePrix = async function(codeArticle, prix) {
 export const totalVentes = async function() {
     try {
         const [rows, fields] = await db.execute(`
-        SELECT sku, onsale, total_sales FROM wp_wc_product_meta_lookup
+        SELECT post_title, a.meta_value as "Code Article", CAST(b.meta_value AS INT) as "Ventes total" FROM wp_posts 
+        INNER JOIN wp_postmeta as a ON a.post_id=wp_posts.ID AND a.meta_key="_sku"
+        INNER JOIN wp_postmeta as b ON b.post_id=wp_posts.ID AND b.meta_key="total_sales"
+        WHERE post_type ="product"
+        ORDER BY CAST(b.meta_value AS INT) DESC    
         `)
 
         return rows
