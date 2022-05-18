@@ -40,6 +40,7 @@ const ListeEmploye = function(props) {
             page={tableData.page || 1}
             handleChangePage={handleChangePage}
             loading={loading}
+            sx= {{boxShadow : "unset", borderRadius : "0px 0px 6px 6px"}}
         >
         <TableHeadCustom header={header} sortHandeler={sortHandeler}/>
 

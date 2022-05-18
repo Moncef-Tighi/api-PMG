@@ -2,13 +2,12 @@ import { Button, TextField, NativeSelect } from "@mui/material"
 import classes from './Ecommerce.module.css';
 import ListeArticle from "../components/Articles/ListeArticle";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import {Search} from '@mui/icons-material';
 import { InputAdornment } from "@mui/material";
+
 const Ecommerce = function() {
     const [query, setQuery] = useState("");
-    const [sortBy, changeSort] = useState("");
-    const navigate = useNavigate();
+    const [sortBy] = useState("");
     const basicSearch= function(event) {
         event.preventDefault();
         const {select, recherche}= event.currentTarget.elements

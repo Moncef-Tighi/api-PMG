@@ -25,7 +25,7 @@ export default function usePost(url, payload, headers=null){
                 }
             }
         )()
-    }, [url])
+    }, [url, headers, payload])
 
     return { data, error, loading }
 

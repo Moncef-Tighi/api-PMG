@@ -16,7 +16,7 @@ const useTable = function(query) {
         let param={}
         param[key] = query?.value
         if (query?.value) setSearchParams(param)
-    }, [query])
+    }, [query, setSearchParams])
 
     const readURL = function(searchParams) {
         let output="";

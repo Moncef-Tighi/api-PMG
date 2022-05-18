@@ -5,7 +5,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 
-import {Article, ContactPhone, LocalOffer, Height, Person, ManageAccounts, History} from '@mui/icons-material';
+import {Article, ContactPhone, LocalOffer, Person, ManageAccounts, History} from '@mui/icons-material';
 import { NavLink } from 'react-router-dom';
 
 const Navigation = function() {

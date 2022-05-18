@@ -1,4 +1,4 @@
-import { TableSortLabel,TableCell, TableHead, TableRow, Box } from "@mui/material";
+import { TableSortLabel,TableCell, TableHead, TableRow } from "@mui/material";
 import { useSearchParams } from "react-router-dom";
 
 const TableHeadCustom = function(props) {

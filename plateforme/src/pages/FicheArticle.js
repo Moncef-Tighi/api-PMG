@@ -15,7 +15,6 @@ const emptyArticle = {
         "GA_LIBELLE" : "",
         "GA2_LIBREARTE": "",
         "GA_DATECREATION": "",
-        "GA_LIBELLE": "",
         "GFM_NATURETYPE": "",
         "GFM_PERTARIF": "",
         "GFM_TYPETARIF": "",
@@ -65,7 +64,7 @@ const FicheArticle = function() {
             <div>
                 <h4>Prix Initial : {article.prixInitial } DA</h4>
                 <h2>Prix Actuel : {article.prixActuel } DA</h2>
-                <img style={{width:"300px", height:"300px", backgroundColor: "lightgrey"}}></img>
+                <img style={{width:"300px", height:"300px", backgroundColor: "lightgrey"}} alt="illustration de l'article"></img>
             </div>
             <div>
                 <h3>Informations Article : </h3>

@@ -25,7 +25,7 @@ export default function useGet(url, defaultData=null){
                 }
             }
         )()
-    }, [url])
+    }, [url, defaultData])
 
     return { data, error, loading }
 

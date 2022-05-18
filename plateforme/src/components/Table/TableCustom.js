@@ -3,7 +3,7 @@ import { TablePagination } from "@mui/material"
 import { TablePaginationActions } from "./TablePaginationActions"
 
 const TableCustom = function(props) {
-    console.log(props.sx);
+
     return (
         <>        
             {!props.loading ? (<TableContainer component={Paper}  sx={props.sx} className="shadow">
