@@ -1,5 +1,7 @@
 import { useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+
+
 const useTable = function(query) {
 
 
@@ -10,10 +12,10 @@ const useTable = function(query) {
     }, [searchParams] )
     
     useEffect( ()=> {
-        const key = query.key;
+        const key = query?.key;
         let param={}
-        param[key] = query.value
-        if (query.value) setSearchParams(param)
+        param[key] = query?.value
+        if (query?.value) setSearchParams(param)
     }, [query])
 
     const readURL = function(searchParams) {

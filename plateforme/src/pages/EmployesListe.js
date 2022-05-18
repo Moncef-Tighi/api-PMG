@@ -13,7 +13,7 @@ import Notification from "../components/util/Util";
 import ListeEmploye from "../components/Articles/ListeEmploye";
 
 const EmployesListe = function() {
-    const [query, setQuery] = useState("");
+    const [query, setQuery] = useState({});
     const [openModal, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -26,7 +26,10 @@ const EmployesListe = function() {
 
         event.preventDefault();
         const {select, recherche}= event.currentTarget.elements
-        setQuery(`${select.value}[like]=${recherche.value}`)
+        setQuery( {
+            key : `${select.value}[like]`,
+            value : recherche.value
+        })
     }
     const closeNotif = (event, reason) => {
         setNotif("");
@@ -92,7 +95,7 @@ const EmployesListe = function() {
                         Ajouter
                     </Button>
 
-                    <ListeEmploye/>
+                    <ListeEmploye query={query}/>
 
                     <AddEmployes open={openModal} onClose={handleClose} createEmploye={createEmploye}/>
                     <Notification closeNotif={closeNotif} message={error} status="error"  />

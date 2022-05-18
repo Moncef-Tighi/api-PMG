@@ -1,8 +1,6 @@
-import { useEffect, useState } from "react";
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
-import { useSearchParams } from 'react-router-dom';
 import classes from './ListeArticle.module.css';
 import { Link } from 'react-router-dom';
 import TableCustom from "../Table/TableCustom";
@@ -19,22 +17,9 @@ const emptyTable= {
 
 const ListeEmploye = function(props) {
 
-    const [searchParams, setSearchParams] = useSearchParams({});
-    const {readURL, handleChangePage,sortHandeler} = useTable();
-    const [url, setUrl] = useState(readURL(searchParams));
+    const {url, handleChangePage,sortHandeler} = useTable(props.query);
     const {data: tableData, loading, error} = useGet(`${API_PLATEFORME}/employes?${url}`, emptyTable);
     const employes = tableData.body
-
-    useEffect( ()=> {
-        setUrl(() => readURL(searchParams))
-    }, [searchParams] )
-    
-    // useEffect( ()=> {
-    //     const key = props.query.key;
-    //     let param={}
-    //     param[key] = props.query.value
-    //     if (props.query.value) setSearchParams(param)
-    // }, [props.query])
 
     const header = [
         { name: "id_employe", sort: false},
@@ -52,7 +37,7 @@ const ListeEmploye = function(props) {
         <TableCustom
             tableData={tableData.body.articles}
             totalSize={tableData.totalSize}
-            page={tableData.page}
+            page={tableData.page || 1}
             handleChangePage={handleChangePage}
             loading={loading}
         >
