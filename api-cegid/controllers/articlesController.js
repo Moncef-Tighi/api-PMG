@@ -12,8 +12,8 @@ export const listArticles = catchAsync( async function(request, response,next){
         having['MAX(CC_LIBELLE)']=request.query.marque;
         delete request.query.marque
     }
-    if(request.query.type) {
-        request.query['MAX(GA_FAMILLENIV2)']=request.query.division;
+    if(request.query.division) {
+        having['MAX(GA_FAMILLENIV2)']=request.query.division;
         delete request.query.division
     }
 
