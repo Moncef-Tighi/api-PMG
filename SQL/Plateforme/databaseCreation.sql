@@ -41,13 +41,12 @@ CREATE TABLE historique_actions (
 CREATE TABLE article (
     code_article VARCHAR(255) PRIMARY KEY,
     date_ajout TIMESTAMP NOT NULL,
-    date_creation TIMESTAMP,
+    date_modification TIMESTAMP,
+    prix_initial READ NOT NULL,
     prix_vente REAL NOT NULL,
     libelle VARCHAR(100),
     marque VARCHAR(100),
-    type VARCHAR(100),
     description TEXT,
-    tags VARCHAR(100),
     activé BOOLEAN DEFAULT true
 );
 
@@ -57,5 +56,19 @@ CREATE TABLE article_taille (
     dimension VARCHAR(25) NOT NULL,
     CONSTRAINT fk_article FOREIGN KEY (code_article) REFERENCES article(code_article)
 );
+
+CREATE TABLE article_categorie (
+    code_article VARCHAR(255) NOT NULL,
+    code_categorie INT NOT NULL,
+
+    PRIMARY KEY (code_article, code_categorie)
+    CONSTRAINT fk_article_categorie FOREIGN KEY (code_article) REFERENCES article(code_article)
+    CONSTRAINT fk_categorie FOREIGN KEY (code_categorie) REFERENCES categorie(code_categorie)
+)
+
+CREATE TABLE categorie (
+    code_categorie SERIAL PRIMARY KEY,
+    nom_categorie VARCHAR(25)
+)
 
 CREATE INDEX index_date_ajout ON article(date_ajout) WHERE activé IS TRUE;

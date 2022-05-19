@@ -84,7 +84,7 @@ const ListeArticle = function(props) {
         {error ? <aside className={classes.error}>{error}</aside>: "" }
         {taille>0 ? 
             <aside className={classes.aside}>
-                <p>{taille} articles sélectionnées</p>
+                <p>{taille} articles sélectionnés</p>
                 <div>    
                     <Button color='primary'sx={{maginRight: "25px"}}>
                         Tout Déselectionner
