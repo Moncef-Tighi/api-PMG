@@ -33,7 +33,7 @@ const ListeEmploye = function(props) {
     
     return (
         <>
-        {error ? <aside className={classes.error}>{error}</aside>: "" }
+        {error ? <aside className={classes.error} style={{ marginBottom: "20px"}}>{error}</aside>: "" }
         <TableCustom
             tableData={tableData.body.articles}
             totalSize={tableData.totalSize}

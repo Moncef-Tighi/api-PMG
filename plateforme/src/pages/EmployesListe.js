@@ -92,9 +92,7 @@ const EmployesListe = function() {
                 </form>
 
                 <Button color="primary" size="small" variant="contained"
-                    startIcon={<AddCircleOutlineIcon />} onClick={handleOpen}> 
-                    Nouveau Employé
-                </Button>
+                    startIcon={<AddCircleOutlineIcon />} onClick={handleOpen}> Ajout Employé </Button>
             </aside>
 
 

@@ -20,13 +20,12 @@ const Ecommerce = function() {
 
     return (
         <>
-            <aside>
+            <aside style={{marginBottom: "25px"}}>
                 <form className={classes.form} onSubmit={basicSearch}>
                     <NativeSelect id="select" variant='outlined'>
                         <option value="GA_CODEARTICLE">Code Article</option>
                         <option value="marque">Marque</option>
-                        <option value="type">Type</option>
-                        <option value="GA_LIBELLE">Libelle</option>
+                        <option value="division">Division</option>
                     </NativeSelect>
                     <TextField id='recherche' size="small" required variant="outlined" sx={{display: "block", marginLeft: "10px", width:"100%"}} 
                     InputProps={{

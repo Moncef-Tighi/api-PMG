@@ -8,6 +8,10 @@ import useGet from "../../hooks/useGet";
 import { API_CEGID } from "../../index";
 import TableHeadCustom from "../Table/TableHeadCustom";
 import useTable from "../../hooks/useTable";
+import {Checkbox, Button} from '@mui/material';
+import {useState} from "react";
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+
 
 Object.defineProperty(String.prototype, 'capitalize', {
     value: function() {
@@ -39,11 +43,29 @@ const ListeArticle = function(props) {
 
     const {url, handleChangePage,sortHandeler} = useTable(props.query);
     const {data: tableData, loading, error} = useGet(`${API_CEGID}/articles?${url}`, emptyTable);
+    const [selection, setSelection] = useState({});
     const article = tableData.body.articles
 
+    const selectionHandeler = function(event, article) {
+        const code_article= article.GA_CODEARTICLE;
 
+        if (!event.target.checked) {
+            const newSelection = {...selection};
+            delete newSelection[code_article]
+            return setSelection(newSelection);
+        }
+        let newArticle= {}
+        newArticle[code_article]= article;
+
+        setSelection({
+            ...selection,
+            ...newArticle
+        })
+        
+    }
 
     const header = [
+        { name: "", sort: false},
         { name: "Code Article", sort: false},
         { name: "Libelle", sort: false},
         { name: "Marque", sort: true, trueName : "marque"},
@@ -52,26 +74,61 @@ const ListeArticle = function(props) {
         { name: "Date Modification", sort: true , trueName : "GA_DATEMODIF"},
         { name: "Prix Initial", sort: true , trueName : "GA_PVTTC"} ,
     ]
+
+    const isSelected = (row) => row.GA_CODEARTICLE in selection;
     
+    const taille = Object.keys(selection).length
     return (
+
         <>
         {error ? <aside className={classes.error}>{error}</aside>: "" }
+        {taille>0 ? 
+            <aside className={classes.aside}>
+                <p>{taille} articles sélectionnées</p>
+                <div>    
+                    <Button color='primary'sx={{maginRight: "25px"}}>
+                        Tout Déselectionner
+                    </Button>    
+                    <Button variant="contained" size='small'
+                    startIcon={<AddCircleOutlineIcon />}
+                    >
+                        Insérer
+                    </Button>
+                </div>
+            </aside>
+        : ""}
+
         <TableCustom
             tableData={tableData.body.articles}
             totalSize={tableData.totalSize}
             page={tableData.page}
             handleChangePage={handleChangePage}
             loading={loading}
-            sx={{marginTop: '25px',
+            sx={{
             boxShadow: "#3c40434d 0px 1px 2px 0px,#3c404326 0px 1px 3px 1px"}}
         >
         <TableHeadCustom header={header} sortHandeler={sortHandeler}/>
 
         <TableBody>
-            {article.map((row) => (
-            <TableRow
+            {article.map((row) => {
+                const isItemSelected= isSelected(row)
+                return (
+                <TableRow
                 key={row.GA_CODEARTICLE}
-            >
+                aria-checked={isItemSelected}
+                selected={isItemSelected}
+                >
+                <TableCell padding="checkbox" >
+                    <Checkbox
+                        color="primary"
+                        checked={isItemSelected}
+                        onClick={(event) => selectionHandeler(event, row)}
+                        inputProps={{
+                        'article': row.GA_CODEARTICLE,
+                        }}
+                    />
+                </TableCell>
+
                 <TableCell component="th" scope="row" sx={{maxWidth: "25px"}}>
                 <Link to={`${row.GA_CODEARTICLE}`}>{row.GA_CODEARTICLE}</Link>
                 </TableCell>
@@ -83,7 +140,7 @@ const ListeArticle = function(props) {
                 <TableCell align="center" sx={{maxWidth: "25px"}}>{numberWithDots(row.GA_PVTTC)}</TableCell>
 
             </TableRow>
-            ))}
+            )})}
         </TableBody>
         </TableCustom>
         </>
