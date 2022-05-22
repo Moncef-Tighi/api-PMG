@@ -67,7 +67,6 @@ const ListeArticle = function(props) {
         })
         
     }
-    console.log(selection);
 
     const header = [
         { name: "", sort: false},
