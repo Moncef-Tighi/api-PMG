@@ -47,8 +47,8 @@ const ListeArticle = function(props) {
     const [selection, setSelection] = useState({});
     const article = tableData.body.articles
     const [open, setModal] = useState(false);
-    const closeModal= ()=> setModal(false);
-    const openModal= ()=> setModal(true);
+    const closeModal= ()=> setModal(()=>false);
+    const openModal= ()=> setModal(()=> true);
 
     const selectionHandeler = function(event, article) {
         const code_article= article.GA_CODEARTICLE;
@@ -67,6 +67,7 @@ const ListeArticle = function(props) {
         })
         
     }
+    console.log(selection);
 
     const header = [
         { name: "", sort: false},
