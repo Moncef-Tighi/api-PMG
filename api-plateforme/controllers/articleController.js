@@ -72,12 +72,13 @@ const updateOnearticleWooCommerce = async function(body,id) {
         date_modified: Date.now(),
         name : libelle
     });
-    console.log(wooCommerce.data);
+
+    const allVariations = await apiWooCommerce.get(`products/${id}/variations`);
+
     const wooCommerceVariations = await apiWooCommerce.post(`products/${id}/variations/batch`,{
         update :  tailles.map(taille=>{
-            console.log(wooCommerce.data.find(article => article.attributes[0].option===taille.dimension));
             return {
-                id : wooCommerce.data.find(article => article.attributes[0].option===taille.dimension).id,
+                id : allVariations.data.find(article => article.attributes[0]?.option===taille.dimension).id,
                 stock_status: taille.stock > process.env.MINSTOCK ? "instock" : "outofstock", 
                 regular_price: String(prix_vente),
             }
@@ -164,7 +165,7 @@ export const ajoutArticle = catchAsync(async function(request, response) {
     const result = await insertOneArticlePlateforme(request.body);
 
     const wooCommerceExistance= await apiWooCommerce.get(`products?sku=${code_article}`);
-    if (wooCommerceExistance.data[0].name) {
+    if (wooCommerceExistance.data[0]?.name) {
         var {wooCommerce, wooCommerceVariations} = await updateOnearticleWooCommerce(request.body,wooCommerceExistance.data[0].id);
     } else {
 
