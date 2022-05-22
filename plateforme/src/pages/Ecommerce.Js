@@ -11,7 +11,6 @@ const Ecommerce = function() {
     const basicSearch= function(event) {
         event.preventDefault();
         const {select, recherche}= event.currentTarget.elements
-        console.log(recherche.value);
         setQuery({
             key : `${select.value}[like]`,
             value :  recherche.value
@@ -42,7 +41,6 @@ const Ecommerce = function() {
                     </Button>
                 </form>
             </aside>
-
             <ListeArticle query={query} sortBy={sortBy} />
         </>  
         )

@@ -11,6 +11,7 @@ import useTable from "../../hooks/useTable";
 import {Checkbox, Button} from '@mui/material';
 import {useState} from "react";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import ModalAddArticles from "./ModalAddArticles";
 
 
 Object.defineProperty(String.prototype, 'capitalize', {
@@ -45,6 +46,9 @@ const ListeArticle = function(props) {
     const {data: tableData, loading, error} = useGet(`${API_CEGID}/articles?${url}`, emptyTable);
     const [selection, setSelection] = useState({});
     const article = tableData.body.articles
+    const [open, setModal] = useState(false);
+    const closeModal= ()=> setModal(false);
+    const openModal= ()=> setModal(true);
 
     const selectionHandeler = function(event, article) {
         const code_article= article.GA_CODEARTICLE;
@@ -91,6 +95,7 @@ const ListeArticle = function(props) {
                     </Button>    
                     <Button variant="contained" size='small'
                     startIcon={<AddCircleOutlineIcon />}
+                    onClick={openModal}
                     >
                         Insérer
                     </Button>
@@ -143,6 +148,11 @@ const ListeArticle = function(props) {
             )})}
         </TableBody>
         </TableCustom>
+
+
+        <ModalAddArticles open={open} onClose={closeModal} selection={selection}/>
+
+
         </>
     )
 }
