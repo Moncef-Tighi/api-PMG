@@ -11,9 +11,13 @@ export const checkDisponibilite = async function(articles) {
 
 export const readAllArticles = async function(param) {
     const query= new QueryPostGre("-date_ajout")
+    if (param.code_article) {
+        param["article.code_article"]=param.code_article;
+        delete param.code_article;
+    }
     const sql = `
-        SELECT article.code_article, prix_vente, libelle, array_agg(dimension) as "dimension"  
-        , date_ajout, marque, type, description, tags
+        SELECT article.code_article,prix_initial, prix_vente, libelle, array_agg(dimension) as "dimension"  
+        , date_ajout, marque, description
         FROM article 
         INNER JOIN article_taille ON article.code_article=article_taille.code_article
         ${query.where(param)}
@@ -31,7 +35,7 @@ export const readAllArticles = async function(param) {
 export const readArticles = async function(articles) {
 
     const sql = `
-    SELECT article.code_article, prix_vente, libelle, array_agg(dimension) as "dimension", activé  FROM article 
+    SELECT article.code_article,prix_initial, prix_vente, libelle, array_agg(dimension) as "dimension", activé  FROM article 
     INNER JOIN article_taille ON article.code_article=article_taille.code_article
     WHERE article.code_article = ANY($1::varchar[])
     GROUP BY article.code_article, prix_vente, libelle
@@ -43,7 +47,7 @@ export const readArticles = async function(articles) {
 
 export const readOneArticle = async function(code_article) {
     const sql = `
-        SELECT article.code_article, prix_vente, libelle, array_agg(dimension) as "dimension"  FROM article 
+        SELECT article.code_article,prix_initial, prix_vente, libelle, array_agg(dimension) as "dimension"  FROM article 
         INNER JOIN article_taille ON article.code_article=article_taille.code_article
         WHERE article.code_article = $1
         GROUP BY article.code_article, prix_vente, libelle
@@ -59,6 +63,8 @@ export const insertArticle = async function(code_article, libelle=null, marque=n
     INSERT INTO article(code_article, libelle, marque, date_modification, date_ajout,prix_initial, prix_vente, description)
     VALUES 
     ($1, $2, $3, $4, CURRENT_TIMESTAMP,$5,$6,$7 )
+    ON CONFLICT (code_article) DO UPDATE
+    SET libelle=$2, prix_vente=$6, description=$7
     RETURNING *
     `
     const values = [code_article, libelle, marque, date_modification,prix_initial, prix_vente, description];
@@ -72,6 +78,7 @@ export const insertTaille = async function(code_article, dimension, code_barre) 
     INSERT INTO article_taille(code_article,dimension, code_barre)
     VALUES
     ($1,$2,$3)
+    ON CONFLICT DO NOTHING
     `
 
     const values = [code_article, dimension, code_barre];
@@ -93,7 +100,22 @@ export const updatePrix = async function(code_article, prix) {
 
     return response.rowCount;
 
-}
+};
+
+export const updateArticle = async function(article, tailles) {
+    try {
+        await db.query("BEGIN");
+        const sqlArticle = `UPDATE article
+        SET prix_vente=$1, libelle=$2, description=$3`
+        const values = [prix, code_article];
+        var responseArticle = await db.query(sql, values)
+    
+
+    } catch(error) {
+        await client.query('ROLLBACK')
+        throw error
+    }
+};
 
 export const activationArticle = async function(code_article, activation) {
     //Fonction utilisée pour activer ET désactiver un article

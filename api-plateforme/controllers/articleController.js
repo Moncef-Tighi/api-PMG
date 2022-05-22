@@ -4,6 +4,90 @@ import createError from 'http-errors';
 import * as wooCommerce from '../models/wooCommerce.js';
 import apiWooCommerce from "../models/api.js";
 
+const extractArticle= function(body) {
+    const code_article= body.code_article;
+    const libelle= body.libelle;
+    const marque = body.marque;
+    const date_modification = body.date_modification;
+    const prix_vente = body.prix_vente;
+    const prix_initial = body.prix_initial;
+    const description = body.description;
+    const tailles = body.taille;
+    return {code_article,libelle,marque,date_modification,prix_vente,prix_initial, description, tailles}
+}
+
+
+const insertOneArticlePlateforme= async function(body) {
+
+    const {code_article,libelle,marque,date_modification,prix_vente,prix_initial, description, tailles} = extractArticle(body);
+    
+    const result = await model.insertArticle(code_article, libelle, marque, date_modification, prix_initial, prix_vente, description);
+
+    tailles.forEach( async taille => {
+        await model.insertTaille(code_article, taille.dimension, taille.code_barre)
+    })
+
+    return {result};
+}
+
+const insertOneArticleWooCommerce= async function(body) {
+    const {code_article,libelle,prix_vente,prix_initial, tailles} = extractArticle(body);
+
+    const wooCommerce = await apiWooCommerce.post("products",{
+        name : libelle,
+        type: "variable",
+        regular_price: String(prix_vente),
+        sku: code_article,
+        stock_status: "instock",
+        attributes : [{
+            id : 3,
+            variation : true,
+            visible: true,
+            options :  tailles.map(dim => dim.dimension)
+        }
+        ]
+    })
+    const wooCommerceVariations = await apiWooCommerce.post(`products/${wooCommerce.data.id}/variations/batch`,{
+        create :  tailles.map(taille=>{
+            return {
+
+                stock_status: taille.stock > process.env.MINSTOCK ? "instock" : "outofstock", 
+                regular_price: prix_vente,
+                attributes : [{
+                    id : 3,
+                    option : taille.dimension
+                }]
+            }
+        })
+        })
+
+    return {wooCommerce, wooCommerceVariations}
+
+}
+
+const updateOnearticleWooCommerce = async function(body,id) {
+    const {libelle,prix_vente, tailles} = extractArticle(body);
+    const wooCommerce = await apiWooCommerce.put(`products/${id}`,{
+        regular_price: String(prix_vente),
+        date_modified: Date.now(),
+        name : libelle
+    });
+    console.log(wooCommerce.data);
+    const wooCommerceVariations = await apiWooCommerce.post(`products/${id}/variations/batch`,{
+        update :  tailles.map(taille=>{
+            console.log(wooCommerce.data.find(article => article.attributes[0].option===taille.dimension));
+            return {
+                id : wooCommerce.data.find(article => article.attributes[0].option===taille.dimension).id,
+                stock_status: taille.stock > process.env.MINSTOCK ? "instock" : "outofstock", 
+                regular_price: String(prix_vente),
+            }
+        })
+        })
+
+    return  {wooCommerce, wooCommerceVariations}
+}
+
+
 const addStockToArticles = async function(articles, articlesDispo) {
     //Fonction utilitaire qui combine les infos de l'article extraite de la plateforme 
     //Avec les informations de stock extraite de l'API Cegid
@@ -72,50 +156,20 @@ export const unArticle = catchAsync( async function(request, response, next) {
 export const ajoutArticle = catchAsync(async function(request, response) {
     //On importe l'article depuis l'API Cegid et on le place dans la plateforme.
     
-    const code_article= request.body.code_article;
-    const libelle= request.body.libelle;
-    const marque = request.body.marque;
-    const date_modification = request.body.date_modification;
-    const prix_vente = request.body.prix_vente;
-    const prix_initial = request.body.prix_initial;
-    const description = request.body.description;
-    const tailles = request.body.taille;
+    const {code_article,prix_vente, tailles} = extractArticle(request.body);
 
     if (!code_article || !tailles || !prix_vente || prix_vente<10) return next(createError(400, `Impossible de créer l'article : une information obligatoire n'a pas été fournit`))
-    const result = await model.insertArticle(code_article, libelle, marque, date_modification, prix_initial, prix_vente, description);
 
-    const wooCommerce = await apiWooCommerce.post("products",{
-        name : libelle,
-        type: "variable",
-        regular_price: String(prix_initial),
-        price: String(prix_vente),
-        sku: code_article,
-        stock_status: "instock",
-        attributes : [{
-            id : 3,
-            variation : true,
-            visible: true,
-            options :  tailles.map(dim => dim.dimension)
-        }
-        ]
-    })
-    const wooCommerceVariations = await apiWooCommerce.post(`products/${wooCommerce.data.id}/variations/batch`,{
-        create :  tailles.map(taille=>{
-            return {
+    
+    const result = await insertOneArticlePlateforme(request.body);
 
-                stock_status: taille.stock > process.env.MINSTOCK ? "instock" : "outofstock", 
-                regular_price: prix_vente,
-                attributes : [{
-                    id : 3,
-                    option : taille.dimension
-                }]
-            }
-        })
-        })
+    const wooCommerceExistance= await apiWooCommerce.get(`products?sku=${code_article}`);
+    if (wooCommerceExistance.data[0].name) {
+        var {wooCommerce, wooCommerceVariations} = await updateOnearticleWooCommerce(request.body,wooCommerceExistance.data[0].id);
+    } else {
 
-    tailles.forEach( async taille => {
-        await model.insertTaille(code_article, taille.dimension, taille.code_barre)
-    })
+        var {wooCommerce, wooCommerceVariations} = await insertOneArticleWooCommerce(request.body);
+    }
 
 
     return response.status(201).json({
@@ -151,7 +205,6 @@ export const articleEtat = catchAsync( async function(request, response, next) {
     const articlesPlateforme = await model.readArticles(codeArticles);
     let result = []
     articles.forEach(article=> {
-        console.log(article);
         let output={};
         const found = articlesPlateforme.find(art=> art.code_article === article.code_article);
 
