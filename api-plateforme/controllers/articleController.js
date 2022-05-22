@@ -75,22 +75,57 @@ export const ajoutArticle = catchAsync(async function(request, response) {
     const code_article= request.body.code_article;
     const libelle= request.body.libelle;
     const marque = request.body.marque;
-    const type= request.body.type;
-    const date_creation = request.body.date_creation;
+    const date_modification = request.body.date_modification;
     const prix_vente = request.body.prix_vente;
+    const prix_initial = request.body.prix_initial;
     const description = request.body.description;
-    const tags = request.body.tags;
     const tailles = request.body.taille;
+
     if (!code_article || !tailles || !prix_vente || prix_vente<10) return next(createError(400, `Impossible de créer l'article : une information obligatoire n'a pas été fournit`))
-    const result = await model.insertArticle(code_article, libelle, marque, type, date_creation, prix_vente, description, tags);
+    const result = await model.insertArticle(code_article, libelle, marque, date_modification, prix_initial, prix_vente, description);
+
+    const wooCommerce = await apiWooCommerce.post("products",{
+        name : libelle,
+        type: "variable",
+        regular_price: String(prix_initial),
+        price: String(prix_vente),
+        sku: code_article,
+        stock_status: "instock",
+        attributes : [{
+            id : 3,
+            variation : true,
+            visible: true,
+            options :  tailles.map(dim => dim.dimension)
+        }
+        ]
+    })
+    const wooCommerceVariations = await apiWooCommerce.post(`products/${wooCommerce.data.id}/variations/batch`,{
+        create :  tailles.map(taille=>{
+            return {
+
+                stock_status: taille.stock > process.env.MINSTOCK ? "instock" : "outofstock", 
+                regular_price: prix_vente,
+                attributes : [{
+                    id : 3,
+                    option : taille.dimension
+                }]
+            }
+        })
+        })
 
     tailles.forEach( async taille => {
         await model.insertTaille(code_article, taille.dimension, taille.code_barre)
     })
+
+
     return response.status(201).json({
         status : "ok",
         message : "L'article a bien été mis en vente sur la plateforme",
-        body : result    
+        body : {
+            plateforme : result,
+            wooCommerce : wooCommerce.data,
+            wooCommerceVariations : wooCommerceVariations.data
+        }    
     })
 })
 

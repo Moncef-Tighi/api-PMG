@@ -54,14 +54,14 @@ export const readOneArticle = async function(code_article) {
 
 }
 
-export const insertArticle = async function(code_article, libelle=null, marque=null, type=null, date_creation=null, prix_vente, description=null, tags=null){
+export const insertArticle = async function(code_article, libelle=null, marque=null, date_modification=null,prix_initial, prix_vente, description=null){
     const sql = `
-    INSERT INTO article(code_article, libelle, marque, type, date_creation, date_ajout, prix_vente, description, tags)
+    INSERT INTO article(code_article, libelle, marque, date_modification, date_ajout,prix_initial, prix_vente, description)
     VALUES 
-    ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP,$6,$7,$8 )
+    ($1, $2, $3, $4, CURRENT_TIMESTAMP,$5,$6,$7 )
     RETURNING *
     `
-    const values = [code_article, libelle, marque, type, date_creation, prix_vente, description, tags];
+    const values = [code_article, libelle, marque, date_modification,prix_initial, prix_vente, description];
     const response = await db.query(sql, values)
     return response.rows[0];
 }
