@@ -12,3 +12,9 @@
     border-radius: 10px;
     padding: 30px;
 }
+
+.flex {
+    display: flex;
+    margin-top: 20px;
+    flex-flow: row-reverse;
+}

@@ -68,6 +68,10 @@ const ListeArticle = function(props) {
         
     }
 
+    const deselectionHadeler= function() {
+        setSelection( ()=> {})
+    }
+
     const header = [
         { name: "", sort: false},
         { name: "Code Article", sort: false},
@@ -79,9 +83,10 @@ const ListeArticle = function(props) {
         { name: "Prix Initial", sort: true , trueName : "GA_PVTTC"} ,
     ]
 
-    const isSelected = (row) => row.GA_CODEARTICLE in selection;
+    const isSelected = (row) => {if (selection) return row.GA_CODEARTICLE in selection};
     
-    const taille = Object.keys(selection).length
+    if (selection) var taille = Object.keys(selection).length
+    else var taille = 0
     return (
 
         <>
@@ -90,7 +95,7 @@ const ListeArticle = function(props) {
             <aside className={classes.aside}>
                 <p>{taille} articles sélectionnés</p>
                 <div>    
-                    <Button color='primary'sx={{maginRight: "25px"}}>
+                    <Button color='primary'sx={{maginRight: "25px"}} onClick={deselectionHadeler}>
                         Tout Déselectionner
                     </Button>    
                     <Button variant="contained" size='small'

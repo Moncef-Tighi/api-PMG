@@ -154,7 +154,7 @@ export const unArticle = catchAsync( async function(request, response, next) {
 
 });
 
-export const ajoutArticle = catchAsync(async function(request, response) {
+export const ajoutArticle = catchAsync(async function(request, response, next) {
     //On importe l'article depuis l'API Cegid et on le place dans la plateforme.
     
     const {code_article,prix_vente, tailles} = extractArticle(request.body);

@@ -103,6 +103,7 @@ const ModalAddArticles = function({open, onClose, selection}) {
                 : ""}
                 {(open === true && articles && sending===false) ? <>
                 <form onSubmit={insertion}>
+                <h1>Insertion</h1>
                 <TableCustom
                     tableData={articles}
                     totalSize={Object.keys(articles).length}
@@ -136,7 +137,13 @@ const ModalAddArticles = function({open, onClose, selection}) {
                 })}        
                 </TableBody>
                 </TableCustom>
-                <Button color='primary' type="submit" variant="contained">Confirmer</Button>
+                <div className={classes.flex}>
+                    <Button color='primary' type="submit" variant="contained" sx={{width : "250px"}}>Confirmer</Button>
+                    <Button variant="contained" color='primaryLighter'
+                    size="large" onClick={onClose} sx={{marginRight: "15px"}}>
+                    Annuler</Button>
+
+                </div>
                 </form>
                 </> : ""}
             </Box>
