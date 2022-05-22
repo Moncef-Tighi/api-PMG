@@ -2,6 +2,7 @@ import { catchAsync } from './errorController.js';
 import * as model from '../models/article.js';
 import createError from 'http-errors';
 import * as wooCommerce from '../models/wooCommerce.js';
+import apiWooCommerce from "../models/api.js";
 
 const addStockToArticles = async function(articles, articlesDispo) {
     //Fonction utilitaire qui combine les infos de l'article extraite de la plateforme 
@@ -56,10 +57,14 @@ export const unArticle = catchAsync( async function(request, response, next) {
     const disponibilite = await model.checkDisponibilite([article.code_article]);
 
     const result = await addStockToArticles(article, disponibilite.articles);
+    const WooCommerce = await apiWooCommerce.get("products", {sku : id})
 
     return response.status(200).json({
         status: 'ok',
-        body : result
+        body : {
+            Plateforme : result,
+            WooCommerce : WooCommerce.data
+        }
     });
 
 });
