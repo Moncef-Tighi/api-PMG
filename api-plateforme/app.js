@@ -7,6 +7,9 @@ import { errorHandeler } from "./controllers/errorController.js";
 import apiRouter from './routes/Router.js';
 //import produitsRouter from './routes/articlesRouter.js';
  
+import { ToadScheduler, SimpleIntervalJob } from "toad-scheduler";
+import { autoUpdateStock } from "./scheduleStockUpdate.js";
+
 const app = express();
 
 app.use(cors());
@@ -23,6 +26,16 @@ app.all('*', (request, response, next)=> {
     //Ce middelware a pour seul but de catch les erreurs 404 
     return next(createError(404, `Erreur 404 : Impossible de trouver l'URL ${request.originalUrl} sur ce serveur`))
 });
+
+const scheduler = new ToadScheduler();
+
+const jobForStockUpdate = new SimpleIntervalJob(
+	{ seconds: 10, runImmediately: true },
+	autoUpdateStock,
+	'id_1'
+);
+
+scheduler.addSimpleIntervalJob(jobForStockUpdate);
 
 
 app.use(errorHandeler);

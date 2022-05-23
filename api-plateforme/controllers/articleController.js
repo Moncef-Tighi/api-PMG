@@ -244,12 +244,6 @@ export const updatePrixArticle = catchAsync( async function(request, response, n
 
 });
 
-export const autoUpdateStock = catchAsync( async function() {
-    //TOUTE LES X MINUTES CETTE FONCTION EST EXECUTEE POUR METTRE A JOUR LE STOCK COTE PLATEFORME 
-    // 
-
-
-})
 
 export const disableArticle = catchAsync( async function(request, response) {
     const code_article = request.params.id
