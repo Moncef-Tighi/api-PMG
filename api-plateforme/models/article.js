@@ -28,6 +28,7 @@ export const readAllArticles = async function(param) {
         `
 
     const response = await db.query(sql, query.sanitize())
+
     return response.rows;
 
 }

@@ -30,7 +30,7 @@ app.all('*', (request, response, next)=> {
 const scheduler = new ToadScheduler();
 
 const jobForStockUpdate = new SimpleIntervalJob(
-	{ seconds: 10, runImmediately: true },
+	{ minutes: process.env.UPDATE_STOCK_EVERY_MINUTE, runImmediately: true },
 	autoUpdateStock,
 	'id_1'
 );
