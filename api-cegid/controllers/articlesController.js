@@ -128,3 +128,23 @@ export const ArticlesDisponible = catchAsync( async function(request, response,n
     })
 
 });
+
+
+
+export const updateStock = async function(request, response,next) {
+
+    const minutes = request.params.minutes
+    if (minutes<2) return next(createError(`Le délais de mise à jour est trop faible`, 400))
+
+    const updateArticle = await model.latestTransactionCode(minutes);
+
+    const articles = updateArticle.map( article => article.GL_CODEARTICLE);
+
+    return response.status(200).json({
+        status: "ok",
+        length : updateArticle.length,
+        body : {
+            articles,
+        }
+    })
+}

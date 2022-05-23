@@ -141,3 +141,17 @@ export const disponibilitéArticle = async function(articles) {
     return data.recordset;
 
 };
+
+
+export const latestTransactionCode = async function(minutes) {
+    const data=await db.query `
+        SELECT 
+        GL_CODEARTICLE
+        FROM LIGNE
+        WHERE GL_NATUREPIECEG='FFO' AND GL_CODEARTICLE!='FD'
+        AND DATEDIFF(minute,GL_DATECREATION,CURRENT_TIMESTAMP)<${minutes}
+        `;
+
+    return data.recordset;
+
+}
