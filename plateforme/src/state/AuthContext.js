@@ -62,8 +62,8 @@ export const AuthContextProvider = (props) => {
     const logoutHandeler = () => {
         setToken(null);
         setEmploye(null);
-        localStorage.setItem("token", "");
-        localStorage.setItem("employe", JSON.stringify(emptyEmploye));
+        localStorage.removeItem("token");
+        localStorage.removeItem("employe");
         setLogin(false);
     } 
 
