@@ -54,6 +54,8 @@ CREATE TABLE article_taille (
     code_article VARCHAR(255) NOT NULL,
     code_barre VARCHAR(255) PRIMARY KEY,
     dimension VARCHAR(25) NOT NULL,
+    stock_dimension INT DEFAULT 0 NOT NULL,
+    disponible BOOLEAN DEFAULT false,
     CONSTRAINT fk_article FOREIGN KEY (code_article) REFERENCES article(code_article)
 );
 

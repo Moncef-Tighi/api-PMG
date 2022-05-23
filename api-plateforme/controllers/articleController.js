@@ -24,7 +24,7 @@ const insertOneArticlePlateforme= async function(body) {
     const result = await model.insertArticle(code_article, libelle, marque, date_modification, prix_initial, prix_vente, description);
 
     tailles.forEach( async taille => {
-        await model.insertTaille(code_article, taille.dimension, taille.code_barre)
+        await model.insertTaille(code_article, taille.dimension, taille.code_barre, taille.stock)
     })
 
     return {result};
@@ -243,6 +243,13 @@ export const updatePrixArticle = catchAsync( async function(request, response, n
     });
 
 });
+
+export const autoUpdateStock = catchAsync( async function() {
+    //TOUTE LES X MINUTES CETTE FONCTION EST EXECUTEE POUR METTRE A JOUR LE STOCK COTE PLATEFORME 
+    // 
+
+
+})
 
 export const disableArticle = catchAsync( async function(request, response) {
     const code_article = request.params.id

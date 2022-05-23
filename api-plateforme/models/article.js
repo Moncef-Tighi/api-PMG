@@ -72,16 +72,17 @@ export const insertArticle = async function(code_article, libelle=null, marque=n
     return response.rows[0];
 }
 
-export const insertTaille = async function(code_article, dimension, code_barre) {
+export const insertTaille = async function(code_article, dimension, code_barre, stock_dimension) {
 
+    let disponible=false
+    if (stock_dimension>process.env.MINSTOCK) disponible=true
     const sql = `
-    INSERT INTO article_taille(code_article,dimension, code_barre)
+    INSERT INTO article_taille(code_article,dimension, code_barre, stock_dimension,disponible)
     VALUES
-    ($1,$2,$3)
-    ON CONFLICT DO NOTHING
+    ($1,$2,$3,$4,${disponible})
     `
 
-    const values = [code_article, dimension, code_barre];
+    const values = [code_article, dimension, code_barre, stock_dimension];
     const response = await db.query(sql, values)
     return response.rows[0];
 
