@@ -9,11 +9,19 @@ export const listArticles = catchAsync( async function(request, response,next){
         delete request.query.stock;
     }
     if(request.query.marque) {
-        having['MAX(CC_LIBELLE)']=request.query.marque;
+        having['MAX(A.CC_LIBELLE)']=request.query.marque;
         delete request.query.marque
     }
+    if(request.query.silhouette) {    
+        having['MAX(B.CC_LIBELLE)']=request.query.silhouette;
+        delete request.query.silhouette
+    }
+    if(request.query.gender) {
+        having['MAX(GA_LIBREART6)']=request.query.gender;
+        delete request.query.gender
+    }
     if(request.query.division) {
-        having['GA_FAMILLENIV2']=request.query.division;
+        having['MAX(GA_FAMILLENIV2)']=request.query.division;
         delete request.query.division
     }
 

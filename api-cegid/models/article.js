@@ -2,39 +2,40 @@ import db from "./database.js";
 import Query from '../util/parametres.js';
 import qs from "qs";
 
-const query= new Query('-GA_DATEMODIF');
+const query= new Query('-MAX(GA_DATEMODIF)');
 
 export const getAllArticles = async function(parametres,having={}) {
     
 
     const sql = `
-    SELECT
+    SELECT DISTINCT
     GA_CODEARTICLE
     ,MAX(A.CC_LIBELLE) AS "marque"
-    ,"gender" =
+    ,MAX(GA_LIBELLE) AS "GA_LIBELLE"
+    ,"gender" =MAX(
     CASE    
         WHEN GA_LIBREART6=001 THEN 'Men'
         WHEN GA_LIBREART6=002 THEN 'Women'
         WHEN GA_LIBREART6=003 THEN 'Infant'
-    END
-    ,"division"=
+    END)
+    ,"division"=MAX(
     CASE
         WHEN GA_FAMILLENIV2='APP' THEN 'Apparel'
         WHEN GA_FAMILLENIV2='FTW' THEN 'Footware'
         WHEN GA_FAMILLENIV2='EQU' THEN 'Equipment'
-    END
+    END)
     , MAX(B.CC_LIBELLE) as "silhouette"
-    , GA_PVTTC
+    , MAX(GA_PVTTC) AS "GA_PVTTC"
     ,SUM(GQ_PHYSIQUE-GQ_RESERVECLI+GQ_RESERVEFOU-GQ_PREPACLI) AS 'stock'
-    , GA_DATECREATION
-    , GA_DATEMODIF
+    , MAX(GA_DATEMODIF) AS "GA_DATEMODIF"
+    , [total]= COUNT(*) OVER()
                     
     FROM DISPO
     INNER JOIN ARTICLE ON GA_ARTICLE=GQ_ARTICLE AND GQ_CLOTURE <> 'X' AND GA_TYPEARTICLE = 'MAR' 
-    LEFT JOIN CHOIXCOD AS A ON A.CC_CODE=GA_FAMILLENIV1 AND CC_LIBELLE<>'Reprise grilles de dimension'
-    LEFT JOIN CHOIXCOD AS B ON B.CC_CODE=GA_LIBREART4
+    LEFT JOIN CHOIXCOD AS A ON A.CC_CODE=GA_FAMILLENIV1 AND A.CC_LIBELLE<>'Reprise grilles de dimension'
+    LEFT JOIN CHOIXCOD AS B ON B.CC_CODE=GA_LIBREART4 AND B.CC_LIBELLE NOT IN ('Windows 2000', 'Taxe 5', 'ZIPPE')
     ${query.where(parametres)} 
-    GROUP BY Ga_CODEARTICLE, GA_FAMILLENIV2,GA_LIBELLE,GA_LIBREART6,GA_LIBREART4,GA_PVTTC,GA_DATECREATION,GA_DATEMODIF
+    GROUP BY GA_CODEARTICLE
     ${query.having(having)}
     ${query.sort(parametres)}
     ${query.paginate(parametres)}
@@ -110,7 +111,7 @@ export const dispoArticleTaille = async function(article) {
         GDI1.GDI_LIBELLE , GDI2.GDI_LIBELLE`
     }
     const data = await request.query(sql);
-    console.log(data.recordset);
+
     return data.recordset
 
 }
