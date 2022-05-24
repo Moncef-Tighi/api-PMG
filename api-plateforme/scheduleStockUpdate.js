@@ -1,6 +1,7 @@
 import  {AsyncTask} from 'toad-scheduler';
 import axios from 'axios';
 import db from './models/postGreSql.js';
+import { updateStockTaille } from './models/article.js';
 
 export const autoUpdateStock = new AsyncTask('simple task', async ()=> {
     //TOUTE LES X MINUTES CETTE FONCTION EST EXECUTEE POUR METTRE A JOUR LE STOCK COTE PLATEFORME 
@@ -12,9 +13,9 @@ export const autoUpdateStock = new AsyncTask('simple task', async ()=> {
     //Et envoyer une requête si c'est le cas
     const code_article = await articleAyantChange();
     const articlesInPlateforme= await findArticles(code_article)
-    console.log(articlesInPlateforme);
-
-    
+    const stockArticles = await findStockArticle(articlesInPlateforme);
+    const update = await updateStockTaille(stockArticles);
+    console.log(update);
 }, (error) =>{
     console.log(`La mise à jour automatique du stock n'a pas eu lieu à cause de cette erreur : 
     ${error}`);
@@ -44,6 +45,8 @@ const articleAyantChange= async () => {
     return code_articles.data.body.articles
 }
 
-const findStockArticle = async () => {
-    
+const findStockArticle = async (articles) => {
+    const code_articles = articles.map( article => article.code_article);
+    const tailles = await axios.post(`${process.env.API_CEGID}/articles/taille`, {articles : code_articles} )
+    return tailles.data.body.articles
 }

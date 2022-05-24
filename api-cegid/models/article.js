@@ -65,7 +65,7 @@ export const dispoArticleTaille = async function(article) {
 
     let sql = `
     SELECT
-    
+    GA_CODEARTICLE,
     GA_CODEBARRE,
     ISNULL(GDI1.GDI_LIBELLE , GDI2.GDI_LIBELLE) AS 'dimension',
     SUM(GQ_PHYSIQUE-GQ_RESERVECLI+GQ_RESERVEFOU-GQ_PREPACLI) AS 'stockNet'
@@ -84,6 +84,7 @@ export const dispoArticleTaille = async function(article) {
         sql+= `    ${query.where(qs.parse('GA_CODEARTICLE='+ article.join('&GA_CODEARTICLE=')))}
             AND GQ_CLOTURE <> 'X' AND GA_TYPEARTICLE = 'MAR'
             GROUP BY
+            GA_CODEARTICLE,
             GA_CODEBARRE,
             GDI1.GDI_LIBELLE , GDI2.GDI_LIBELLE
         `
@@ -91,10 +92,12 @@ export const dispoArticleTaille = async function(article) {
     } else {
         sql+= `WHERE GA_CODEARTICLE='${article}' AND GQ_CLOTURE <> 'X' AND GA_TYPEARTICLE = 'MAR'
         GROUP BY
+        GA_CODEARTICLE,
         GA_CODEBARRE,
         GDI1.GDI_LIBELLE , GDI2.GDI_LIBELLE`
     }
     const data = await request.query(sql);
+    console.log(data.recordset);
     return data.recordset
 
 }

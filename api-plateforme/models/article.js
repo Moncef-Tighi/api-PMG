@@ -119,6 +119,23 @@ export const updateArticle = async function(article, tailles) {
     }
 };
 
+export const updateStockTaille = async function(tailles) {
+    
+    const sql= `
+    UPDATE article_taille AS m SET 
+	stock_dimension= a.stock_dimension,
+	disponible=a.disponible
+    FROM    (VALUES 
+        ${tailles.map(taille => `('${taille.GA_CODEBARRE}',${taille.stockNet}, ${taille.stockNet > process.env.MINSTOCK ? true : false})`).join(',')}
+            ) AS a(code_barre, stock_dimension, disponible)
+    WHERE a.code_barre = m.code_barre
+    RETURNING *
+    `
+    const response = await db.query(sql)
+    return response.rows;
+
+}
+
 export const activationArticle = async function(code_article, activation) {
     //Fonction utilisée pour activer ET désactiver un article
     const sql = `
