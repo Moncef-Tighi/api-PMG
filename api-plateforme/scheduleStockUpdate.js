@@ -43,3 +43,7 @@ const articleAyantChange= async () => {
 
     return code_articles.data.body.articles
 }
+
+const findStockArticle = async () => {
+    
+}

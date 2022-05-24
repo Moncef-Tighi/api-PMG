@@ -129,6 +129,22 @@ export const ArticlesDisponible = catchAsync( async function(request, response,n
 
 });
 
+export const tailleDisponible = catchAsync(async function(request, response, next) {
+    const articles = request.body.articles
+    if (!articles || ! articles instanceof Array) {
+        return next(createError(400, "Erreur : Une liste d'article n'a pas été fournit dans le body de la requête") )
+    }
+    const dataRecord = await model.dispoArticleTaille(articles);
+    console.log(dataRecord);
+
+    return response.status(200).json({
+        status : "ok",
+        body : {
+            articles : "resultat"
+        }
+    })
+
+} )
 
 
 export const updateStock = async function(request, response,next) {

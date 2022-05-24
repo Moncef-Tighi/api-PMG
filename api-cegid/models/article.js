@@ -19,7 +19,7 @@ export const getAllArticles = async function(parametres,having={}) {
         
     FROM DISPO
     INNER JOIN ARTICLE ON GA_ARTICLE=GQ_ARTICLE AND GQ_CLOTURE <> 'X' AND GA_TYPEARTICLE = 'MAR' 
-    LEFT JOIN CHOIXCOD ON CC_CODE=GA_FAMILLENIV1
+    LEFT JOIN CHOIXCOD ON CC_CODE=GA_FAMILLENIV1 AND CC_CODE<>'Reprise grilles de dimension'
     ${query.where(parametres)} 
     GROUP BY Ga_CODEARTICLE
     ${query.having(having)}
@@ -61,8 +61,9 @@ export const infoArticle = async function(parametre) {
 
 
 export const dispoArticleTaille = async function(article) {
+    const request = new db.Request();
 
-    const data = await db.query`
+    let sql = `
     SELECT
     
     GA_CODEBARRE,
@@ -77,13 +78,23 @@ export const dispoArticleTaille = async function(article) {
         AND GDI1.GDI_TYPEDIM = 'DI1' 
     LEFT OUTER JOIN DIMENSION AS GDI2 ON ARTICLE.GA_GRILLEDIM2 = GDI2.GDI_GRILLEDIM 
         AND ARTICLE.GA_CODEDIM2 = GDI2.GDI_CODEDIM 
-        AND GDI2.GDI_TYPEDIM = 'DI2' 
+        AND GDI2.GDI_TYPEDIM = 'DI2' `
 
-    WHERE GA_CODEARTICLE=${article} AND GQ_CLOTURE <> 'X' AND GA_TYPEARTICLE = 'MAR'
-    GROUP BY
-    GA_CODEBARRE,
-    GDI1.GDI_LIBELLE , GDI2.GDI_LIBELLE`
-
+    if (Array.isArray(article)) {
+        sql+= `    ${query.where(qs.parse('GA_CODEARTICLE='+ article.join('&GA_CODEARTICLE=')))}
+            AND GQ_CLOTURE <> 'X' AND GA_TYPEARTICLE = 'MAR'
+            GROUP BY
+            GA_CODEBARRE,
+            GDI1.GDI_LIBELLE , GDI2.GDI_LIBELLE
+        `
+        query.sanitize(request);
+    } else {
+        sql+= `WHERE GA_CODEARTICLE='${article}' AND GQ_CLOTURE <> 'X' AND GA_TYPEARTICLE = 'MAR'
+        GROUP BY
+        GA_CODEBARRE,
+        GDI1.GDI_LIBELLE , GDI2.GDI_LIBELLE`
+    }
+    const data = await request.query(sql);
     return data.recordset
 
 }
