@@ -15,7 +15,12 @@ export const autoUpdateStock = new AsyncTask('simple task', async ()=> {
     const articlesInPlateforme= await findArticles(code_article)
     const stockArticles = await findStockArticle(articlesInPlateforme);
     const update = await updateStockTaille(stockArticles);
-    console.log(update);
+
+    const updateWooCommerce = articlesInPlateforme.filter(article => {
+        return update.find(articleUpdate => article.code_article===articleUpdate.code_article 
+            && article.disponible!=articleUpdate.disponible);
+    })
+    console.log(updateWooCommerce);
 }, (error) =>{
     console.log(`La mise à jour automatique du stock n'a pas eu lieu à cause de cette erreur : 
     ${error}`);
@@ -23,13 +28,11 @@ export const autoUpdateStock = new AsyncTask('simple task', async ()=> {
 
 export const findArticles = async function(articles) {
     const sql = `
-        SELECT article.code_article,prix_initial, prix_vente, libelle, array_agg(dimension) as "dimension"  
-        , date_ajout, marque, description
-        FROM article 
-        INNER JOIN article_taille ON article.code_article=article_taille.code_article
-        WHERE article.code_article IN ( '${articles.join("','")}' )
-        GROUP BY article.code_article, prix_vente, libelle
-        `
+    SELECT article.code_article, code_barre,dimension, stock_dimension,disponible
+    FROM article         
+    INNER JOIN article_taille ON article.code_article=article_taille.code_article
+    WHERE article.code_article IN ( '${articles.join("','")}' )
+    `
     const response = await db.query(sql)
 
     return response.rows;
