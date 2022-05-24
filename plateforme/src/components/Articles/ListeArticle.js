@@ -77,7 +77,9 @@ const ListeArticle = function(props) {
         { name: "Code Article", sort: false},
         { name: "Libelle", sort: false},
         { name: "Marque", sort: true, trueName : "marque"},
+        { name: "Gender", sort: true, trueName : "gender"},
         { name: "Division", sort: true, trueName : "division"},
+        { name: "Silhouette", sort: true, trueName : "silhouette"},
         { name: "Stock", sort: true, trueName : "stock"},
         { name: "Date Modification", sort: true , trueName : "GA_DATEMODIF"},
         { name: "Prix Initial", sort: true , trueName : "GA_PVTTC"} ,
@@ -139,15 +141,17 @@ const ListeArticle = function(props) {
                     />
                 </TableCell>
 
-                <TableCell component="th" scope="row" sx={{maxWidth: "25px"}}>
+                <TableCell component="th" scope="row">
                 <Link to={`${row.GA_CODEARTICLE}`}>{row.GA_CODEARTICLE}</Link>
                 </TableCell>
-                <TableCell align="left" sx={{maxWidth: "100px"}}>{row.GA_LIBELLE?.toLowerCase()}</TableCell>
-                <TableCell align="left" sx={{maxWidth: "50px"}}>{row.marque?.toLowerCase().capitalize()}</TableCell>
-                <TableCell align="left" sx={{maxWidth: "50px"}}>{row.division}</TableCell>
-                <TableCell align="center" sx={{maxWidth: "25px"}}>{row.stock}</TableCell>
-                <TableCell align="center" sx={{maxWidth: "40px"}}>{dateToYMD(row.GA_DATEMODIF)}</TableCell>
-                <TableCell align="center" sx={{maxWidth: "25px"}}>{numberWithDots(row.GA_PVTTC)}</TableCell>
+                <TableCell align="left">{row.GA_LIBELLE?.toLowerCase()}</TableCell>
+                <TableCell align="left" >{row.marque?.toLowerCase().capitalize()}</TableCell>
+                <TableCell align="left" >{row.gender || ""}</TableCell>
+                <TableCell align="left" >{row.division || ""}</TableCell>
+                <TableCell align="left" >{row.silhouette || ""}</TableCell>
+                <TableCell align="center" >{row.stock}</TableCell>
+                <TableCell align="center" >{dateToYMD(row.GA_DATEMODIF)}</TableCell>
+                <TableCell align="center" >{numberWithDots(row.GA_PVTTC)}</TableCell>
 
             </TableRow>
             )})}

@@ -24,7 +24,7 @@ const Ecommerce = function() {
                     <NativeSelect id="select" variant='outlined'>
                         <option value="GA_CODEARTICLE">Code Article</option>
                         <option value="marque">Marque</option>
-                        <option value="division">Division</option>
+                        <option value="silhouette">Silhouette</option>
                     </NativeSelect>
                     <TextField id='recherche' size="small" required variant="outlined" sx={{display: "block", marginLeft: "10px", width:"100%"}} 
                     InputProps={{
