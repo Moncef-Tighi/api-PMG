@@ -13,7 +13,7 @@ export const listArticles = catchAsync( async function(request, response,next){
         delete request.query.marque
     }
     if(request.query.division) {
-        having['MAX(GA_FAMILLENIV2)']=request.query.division;
+        having['GA_FAMILLENIV2']=request.query.division;
         delete request.query.division
     }
 

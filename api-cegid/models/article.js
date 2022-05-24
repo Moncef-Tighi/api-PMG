@@ -9,19 +9,32 @@ export const getAllArticles = async function(parametres,having={}) {
 
     const sql = `
     SELECT
-    GA_CODEARTICLE, 
-    MAX(CC_LIBELLE) AS "marque",MAX(GA_FAMILLENIV2) AS "division"
-    , MAX(GA_LIBELLE) AS "GA_LIBELLE"
-    , MAX(GA_PVTTC) AS 'GA_PVTTC'
+    GA_CODEARTICLE
+    ,MAX(A.CC_LIBELLE) AS "marque"
+    ,"gender" =
+    CASE    
+        WHEN GA_LIBREART6=001 THEN 'Men'
+        WHEN GA_LIBREART6=002 THEN 'Women'
+        WHEN GA_LIBREART6=003 THEN 'Infant'
+    END
+    ,"division"=
+    CASE
+        WHEN GA_FAMILLENIV2='APP' THEN 'Apparel'
+        WHEN GA_FAMILLENIV2='FTW' THEN 'Footware'
+        WHEN GA_FAMILLENIV2='EQU' THEN 'Equipment'
+    END
+    , MAX(B.CC_LIBELLE) as "silhouette"
+    , GA_PVTTC
     ,SUM(GQ_PHYSIQUE-GQ_RESERVECLI+GQ_RESERVEFOU-GQ_PREPACLI) AS 'stock'
-    , MAX(GA_DATECREATION) as "GA_DATECREATION", MAX(GA_DATEMODIF) as "GA_DATEMODIF"
-    , [total]= COUNT(*) OVER()
-        
+    , GA_DATECREATION
+    , GA_DATEMODIF
+                    
     FROM DISPO
     INNER JOIN ARTICLE ON GA_ARTICLE=GQ_ARTICLE AND GQ_CLOTURE <> 'X' AND GA_TYPEARTICLE = 'MAR' 
-    LEFT JOIN CHOIXCOD ON CC_CODE=GA_FAMILLENIV1 AND CC_CODE<>'Reprise grilles de dimension'
+    LEFT JOIN CHOIXCOD AS A ON A.CC_CODE=GA_FAMILLENIV1 AND CC_LIBELLE<>'Reprise grilles de dimension'
+    LEFT JOIN CHOIXCOD AS B ON B.CC_CODE=GA_LIBREART4
     ${query.where(parametres)} 
-    GROUP BY Ga_CODEARTICLE
+    GROUP BY Ga_CODEARTICLE, GA_FAMILLENIV2,GA_LIBELLE,GA_LIBREART6,GA_LIBREART4,GA_PVTTC,GA_DATECREATION,GA_DATEMODIF
     ${query.having(having)}
     ${query.sort(parametres)}
     ${query.paginate(parametres)}
