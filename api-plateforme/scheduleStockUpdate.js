@@ -11,6 +11,7 @@ export const autoUpdateStock = new AsyncTask('simple task', async ()=> {
     //WooCommerce ne gère pas le stock, on lui envoie juste instock ou outofstock au besoin.
     //Pour pouvoir envoyer ça il faut un algorithme qui va chercher si il y a eu un changement dans le status de l'article
     //Et envoyer une requête si c'est le cas
+
     const code_article = await articleAyantChange();
     const articlesInPlateforme= await findArticles(code_article)
     const stockArticles = await findStockArticle(articlesInPlateforme);
@@ -20,7 +21,10 @@ export const autoUpdateStock = new AsyncTask('simple task', async ()=> {
         return update.find(articleUpdate => article.code_article===articleUpdate.code_article 
             && article.disponible!=articleUpdate.disponible);
     })
-    console.log(updateWooCommerce);
+    if (updateWooCommerce.length>0) {
+        console.log(updateWooCommerce);
+        const sku_articles = updateWooCommerce.forEach(article => sku_articles[article.code_article] ='')
+    }
 }, (error) =>{
     console.log(`La mise à jour automatique du stock n'a pas eu lieu à cause de cette erreur : 
     ${error}`);

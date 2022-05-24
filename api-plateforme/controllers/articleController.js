@@ -17,14 +17,14 @@ const extractArticle= function(body) {
 }
 
 
-const insertOneArticlePlateforme= async function(body) {
+const insertOneArticlePlateforme= async function(body, id, variation) {
 
     const {code_article,libelle,marque,date_modification,prix_vente,prix_initial, description, tailles} = extractArticle(body);
     
-    const result = await model.insertArticle(code_article, libelle, marque, date_modification, prix_initial, prix_vente, description);
-
+    const result = await model.insertArticle(code_article, libelle, marque, date_modification, prix_initial, prix_vente, description, id);
     tailles.forEach( async taille => {
-        await model.insertTaille(code_article, taille.dimension, taille.code_barre, taille.stock)
+        await model.insertTaille(code_article, taille.dimension, taille.code_barre, taille.stock,
+            variation.find(art=> art.taille===taille.dimension)?.id)
     })
 
     return {result};
@@ -161,9 +161,6 @@ export const ajoutArticle = catchAsync(async function(request, response, next) {
 
     if (!code_article || !tailles || !prix_vente || prix_vente<10) return next(createError(400, `Impossible de créer l'article : une information obligatoire n'a pas été fournit`))
 
-    
-    const result = await insertOneArticlePlateforme(request.body);
-
     const wooCommerceExistance= await apiWooCommerce.get(`products?sku=${code_article}`);
     if (wooCommerceExistance.data[0]?.name) {
         var {wooCommerce, wooCommerceVariations} = await updateOnearticleWooCommerce(request.body,wooCommerceExistance.data[0].id);
@@ -171,6 +168,25 @@ export const ajoutArticle = catchAsync(async function(request, response, next) {
 
         var {wooCommerce, wooCommerceVariations} = await insertOneArticleWooCommerce(request.body);
     }
+
+    //L'ajout des l'ID de la variation sur WooCommerce avec deux options de paramètres c'est un peu bizarre comme logique
+    //Mais c'est obligé parce que parfois la réponse va être un create et parfois un update.
+    //Sauf que pour une meilleur UX on garde aucune différence entre les deux.
+
+    const result = await insertOneArticlePlateforme(request.body, wooCommerce.data.id,
+        wooCommerceVariations.data?.create?.map(variation=> {
+            return {
+                id : variation.id,
+                taille : variation.attributes[0].option
+            }
+        }) || wooCommerceVariations.data.update.map(variation=> {
+            return {
+                id : variation.id,
+                taille : variation.attributes[0].option
+            }
+        })
+        );
+
 
 
     return response.status(201).json({

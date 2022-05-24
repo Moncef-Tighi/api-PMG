@@ -59,31 +59,34 @@ export const readOneArticle = async function(code_article) {
 
 }
 
-export const insertArticle = async function(code_article, libelle=null, marque=null, date_modification=null,prix_initial, prix_vente, description=null){
+export const insertArticle = async function(code_article, libelle=null, marque=null, date_modification=null,prix_initial, prix_vente, description=null,id){
     const sql = `
-    INSERT INTO article(code_article, libelle, marque, date_modification, date_ajout,prix_initial, prix_vente, description)
+    INSERT INTO article(code_article, libelle, marque, date_modification, date_ajout,prix_initial, prix_vente, description, id_article_WooCommerce)
     VALUES 
-    ($1, $2, $3, $4, CURRENT_TIMESTAMP,$5,$6,$7 )
+    ($1, $2, $3, $4, CURRENT_TIMESTAMP,$5,$6,$7,$8 )
     ON CONFLICT (code_article) DO UPDATE
     SET libelle=$2, prix_vente=$6, description=$7
     RETURNING *
     `
-    const values = [code_article, libelle, marque, date_modification,prix_initial, prix_vente, description];
+    const values = [code_article, libelle, marque, date_modification,prix_initial, prix_vente, description, id];
     const response = await db.query(sql, values)
     return response.rows[0];
 }
 
-export const insertTaille = async function(code_article, dimension, code_barre, stock_dimension) {
+export const insertTaille = async function(code_article, dimension, code_barre, stock_dimension, id) {
 
     let disponible=false
     if (stock_dimension>process.env.MINSTOCK) disponible=true
     const sql = `
-    INSERT INTO article_taille(code_article,dimension, code_barre, stock_dimension,disponible)
+    INSERT INTO article_taille(code_article,dimension, code_barre, stock_dimension,disponible,id_taille_WooCommerce)
     VALUES
-    ($1,$2,$3,$4,${disponible})
+    ($1,$2,$3,$4,${disponible}, $5)
+    ON CONFLICT (code_barre) DO UPDATE
+    SET stock_dimension=$4, disponible=${disponible},id_taille_WooCommerce=$5
+
     `
 
-    const values = [code_article, dimension, code_barre, stock_dimension];
+    const values = [code_article, dimension, code_barre, Number(stock_dimension), id];
     const response = await db.query(sql, values)
     return response.rows[0];
 

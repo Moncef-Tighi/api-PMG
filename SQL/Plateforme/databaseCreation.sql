@@ -47,6 +47,7 @@ CREATE TABLE article (
     libelle VARCHAR(100),
     marque VARCHAR(100),
     description TEXT,
+    id_article_WooCommerce INT,
     activé BOOLEAN DEFAULT true
 );
 
@@ -56,6 +57,7 @@ CREATE TABLE article_taille (
     dimension VARCHAR(25) NOT NULL,
     stock_dimension INT DEFAULT 0 NOT NULL,
     disponible BOOLEAN DEFAULT false,
+    id_taille_WooCommerce INT,
     CONSTRAINT fk_article FOREIGN KEY (code_article) REFERENCES article(code_article)
 );
 
