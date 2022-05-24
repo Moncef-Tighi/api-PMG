@@ -2,6 +2,7 @@ import  {AsyncTask} from 'toad-scheduler';
 import axios from 'axios';
 import db from './models/postGreSql.js';
 import { updateStockTaille } from './models/article.js';
+import apiWooCommerce from './models/api.js';
 
 export const autoUpdateStock = new AsyncTask('simple task', async ()=> {
     //TOUTE LES X MINUTES CETTE FONCTION EST EXECUTEE POUR METTRE A JOUR LE STOCK COTE PLATEFORME 
@@ -22,8 +23,14 @@ export const autoUpdateStock = new AsyncTask('simple task', async ()=> {
             && article.disponible!=articleUpdate.disponible);
     })
     if (updateWooCommerce.length>0) {
-        console.log(updateWooCommerce);
-        const sku_articles = updateWooCommerce.forEach(article => sku_articles[article.code_article] ='')
+        updateWooCommerce.forEach(async article=> {
+            await apiWooCommerce.put(`products/${article.id_article_woocommerce}/variations/${article.id_taille_woocommerce}`,{
+                //Instock et outofStock sont inversés parce que updateWooCommerce a l'ancienne valeur de dispo
+                //Plutôt que de me casser la tête à faire une logique plus complexe pour obtenir la nouvelle valeur de dispo
+                //J'ai juste inversé vu que je sais que si un article arrive ici ça veut dire que la valeur de dispo a changée.
+                "stock_status": article.disponible ? "outofstock" : "instock"
+            })
+        })
     }
 }, (error) =>{
     console.log(`La mise à jour automatique du stock n'a pas eu lieu à cause de cette erreur : 
@@ -32,7 +39,7 @@ export const autoUpdateStock = new AsyncTask('simple task', async ()=> {
 
 export const findArticles = async function(articles) {
     const sql = `
-    SELECT article.code_article, code_barre,dimension, stock_dimension,disponible
+    SELECT article.code_article, code_barre,dimension, stock_dimension,disponible, id_article_WooCommerce, id_taille_WooCommerce
     FROM article         
     INNER JOIN article_taille ON article.code_article=article_taille.code_article
     WHERE article.code_article IN ( '${articles.join("','")}' )
