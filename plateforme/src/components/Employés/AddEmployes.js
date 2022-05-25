@@ -4,6 +4,7 @@ import classes from './AddEmployes.module.css'
 import { OutlinedInput, IconButton, InputAdornment, InputLabel, Button } from '@mui/material';
 import { useState } from 'react';
 import {Visibility, VisibilityOff} from '@mui/icons-material'
+import { NativeSelect } from "@mui/material";
 
 const AddEmployes = function({open, onClose, createEmploye}) {
     const [showPassword, setPasswordVisibility]=useState(false);
@@ -53,6 +54,16 @@ const AddEmployes = function({open, onClose, createEmploye}) {
                             </IconButton>
                         </InputAdornment>}
                         />
+                        <NativeSelect variant='outlined'
+                            color='primary' sx={{marginTop : "15px"}}
+                            defaultValue={"modification"}
+                            inputProps={{name: 'permission',id: 'permission',}}
+                            >
+                                <option value={"modification"}>Employé</option>
+                                <option value={"admin"}>Admin</option>
+                        </NativeSelect>
+
+
 
 
                     <div className={classes.flex}>
@@ -63,6 +74,7 @@ const AddEmployes = function({open, onClose, createEmploye}) {
                     <Button variant="contained" color='primaryLighter'
                     size="large" onClick={onClose} sx={{marginLeft: "10px"}}>
                     Annuler</Button>
+
                     </div>
                 </form>
                 

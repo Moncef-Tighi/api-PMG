@@ -43,6 +43,9 @@ const header = [
     { name: "Code Article", sort: false},
     { name: "Libelle", sort: false},
     { name: "Marque", sort: false},
+    { name: "Gender", sort: false},
+    { name: "Division", sort: false},
+    { name: "Silhouette", sort: false},
     { name: "Prix Initial", sort: false},
     { name: "Prix de vente", sort: false},
     { name: "Categories", sort: false},
@@ -71,6 +74,7 @@ const ModalAddArticles = function({open, onClose, selection}) {
         const neededData= async () => {
             if(open===true) {
                 setLoading(true);
+                setSelectedCategories({});
                 const data = await findTailles(selection);
                 const categorie = await getCategories();
                 setCategories(categorie);
@@ -126,7 +130,6 @@ const ModalAddArticles = function({open, onClose, selection}) {
                 ...prevState,
                 [code_article] : [...value]}
         })
-        console.log(selectedCategories);
       };
     
 
@@ -165,7 +168,7 @@ const ModalAddArticles = function({open, onClose, selection}) {
                             <TableCell component="th" scope="row" sx={{maxWidth: "25px"}}>
                             {articles[code_article].GA_CODEARTICLE}
                             </TableCell>
-                            <TableCell align="left" sx={{width: "350px"}}>
+                            <TableCell align="left" sx={{width: "300px"}}>
                                 <Input fullWidth={true} color="primary" id={`${code_article}-libelle`}  defaultValue={articles[code_article].GA_LIBELLE?.toLowerCase()}/>
                             </TableCell>
                             <TableCell align="left" sx={{maxWidth: "50px"}}>{articles[code_article].marque?.toLowerCase()}</TableCell>

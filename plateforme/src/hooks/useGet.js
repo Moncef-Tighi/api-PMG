@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import axios from "axios"
 
 
-export default function useGet(url, defaultData=null){
+export default function useGet(url, defaultData=null, headers){
 
     const [data,setData] = useState(defaultData)
     const [error,setError] = useState(null)
@@ -13,7 +13,7 @@ export default function useGet(url, defaultData=null){
             async function(){
                 try{
                     setLoading(true)
-                    const response = await axios.get(url)
+                    const response = await axios.get(url, headers)
                     setData(response.data)
                 }catch(error){
                     if (defaultData) setData(defaultData)
