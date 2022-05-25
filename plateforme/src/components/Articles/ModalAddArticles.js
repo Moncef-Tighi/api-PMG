@@ -8,8 +8,7 @@ import TableHeadCustom from "../Table/TableHeadCustom";
 import useTable from "../../hooks/useTable";
 import { TableCell, TableRow, TableBody } from "@mui/material";
 import Notification from "../util/Util";
-import { Select, OutlinedInput, MenuItem, Checkbox, ListItemText ,InputLabel} from "@mui/material";
-import { MultiSelect } from "react-multi-select-component";
+import { Select, OutlinedInput, MenuItem, Checkbox, ListItemText } from "@mui/material";
 
 function numberWithDots(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -55,12 +54,7 @@ const ModalAddArticles = function({open, onClose, selection}) {
 
     const [articles, setArticles] = useState(selection);
     const [categories, setCategories] = useState([]);
-    console.log(selection);
-    const [selectedCategories, setSelectedCategories] = useState({
-        'code_article' : []
-    })
-    ;
-
+    const [selectedCategories, setSelectedCategories] = useState({});
     
     const [loading, setLoading] = useState(false);
     const [sending, setSending] = useState(false);
@@ -91,8 +85,8 @@ const ModalAddArticles = function({open, onClose, selection}) {
         event.preventDefault();
         const inputs=event.currentTarget.elements;
         setSending(true);
-        console.log(articles);
         for (const code_article of Object.keys(articles)) {
+
             let article = {
                 "code_article" : code_article,
                 "marque" : articles[code_article].marque,
@@ -104,15 +98,17 @@ const ModalAddArticles = function({open, onClose, selection}) {
                 "prix_initial" : articles[code_article].GA_PVTTC,
                 "prix_vente" : inputs[`${code_article}-prixVente`].value,
                 "description" : "",
-                taille : []
+                taille : [],
+                categorie : selectedCategories[code_article],
             }
             articles[code_article].taille.forEach(taille=> {
                 article.taille.push({
                     stock: taille.stockNet,
                     code_barre: taille.GA_CODEBARRE,
-                    dimension: taille.dimension
+                    dimension: taille.dimension 
                 })
             })
+
             const response = await axios.post(`${API_PLATEFORME}/articles/insertion`, article)
             setReceived(()=> received+1);
         }
@@ -173,6 +169,9 @@ const ModalAddArticles = function({open, onClose, selection}) {
                                 <Input fullWidth={true} color="primary" id={`${code_article}-libelle`}  defaultValue={articles[code_article].GA_LIBELLE?.toLowerCase()}/>
                             </TableCell>
                             <TableCell align="left" sx={{maxWidth: "50px"}}>{articles[code_article].marque?.toLowerCase()}</TableCell>
+                            <TableCell align="left">{articles[code_article].gender}</TableCell>
+                            <TableCell align="left">{articles[code_article].division}</TableCell>
+                            <TableCell align="left">{articles[code_article].silhouette}</TableCell>
                             <TableCell align="center" sx={{maxWidth: "25px"}}>{numberWithDots(articles[code_article].GA_PVTTC)}</TableCell>
                             <TableCell align="center" sx={{maxWidth: "25px"}}>
                                 <Input color="primary" id={`${code_article}-prixVente`} defaultValue={articles[code_article].prixActuel}/>                              

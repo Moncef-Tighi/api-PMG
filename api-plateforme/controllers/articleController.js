@@ -16,8 +16,9 @@ const extractArticle= function(body) {
     const gender = body.gender;
     const division = body.division;
     const silhouette = body.silhouette;
+    const categorie= body.categorie;
     return {code_article,libelle,marque,date_modification,prix_vente,prix_initial, description, tailles
-        ,gender,division,silhouette}
+        ,gender,division,silhouette, categorie}
 }
 
 
@@ -37,12 +38,13 @@ const insertOneArticlePlateforme= async function(body, id, variation) {
 }
 
 const insertOneArticleWooCommerce= async function(body) {
-    const {code_article,libelle,prix_vente,prix_initial, tailles} = extractArticle(body);
+    const {code_article,libelle,prix_vente,prix_initial, tailles, categorie} = extractArticle(body);
 
     const wooCommerce = await apiWooCommerce.post("products",{
         name : libelle,
         type: "variable",
-        regular_price: String(prix_vente),
+        regular_price: String(prix_initial),
+        sale_price: String(prix_vente) ,
         sku: code_article,
         stock_status: "instock",
         attributes : [{
@@ -51,14 +53,16 @@ const insertOneArticleWooCommerce= async function(body) {
             visible: true,
             options :  tailles.map(dim => dim.dimension)
         }
-        ]
+        ],
+        categories : categorie?.map(cat=> {return {"id" : cat}}) || []
     })
     const wooCommerceVariations = await apiWooCommerce.post(`products/${wooCommerce.data.id}/variations/batch`,{
         create :  tailles.map(taille=>{
             return {
 
                 stock_status: taille.stock > process.env.MINSTOCK ? "instock" : "outofstock", 
-                regular_price: prix_vente,
+                regular_price: String(prix_initial),
+                sale_price: String(prix_vente) ,
                 attributes : [{
                     id : 3,
                     option : taille.dimension
@@ -72,11 +76,12 @@ const insertOneArticleWooCommerce= async function(body) {
 }
 
 const updateOnearticleWooCommerce = async function(body,id) {
-    const {libelle,prix_vente, tailles} = extractArticle(body);
+    const {libelle,prix_vente, tailles,categorie} = extractArticle(body);
     const wooCommerce = await apiWooCommerce.put(`products/${id}`,{
-        regular_price: String(prix_vente),
+        sale_price: String(prix_vente),
         date_modified: Date.now(),
-        name : libelle
+        name : libelle,
+        categories : categorie.map(cat=> {return {"id" : cat}})
     });
 
     const allVariations = await apiWooCommerce.get(`products/${id}/variations`);

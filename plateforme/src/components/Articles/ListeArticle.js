@@ -134,7 +134,7 @@ const ListeArticle = function(props) {
                     <Checkbox
                         color="primary"
                         checked={isItemSelected}
-                        onClick={(event) => selectionHandeler(event, row)}
+                        onClick={(event) => selectionHandeler(event, row) || false}
                         inputProps={{
                         'article': row.GA_CODEARTICLE,
                         }}
