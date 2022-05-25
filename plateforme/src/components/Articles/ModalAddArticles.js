@@ -55,8 +55,11 @@ const ModalAddArticles = function({open, onClose, selection}) {
 
     const [articles, setArticles] = useState(selection);
     const [categories, setCategories] = useState([]);
-
-    const [selectedCategories, setSelectedCategories] = useState({    });
+    console.log(selection);
+    const [selectedCategories, setSelectedCategories] = useState({
+        'code_article' : []
+    })
+    ;
 
     
     const [loading, setLoading] = useState(false);
@@ -188,7 +191,7 @@ const ModalAddArticles = function({open, onClose, selection}) {
                                 >
                                 {categories.map((categorie) => (
                                     <MenuItem key={categorie?.id} value={categorie?.id}>
-                                    <Checkbox checked={selectedCategories[code_article]?.some(cat => cat===categorie.id)} />
+                                    <Checkbox checked={selectedCategories[code_article]?.some(cat => cat===categorie.id)|| false } />
                                     <ListItemText primary={categorie?.slug}/>
                                     </MenuItem>
                                 ))}
