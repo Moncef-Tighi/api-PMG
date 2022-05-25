@@ -76,14 +76,15 @@ export const newEmploye = async function(email, password, nom, prenom="", poste=
     return response.rows[0];
 }
 
-export const changeEmploye = async function(id,email,nom,prenom="",poste=""){
+export const changeEmploye = async function(id,email,nom,prenom="",poste="", active=true){
+
     const sql = `
     UPDATE employee 
-    SET email=$2, nom=$3, prenom=$4, poste=$5
+    SET email=$2, nom=$3, prenom=$4, poste=$5, active=$6
     WHERE id_employe=$1
     RETURNING *
     `
-    const values = [id,email, nom, prenom, poste];
+    const values = [id,email, nom, prenom, poste, active];
     const response = await db.query(sql, values)
     return response.rows[0];
 
