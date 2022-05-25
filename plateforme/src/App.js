@@ -5,17 +5,10 @@ import React from 'react';
 import {Route, Routes} from 'react-router-dom'
 import LoginPage from './pages/LoginPage';
 import Page from './pages/Page'
-// import Accueil from './pages/Accueil';
-// import Ecommerce from './pages/Ecommerce.js';
-// import EmployesListe from './pages/EmployesListe';
-// import AddEmployes from './pages/AddEmployes';
-// import Permissions from './pages/Permissions';
-// import Historique from './pages/Historique';
 import Restrict from './components/restrict';
 import ProtectRoute from './components/ProtectRoute';
 import FicheEmploye from "./pages/FicheEmploye";
-// const LoginPage = React.lazy(() => import('./pages/LoginPage'));
-//const Page = React.lazy(() => import('./pages/Page'));
+
 const Accueil = React.lazy(() => import('./pages/Accueil'));
 const Ecommerce = React.lazy(() => import('./pages/Ecommerce'));
 const EmployesListe = React.lazy(() => import('./pages/EmployesListe'));

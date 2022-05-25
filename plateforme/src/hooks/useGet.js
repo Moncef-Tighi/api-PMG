@@ -2,18 +2,22 @@ import { useEffect, useState } from "react"
 import axios from "axios"
 
 
-export default function useGet(url, defaultData=null, headers){
+export default function useGet(url, defaultData=null, token){
 
     const [data,setData] = useState(defaultData)
     const [error,setError] = useState(null)
     const [loading,setLoading] = useState(false)
-
+    if (token) {var header = { headers : {
+        "Authorization" : `Bearer ${token}`
+        }}
+    }
     useEffect(() => {
         (
             async function(){
+
                 try{
                     setLoading(true)
-                    const response = await axios.get(url, headers)
+                    const response = await axios.get(url,header )
                     setData(response.data)
                 }catch(error){
                     if (defaultData) setData(defaultData)
@@ -27,6 +31,6 @@ export default function useGet(url, defaultData=null, headers){
         )()
     }, [url, defaultData])
 
-    return { data, error, loading }
+    return { data, error, loading, token }
 
 }
