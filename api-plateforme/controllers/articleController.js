@@ -13,15 +13,21 @@ const extractArticle= function(body) {
     const prix_initial = body.prix_initial;
     const description = body.description;
     const tailles = body.taille;
-    return {code_article,libelle,marque,date_modification,prix_vente,prix_initial, description, tailles}
+    const gender = body.gender;
+    const division = body.division;
+    const silhouette = body.silhouette;
+    return {code_article,libelle,marque,date_modification,prix_vente,prix_initial, description, tailles
+        ,gender,division,silhouette}
 }
 
 
 const insertOneArticlePlateforme= async function(body, id, variation) {
 
-    const {code_article,libelle,marque,date_modification,prix_vente,prix_initial, description, tailles} = extractArticle(body);
+    const {code_article,libelle,marque,date_modification,prix_vente,prix_initial, description, tailles
+    , gender, division, silhouette} = extractArticle(body);
     
-    const result = await model.insertArticle(code_article, libelle, marque, date_modification, prix_initial, prix_vente, description, id);
+    const result = await model.insertArticle(code_article, libelle, marque, date_modification,
+        gender, division, silhouette ,prix_initial, prix_vente, description,id);
     tailles.forEach( async taille => {
         await model.insertTaille(code_article, taille.dimension, taille.code_barre, taille.stock,
             variation.find(art=> art.taille===taille.dimension)?.id)

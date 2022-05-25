@@ -62,12 +62,16 @@ const ModalAddArticles = function({open, onClose, selection}) {
         event.preventDefault();
         const inputs=event.currentTarget.elements;
         setSending(true);
+        console.log(articles);
         for (const code_article of Object.keys(articles)) {
             let article = {
                 "code_article" : code_article,
                 "marque" : articles[code_article].marque,
+                "gender" : articles[code_article].gender,
+                "division" : articles[code_article].division,
+                "silhouette" : articles[code_article].silhouette,
                 "libelle" : inputs[`${code_article}-libelle`].value,
-                "date_modification" : new Date(),
+                "date_modification" : articles[code_article].GA_DATEMODIF,
                 "prix_initial" : articles[code_article].GA_PVTTC,
                 "prix_vente" : inputs[`${code_article}-prixVente`].value,
                 "description" : "",

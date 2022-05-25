@@ -39,13 +39,16 @@ CREATE TABLE historique_actions (
 );
 
 CREATE TABLE article (
-    code_article VARCHAR(255) PRIMARY KEY,
+    code_article VARCHAR(50) PRIMARY KEY,
     date_ajout TIMESTAMP NOT NULL,
     date_modification TIMESTAMP,
     prix_initial REAl NOT NULL,
     prix_vente REAL NOT NULL,
-    libelle VARCHAR(100),
-    marque VARCHAR(100),
+    libelle VARCHAR(255),
+    marque VARCHAR(25),
+    gender VARCHAR(25),
+    division VARCHAR(25),
+    silhouette VARCHAR(25),
     description TEXT,
     id_article_WooCommerce INT,
     activé BOOLEAN DEFAULT true
@@ -61,18 +64,18 @@ CREATE TABLE article_taille (
     CONSTRAINT fk_article FOREIGN KEY (code_article) REFERENCES article(code_article)
 );
 
-CREATE TABLE article_categorie (
-    code_article VARCHAR(255) NOT NULL,
-    code_categorie INT NOT NULL,
+-- CREATE TABLE article_categorie (
+--     code_article VARCHAR(255) NOT NULL,
+--     code_categorie INT NOT NULL,
 
-    PRIMARY KEY (code_article, code_categorie),
-    CONSTRAINT fk_article_categorie FOREIGN KEY (code_article) REFERENCES article(code_article),
-    CONSTRAINT fk_categorie FOREIGN KEY (code_categorie) REFERENCES categorie(code_categorie)
-);
+--     PRIMARY KEY (code_article, code_categorie),
+--     CONSTRAINT fk_article_categorie FOREIGN KEY (code_article) REFERENCES article(code_article),
+--     CONSTRAINT fk_categorie FOREIGN KEY (code_categorie) REFERENCES categorie(code_categorie)
+-- );
 
-CREATE TABLE categorie (
-    code_categorie SERIAL PRIMARY KEY,
-    nom_categorie VARCHAR(25)
-);
+-- CREATE TABLE categorie (
+--     code_categorie SERIAL PRIMARY KEY,
+--     nom_categorie VARCHAR(25)
+-- );
 
 CREATE INDEX index_date_ajout ON article(date_ajout) WHERE activé IS TRUE;

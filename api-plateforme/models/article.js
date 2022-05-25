@@ -59,16 +59,19 @@ export const readOneArticle = async function(code_article) {
 
 }
 
-export const insertArticle = async function(code_article, libelle=null, marque=null, date_modification=null,prix_initial, prix_vente, description=null,id){
+export const insertArticle = async function(code_article, libelle=null, marque=null, date_modification=null,
+    gender=null, division=null, silhouette=null ,prix_initial, prix_vente, description=null,id){
     const sql = `
-    INSERT INTO article(code_article, libelle, marque, date_modification, date_ajout,prix_initial, prix_vente, description, id_article_WooCommerce)
+    INSERT INTO article(code_article, libelle, marque, gender, division, silhouette,
+    date_modification, date_ajout,prix_initial, prix_vente, description, id_article_WooCommerce)
     VALUES 
-    ($1, $2, $3, $4, CURRENT_TIMESTAMP,$5,$6,$7,$8 )
+    ($1, $2, $3, $4,$5, $6 , $7, CURRENT_TIMESTAMP,$8,$9,$10,$11 )
     ON CONFLICT (code_article) DO UPDATE
-    SET libelle=$2, prix_vente=$6, description=$7
+    SET libelle=$2,gender=$4, division=$5, silhouette=$6,
+    date_modification=$7, prix_vente=$9, description=$10
     RETURNING *
     `
-    const values = [code_article, libelle, marque, date_modification,prix_initial, prix_vente, description, id];
+    const values = [code_article, libelle, marque,gender, division, silhouette, date_modification,prix_initial, prix_vente, description, id];
     const response = await db.query(sql, values)
     return response.rows[0];
 }
