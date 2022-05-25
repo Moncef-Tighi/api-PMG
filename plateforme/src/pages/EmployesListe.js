@@ -12,6 +12,7 @@ import { API_PLATEFORME } from '../index';
 import Notification from "../components/util/Util";
 import ListeEmploye from "../components/Articles/ListeEmploye";
 
+
 const EmployesListe = function() {
     const [query, setQuery] = useState({});
     const [openModal, setOpen] = useState(false);
@@ -39,15 +40,24 @@ const EmployesListe = function() {
 
     const createEmploye =async  function(event) {
         event.preventDefault();
-        const {nom, prenom, email, poste ,password}= event.currentTarget.elements
 
+        const {nom, prenom, email, poste ,password, permission}= event.currentTarget.elements
         try {
-            await axios.post(`${API_PLATEFORME}/employes/creation`, {
+            const response = await axios.post(`${API_PLATEFORME}/employes/creation`, {
                 nom : nom.value,
                 prenom: prenom.value,
                 email: email.value,
                 poste: poste.value,
                 password: password.value
+            }, {
+                headers : {
+                    "Authorization" : `Bearer ${authContext.token}`
+                }
+            })
+
+            await axios.post(`${API_PLATEFORME}/permissions/ajouter`, {
+                "email": response.data.body.email,
+                "role" : permission.value
             }, {
                 headers : {
                     "Authorization" : `Bearer ${authContext.token}`
