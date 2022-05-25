@@ -7,9 +7,11 @@ import ListItemText from '@mui/material/ListItemText';
 
 import {Article, ContactPhone, LocalOffer, Person, ManageAccounts, History} from '@mui/icons-material';
 import { NavLink } from 'react-router-dom';
+import { useContext } from 'react';
+import AuthContext from "../../state/AuthContext";
 
 const Navigation = function() {
-
+    const authContext= useContext(AuthContext);
     return (
         <nav>
             <h1>Menu</h1>
@@ -38,6 +40,8 @@ const Navigation = function() {
                         <ListItemText primary="Prix" className={classes.textLink} />
                     </ListItemButton>
                 </NavLink>
+                {authContext.permissions.find(permission => permission==="admin" ) ?
+                <>
                 <NavLink to="/admin/employes" className={({ isActive }) =>isActive ? classes.activeLink : classes.navLink}>
                     <ListItemButton sx={{ width: '100%', height: "60px"}}>
                         <ListItemIcon>
@@ -61,7 +65,8 @@ const Navigation = function() {
                         </ListItemIcon>
                         <ListItemText primary="Historique" className={classes.textLink}/>
                     </ListItemButton>
-                </NavLink>
+                </NavLink></>
+                 : ""}
             </List>
 
         </nav>

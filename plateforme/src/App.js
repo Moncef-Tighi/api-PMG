@@ -39,11 +39,12 @@ function App() {
           <Route path='ecommerce/commande' element={<Ecommerce />}/>
           <Route path='ecommerce/prix' element={<Ecommerce />}/>
           <Route path='ecommerce/dimension' element={<Ecommerce />}/>
-
+        <Route element={<Restrict permissions={permissions} allow={["admin"]}/>}>
           <Route path='admin/employes' element={<EmployesListe />} />
           <Route path="admin/employes/:id" element={<FicheEmploye />} />
           <Route path='admin/permissions' element={<Permissions />}/>
           <Route path='admin/historique' element={<Historique />}/>
+        </Route>
         </Route>          
       </Route>
       <Route path='*' element={<div>ERREUR 404</div>}/>
