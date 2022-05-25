@@ -2,6 +2,25 @@ import { catchAsync } from "./errorController.js";
 import * as wooCommerce from '../models/wooCommerce.js';
 import * as cegid from "../models/article.js";
 import createError from 'http-errors';
+import apiWooCommerce from "../models/api.js";
+
+
+export const getCategorie = catchAsync(async function(request, response, next) {
+    let categories= [];
+    let categorie= []
+    let i=0
+    while (i<1 || categorie?.data?.length>0) {
+        i+=1;
+        categorie = await apiWooCommerce.get(`products/categories?page=${i}&per_page=100&_fields=id,name,slug`);
+        categories.push(...categorie.data);
+    }
+
+    return response.status(200).json({
+        status: "ok",
+        body : categories
+    })
+
+})
 
 export const updatePrixArticle = catchAsync( async function(request, response, next) {
     //Utilisé pour la page comparaison de prix

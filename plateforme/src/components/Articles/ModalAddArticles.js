@@ -8,6 +8,8 @@ import TableHeadCustom from "../Table/TableHeadCustom";
 import useTable from "../../hooks/useTable";
 import { TableCell, TableRow, TableBody } from "@mui/material";
 import Notification from "../util/Util";
+import { Select, OutlinedInput, MenuItem, Checkbox, ListItemText ,InputLabel} from "@mui/material";
+import { MultiSelect } from "react-multi-select-component";
 
 function numberWithDots(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -23,18 +25,40 @@ const findTailles = async function(articles) {
 
 }
 
+const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: 400,
+        width: 300,
+      },
+    },
+  };
+  
+
+const getCategories = async function() {
+    const categories = await axios.get(`${API_PLATEFORME}/woocommerce/categorie`);
+    return categories.data.body
+}
+
 const header = [
     { name: "Code Article", sort: false},
     { name: "Libelle", sort: false},
     { name: "Marque", sort: false},
     { name: "Prix Initial", sort: false},
     { name: "Prix de vente", sort: false},
+    { name: "Categories", sort: false},
     { name: "Retirer", sort: false},
 ]
 
 
 const ModalAddArticles = function({open, onClose, selection}) {
+
     const [articles, setArticles] = useState(selection);
+    const [categories, setCategories] = useState([]);
+
+    const [selectedCategories, setSelectedCategories] = useState({    });
+
+    
     const [loading, setLoading] = useState(false);
     const [sending, setSending] = useState(false);
     const [received, setReceived] = useState(0);
@@ -51,6 +75,8 @@ const ModalAddArticles = function({open, onClose, selection}) {
             if(open===true) {
                 setLoading(true);
                 const data = await findTailles(selection);
+                const categorie = await getCategories();
+                setCategories(categorie);
                 setArticles(()=> data);
                 setLoading(false);
             }
@@ -91,6 +117,19 @@ const ModalAddArticles = function({open, onClose, selection}) {
         setSending(false);
     }
 
+    const handleChangeCategorie = (event, code_article) => {
+        const {
+          target: { value },
+        } = event;
+        console.log(value);
+        setSelectedCategories((prevState)=> {
+            return {
+                ...prevState,
+                [code_article] : [...value]}
+        })
+        console.log(selectedCategories);
+      };
+    
 
     return (
         <>
@@ -134,6 +173,27 @@ const ModalAddArticles = function({open, onClose, selection}) {
                             <TableCell align="center" sx={{maxWidth: "25px"}}>{numberWithDots(articles[code_article].GA_PVTTC)}</TableCell>
                             <TableCell align="center" sx={{maxWidth: "25px"}}>
                                 <Input color="primary" id={`${code_article}-prixVente`} defaultValue={articles[code_article].prixActuel}/>                              
+                            </TableCell>
+                            <TableCell>
+                                <Select
+                                id="categorie"
+                                multiple
+                                input={<OutlinedInput label="Tag" />}
+                                renderValue={()=> 'Categorie'}
+                                MenuProps={MenuProps}
+                                onChange={(event) => handleChangeCategorie(event, code_article)}
+                                value={selectedCategories[code_article] || []}
+                                autoWidth
+                                label="Categorie"
+                                >
+                                {categories.map((categorie) => (
+                                    <MenuItem key={categorie?.id} value={categorie?.id}>
+                                    <Checkbox checked={selectedCategories[code_article]?.some(cat => cat===categorie.id)} />
+                                    <ListItemText primary={categorie?.slug}/>
+                                    </MenuItem>
+                                ))}
+                                </Select>
+
                             </TableCell>
                             <TableCell align="center" sx={{maxWidth: "25px"}}>X</TableCell>
                         </TableRow>        
