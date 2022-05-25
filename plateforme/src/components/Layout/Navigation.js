@@ -19,7 +19,7 @@ const Navigation = function() {
                 <NavLink to="/ecommerce/article" className={({ isActive }) =>isActive ? classes.activeLink : classes.navLink}>
                     <ListItemButton sx={{ width: '100%', height: "60px"}} color="primary" >
                         <ListItemIcon><Article  sx={{width:'1.3em', height: '1.3em', color: '#262626'}}/> </ListItemIcon>
-                        <ListItemText primary="Articles" />
+                        <ListItemText primary="Articles" className={classes.textLink}/>
                     </ListItemButton>
                 </NavLink>
                 <NavLink  to="/ecommerce/commande" className={({ isActive }) =>isActive ? classes.activeLink : classes.navLink}>
@@ -27,7 +27,7 @@ const Navigation = function() {
                         <ListItemIcon>
                         <ContactPhone  sx={{width:'1.3em', height: '1.3em', color: '#262626'}}/>
                         </ListItemIcon>
-                        <ListItemText primary="Commandes" />
+                        <ListItemText primary="Commandes" className={classes.textLink}/>
                     </ListItemButton>
                 </NavLink>
                 <NavLink to="/ecommerce/prix" className={({ isActive }) =>isActive ? classes.activeLink : classes.navLink}> 
@@ -35,7 +35,7 @@ const Navigation = function() {
                         <ListItemIcon>
                         <LocalOffer  sx={{width:'1.3em', height: '1.3em', color: '#262626'}}/>
                         </ListItemIcon>
-                        <ListItemText primary="Prix" />
+                        <ListItemText primary="Prix" className={classes.textLink} />
                     </ListItemButton>
                 </NavLink>
                 <NavLink to="/admin/employes" className={({ isActive }) =>isActive ? classes.activeLink : classes.navLink}>
@@ -43,7 +43,7 @@ const Navigation = function() {
                         <ListItemIcon>
                         <Person  sx={{width:'1.3em', height: '1.3em', color: '#262626'}}/>
                         </ListItemIcon>
-                        <ListItemText primary="Employés" />
+                        <ListItemText primary="Employés" className={classes.textLink} />
                     </ListItemButton>
                 </NavLink>
                 <NavLink to="/admin/permissions" className={({ isActive }) =>isActive ? classes.activeLink : classes.navLink}>
@@ -51,7 +51,7 @@ const Navigation = function() {
                         <ListItemIcon>
                         <ManageAccounts  sx={{width:'1.3em', height: '1.3em', color: '#262626'}}/>
                         </ListItemIcon>
-                        <ListItemText primary="Permissions" />
+                        <ListItemText primary="Permissions" className={classes.textLink}/>
                     </ListItemButton>
                 </NavLink>
                 <NavLink  to="/admin/historique" className={({ isActive }) =>isActive ? classes.activeLink : classes.navLink}>
@@ -59,7 +59,7 @@ const Navigation = function() {
                         <ListItemIcon>
                         <History  sx={{width:'1.3em', height: '1.3em', color: '#262626'}}/>
                         </ListItemIcon>
-                        <ListItemText primary="Historique" />
+                        <ListItemText primary="Historique" className={classes.textLink}/>
                     </ListItemButton>
                 </NavLink>
             </List>

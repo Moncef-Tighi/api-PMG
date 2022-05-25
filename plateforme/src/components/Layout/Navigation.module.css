@@ -1,6 +1,6 @@
 nav {
     position: fixed;
-    width: 19vw;
+    width: 15vw;
     background-color: white;
     overflow: hidden;
     border-radius: 0px 10px 10px 0px;
@@ -33,4 +33,10 @@ nav {
 
 .activeLink svg {
     color: white;
+}
+
+@media only screen and (max-width: 900px) {
+    .textLink {
+        text-indent: -9999px;
+    }
 }
