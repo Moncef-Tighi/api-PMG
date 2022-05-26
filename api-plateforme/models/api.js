@@ -16,4 +16,7 @@ try {
     Erreur : ${error}`);
 }
 
+
+// apiWooCommerce.get('products').then(res => console.log(res));
+
 export default apiWooCommerce

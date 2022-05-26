@@ -9,6 +9,7 @@ import { InputLabel, OutlinedInput, Button, NativeSelect } from "@mui/material";
 import Notification from "../components/util/Util";
 import { useState } from "react";
 import axios from "axios";
+import ChangePassword from "../components/Employés/ChangePassword";
 
 const FicheEmploye = function() {
     const authContext = useContext(AuthContext);
@@ -71,24 +72,6 @@ const FicheEmploye = function() {
                         <InputLabel htmlFor="poste">Poste</InputLabel>
                         <OutlinedInput id='poste' color='primary' size='small' fullWidth={true} required
                         value={employe?.body?.poste || ""}/>
-                        {/* <InputLabel htmlFor="password">Password</InputLabel>
-                        <OutlinedInput
-                        size='small'
-                        id="password"
-                        type={showPassword ? 'text' : 'password'}
-                        fullWidth={true}
-                        endAdornment={<InputAdornment position="end">
-                        
-                        <IconButton
-                                aria-label="toggle password visibility"
-                                onClick={handleClickShowPassword}
-                                onMouseDown={handleMouseDownPassword}
-                                edge="end"
-                                >
-                                {showPassword ? <VisibilityOff /> : <Visibility />}
-                                </IconButton>
-                        </InputAdornment>}
-                    /> */}
                     <InputLabel htmlFor="active">Activé ?</InputLabel>
                     <NativeSelect variant='outlined'
                         color='primary' sx={{marginTop : "15px"}}
@@ -98,11 +81,13 @@ const FicheEmploye = function() {
                             <option value={"oui"}>Oui</option>
                             <option value={"non"}>Non</option>
                     </NativeSelect>
+                    <br/>
+                    <ChangePassword id={id}/>
+
                     <div className={classes.flex}>
                     <Button color="primary" variant="contained" fullWidth={true}
                     size="large" type="submit">
                     Confirmer</Button>
-
                     </div>
                 </form>
                 

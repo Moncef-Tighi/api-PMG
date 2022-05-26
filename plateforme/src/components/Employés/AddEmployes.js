@@ -54,7 +54,8 @@ const AddEmployes = function({open, onClose, createEmploye}) {
                             </IconButton>
                         </InputAdornment>}
                         />
-                        <NativeSelect variant='outlined'
+                        <InputLabel htmlFor="poste">Poste</InputLabel>
+                        <NativeSelect variant='outlined' id='poste'
                             color='primary' sx={{marginTop : "15px"}}
                             defaultValue={"modification"}
                             inputProps={{name: 'permission',id: 'permission',}}
@@ -67,13 +68,14 @@ const AddEmployes = function({open, onClose, createEmploye}) {
 
 
                     <div className={classes.flex}>
+                    <Button variant="contained" color='grey'
+                    size="large" onClick={onClose} sx={{marginRight: "10px"}}>
+                    Annuler</Button>
+
                     <Button color="primary" variant="contained" fullWidth={true}
                     size="large" type="submit">
                     Confirmer</Button>
 
-                    <Button variant="contained" color='primaryLighter'
-                    size="large" onClick={onClose} sx={{marginLeft: "10px"}}>
-                    Annuler</Button>
 
                     </div>
                 </form>
