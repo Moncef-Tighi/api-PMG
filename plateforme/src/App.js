@@ -2,7 +2,7 @@ import AuthContext from "./state/AuthContext";
 import { useContext, useEffect } from "react";
 import React from 'react';
 
-import {Route, Routes} from 'react-router-dom'
+import {Route, Routes, useNavigate} from 'react-router-dom'
 import LoginPage from './pages/LoginPage';
 import Page from './pages/Page'
 import Restrict from './components/restrict';
@@ -18,9 +18,11 @@ const FicheArticle = React.lazy(() => import('./pages/FicheArticle'));
 
 function App() {
   const authContext = useContext(AuthContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
-      authContext.checkLogin();
+      const check = authContext.checkLogin();
+      if (check===false) navigate("/connexion");
   }, [authContext]  )
   const permissions = authContext.permissions;
   const login = authContext.isLoggedIn;

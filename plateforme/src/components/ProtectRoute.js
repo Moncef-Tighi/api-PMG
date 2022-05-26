@@ -9,6 +9,7 @@ const ProtectRoute = function(props) {
     const firstRender= useRef(true);
     const authContext= useContext(AuthContext);
     useEffect( ()=> {
+
         if (firstRender.current) firstRender.current = false; 
         else {
             if (!props.login) {

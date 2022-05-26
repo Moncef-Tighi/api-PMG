@@ -37,7 +37,6 @@ const AuthContext= React.createContext({
     logout : ()=> {},
     permissions : []
 })
-
 export const AuthContextProvider = (props) => {
     //C'est ce component qui gère la state     
 
@@ -45,7 +44,7 @@ export const AuthContextProvider = (props) => {
     const [employe, setEmploye] = useState(emptyEmploye);
     const [permissions, setPermissions]= useState([]);
     const [isLoggedIn, setLogin]= useState(null);
-
+    
     const setInfoToConText = function(token, employe) {
         setToken(token);
         setEmploye(employe);
@@ -60,6 +59,7 @@ export const AuthContextProvider = (props) => {
     } 
 
     const logoutHandeler = () => {
+        console.log("ok");
         setToken(null);
         setEmploye(null);
         localStorage.removeItem("token");

@@ -8,7 +8,7 @@ const Restrict = function(props) {
     const navigate=useNavigate();
     const firstRender= useRef(true);
     useEffect( ()=> {
-        console.log(props.permissions);
+
         if (firstRender.current) firstRender.current = false; 
         else {
             //ATTENTION ! Plus tard il faudra une page "unAuthorized" plutôt que de dévier vers l'accueil   
