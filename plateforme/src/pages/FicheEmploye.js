@@ -17,6 +17,12 @@ const FicheEmploye = function() {
     const { id } = useParams();
     const {data: employe, loading, error} = useGet(`${API_PLATEFORME}/employes/${id}`,null,authContext.token);
 
+    const [openModal, setOpen] = useState(false);
+
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
+
     const [openNotif, setNotif] = useState("");
     const [err, setError] = useState("");
     const closeNotif = (event, reason) => {
@@ -28,7 +34,7 @@ const FicheEmploye = function() {
         event.preventDefault();
 
         const {nom, prenom, email, poste ,active}= event.currentTarget.elements
-        console.log(active.value)
+
         try {
             const response = await axios.put(`${API_PLATEFORME}/employes/modifier`, {
                 id_employe : id,
@@ -82,7 +88,7 @@ const FicheEmploye = function() {
                             <option value={"non"}>Non</option>
                     </NativeSelect>
                     <br/>
-                    <ChangePassword id={id}/>
+                    <Button onClick={handleOpen} sx={{marginTop: "10px"}}>Change Password</Button>
 
                     <div className={classes.flex}>
                     <Button color="primary" variant="contained" fullWidth={true}
@@ -90,6 +96,7 @@ const FicheEmploye = function() {
                     Confirmer</Button>
                     </div>
                 </form>
+                <ChangePassword id={id} openModal={openModal} handleClose={handleClose}/>
                 
             </Box>
             <Notification closeNotif={closeNotif} message={err} status="error"  />

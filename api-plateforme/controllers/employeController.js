@@ -108,6 +108,7 @@ export const changeMyPassword = catchAsync( async function(request, response, ne
 
 export const changeAnyPassword = catchAsync(async function(request, response, next) {
     const newPassword = request.body.password;
+
     if (!newPassword) return next(createError(400, `aucun mot de passe n'a été spécifié`));
     const id_employe = request.body.id_employe;
     if (!id_employe) return next(createError(400, `aucun employé n'a été spécifié`));
