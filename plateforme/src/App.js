@@ -7,8 +7,8 @@ import LoginPage from './pages/LoginPage';
 import Page from './pages/Page'
 import Restrict from './components/restrict';
 import ProtectRoute from './components/ProtectRoute';
-import FicheEmploye from "./pages/FicheEmploye";
 
+const FicheEmploye = React.lazy(() => import('./pages/FicheEmploye'));
 const Accueil = React.lazy(() => import('./pages/Accueil'));
 const Ecommerce = React.lazy(() => import('./pages/Ecommerce'));
 const EmployesListe = React.lazy(() => import('./pages/EmployesListe'));

@@ -200,13 +200,6 @@ const query2= new Query("",["invalidField"]);
 // console.log(query2.where(qs.parse("stock[lt]=10&b=20&a[gt]=10")));
 // console.log(query1.where(qs.parse("GA_CODEARTICLE= 000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZv")))
 
-
-// console.log(query2.where("stock[lt]=10&[or]&stock[gt]=20"));
-// console.log(query2.where("stock=10[or]stock=20[or]a>10"));
-// console.log(query2.where("marque=adidas&stock[lt]=10[or]stock[gt]=20"));
-
-
-
 //Des querry qui devraient être valide pour SORT : 
 
 // console.log(query1.sort(qs.parse("sort=-marque,+stock")));
@@ -217,6 +210,11 @@ const query2= new Query("",["invalidField"]);
 // console.log(query1.where(qs.parse("marque=adidas,nike&stock[gt]=10&stock[lte]=20"))
 // + query1.sort(qs.parse("sort=-marque,+stock")) 
 // + query1.paginate(qs.parse("page=2,pageSize=800")));
+
+// console.log(query2.where("stock[lt]=10&[or]&stock[gt]=20"));
+// console.log(query2.where("stock=10[or]stock=20[or]a>10"));
+// console.log(query2.where("marque=adidas&stock[lt]=10[or]stock[gt]=20"));
+
 
 
 //Des querry qui doivent être invalides : 

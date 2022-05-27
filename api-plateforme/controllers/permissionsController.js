@@ -3,14 +3,6 @@ import * as model from '../models/permissions.js';
 import * as employe from '../models/employe.js';
 import createError from 'http-errors';
 import newAction from './historiqueController.js';
-// export const idFromEmailAndRole = catchAsync(async function(request, response , next) {
-//     //Cette fonction existe juste pour permettre d'écrire la requête avec l'ID ou avec le nom
-//     //C'était pertinant dans ce cas parce qu'on peut l'utiliser plusieurs fois 
-//     //Là où ça serait overkill pour une seule fonction
-    
-
-//     next();
-// });
 
 export const emailAndRoleAndId = catchAsync(async function(request, response , next) {
 
