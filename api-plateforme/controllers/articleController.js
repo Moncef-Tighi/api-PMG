@@ -31,7 +31,7 @@ const insertOneArticlePlateforme= async function(body, id, variation) {
         gender, division, silhouette ,prix_initial, prix_vente, description,id);
     tailles.forEach( async taille => {
         await model.insertTaille(code_article, taille.dimension, taille.code_barre, taille.stock,
-            variation.find(art=> art.taille===taille.dimension)?.id)
+            variation.find(art=> art?.taille===taille.dimension)?.id)
     })
 
     return {result};
@@ -81,17 +81,22 @@ const updateOnearticleWooCommerce = async function(body,id) {
         sale_price: String(prix_vente),
         date_modified: Date.now(),
         name : libelle,
-        categories : categorie.map(cat=> {return {"id" : cat}})
+        categories : categorie ? categorie.map(cat=> {return {"id" : cat}}) : []
     });
 
     const allVariations = await apiWooCommerce.get(`products/${id}/variations`);
 
     const wooCommerceVariations = await apiWooCommerce.post(`products/${id}/variations/batch`,{
         update :  tailles.map(taille=>{
-            return {
-                id : allVariations.data.find(article => article.attributes[0]?.option===taille.dimension).id,
-                stock_status: taille.stock > process.env.MINSTOCK ? "instock" : "outofstock", 
-                regular_price: String(prix_vente),
+            if (allVariations.data.some(art=> art.attributes[0].option===taille.dimension)) {
+                //Cette condition existe pour protéger contre le cas ou on reçoit une taille qui n'existe pas dans le stock détaillé.
+                return {
+                    id : allVariations.data.find(article => {
+                        return article.attributes[0].option===taille.dimension
+                    }).id,
+                    stock_status: taille.stock > process.env.MINSTOCK ? "instock" : "outofstock", 
+                    regular_price: String(prix_vente),
+                }
             }
         })
         })
@@ -186,11 +191,15 @@ export const ajoutArticle = catchAsync(async function(request, response, next) {
 
     const result = await insertOneArticlePlateforme(request.body, wooCommerce.data.id,
         wooCommerceVariations.data?.create?.map(variation=> {
+            if (!variation.id) return
+            //Cette condition existe pour protéger contre le cas ou on reçoit une taille qui n'existe pas dans le stock détaillé.
             return {
                 id : variation.id,
                 taille : variation.attributes[0].option
             }
         }) || wooCommerceVariations.data.update.map(variation=> {
+            if (!variation.id) return
+            //Cette condition existe pour protéger contre le cas ou on reçoit une taille qui n'existe pas dans le stock détaillé.
             return {
                 id : variation.id,
                 taille : variation.attributes[0].option
