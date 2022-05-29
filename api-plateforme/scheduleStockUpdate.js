@@ -22,14 +22,22 @@ export const autoUpdateStock = new AsyncTask('simple task', async ()=> {
         return update.find(articleUpdate => article.code_article===articleUpdate.code_article 
             && article.disponible!=articleUpdate.disponible);
     })
+
     if (updateWooCommerce.length>0) {
+        const verifyArticles = new Set();
+        updateWooCommerce.forEach(article=> verifyArticles.add(article.code_article));
+        const existingArticleWooCommerce = await apiWooCommerce.get(`products?sku=${Array.from(verifyArticles).join(",")}`)
+
         updateWooCommerce.forEach(async article=> {
-            await apiWooCommerce.put(`products/${article.id_article_woocommerce}/variations/${article.id_taille_woocommerce}`,{
-                //Instock et outofStock sont inversés parce que updateWooCommerce a l'ancienne valeur de dispo
-                //Plutôt que de me casser la tête à faire une logique plus complexe pour obtenir la nouvelle valeur de dispo
-                //J'ai juste inversé vu que je sais que si un article arrive ici ça veut dire que la valeur de dispo a changée.
-                "stock_status": article.disponible ? "outofstock" : "instock"
-            })
+            console.log(existingArticleWooCommerce.data.some(art => art.id===article.id_article_woocommerce));
+            if (existingArticleWooCommerce.data.some(art => art.id===article.id_article_woocommerce)) {
+                await apiWooCommerce.put(`products/${article.id_article_woocommerce}/variations/${article.id_taille_woocommerce}`,{
+                    //Instock et outofStock sont inversés parce que updateWooCommerce a l'ancienne valeur de dispo
+                    //Plutôt que de me casser la tête à faire une logique plus complexe pour obtenir la nouvelle valeur de dispo
+                    //J'ai juste inversé vu que je sais que si un article arrive ici ça veut dire que la valeur de dispo a changée.
+                    "stock_status": article.disponible ? "outofstock" : "instock"
+                })
+            }
         })
     }
 }, (error) =>{
