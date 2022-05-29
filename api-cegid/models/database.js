@@ -5,7 +5,7 @@ const config = {
     password: process.env.DB_PWD,
     database: process.env.DB_NAME,
     server: process.env.DB_ADDRESS,
-    requestTimeout : 50000,
+    requestTimeout : 60000,
     pool: {
         idleTimeoutMillis: 30000,
       },    

@@ -49,11 +49,10 @@ const header = [
     { name: "Prix Initial", sort: false},
     { name: "Prix de vente", sort: false},
     { name: "Categories", sort: false},
-    { name: "Retirer", sort: false},
 ]
 
 
-const ModalAddArticles = function({open, onClose, selection}) {
+const ModalAddArticles = function({open, onClose, selection, removeSelection}) {
 
     const [articles, setArticles] = useState(selection);
     const [categories, setCategories] = useState([]);
@@ -218,7 +217,7 @@ const ModalAddArticles = function({open, onClose, selection}) {
                                 </Select>
 
                             </TableCell>
-                            <TableCell align="center" sx={{maxWidth: "25px"}}>X</TableCell>
+                            {/* <TableCell align="center" sx={{maxWidth: "25px"}}><button onClick={()=>{removeSelection(code_article)}}>X</button></TableCell> */}
                         </TableRow>        
                     )
                 })}        

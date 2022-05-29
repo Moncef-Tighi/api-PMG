@@ -77,6 +77,12 @@ const ListeArticle = function(props) {
         setSelection( ()=> {})
     }
 
+    const removeSelection= function(code_article) {
+        console.log(code_article);
+        const newSelection = selection.filter(art => art.code_article!==code_article);
+        setSelection(newSelection);
+    }
+
     const header = [
         { name: "", sort: false},
         { name: "Code Article", sort: false},
@@ -164,7 +170,7 @@ const ListeArticle = function(props) {
         </TableCustom>
 
 
-        <ModalAddArticles open={open} onClose={closeModal} selection={selection}/>
+        <ModalAddArticles open={open} onClose={closeModal} selection={selection} removeSelection={removeSelection}/>
         <Notification closeNotif={closeNotif} message={openWarn} status="warning"  />
 
         </>
