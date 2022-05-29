@@ -208,7 +208,6 @@ export const ajoutArticle = catchAsync(async function(request, response, next) {
         );
 
 
-
     return response.status(201).json({
         status : "ok",
         message : "L'article a bien été mis en vente sur la plateforme",

@@ -20,7 +20,7 @@ export const catchAsync= function(func){
 
 const logError = function(err) {
     if (err.status!=404) {
-        console.error(err);
+        console.error(err.message);
     }
 }
 

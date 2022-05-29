@@ -15,6 +15,7 @@ export const autoUpdateStock = new AsyncTask('simple task', async ()=> {
 
     const code_article = await articleAyantChange();
     const articlesInPlateforme= await findArticles(code_article)
+
     const stockArticles = await findStockArticle(articlesInPlateforme);
     const update = await updateStockTaille(stockArticles);
 

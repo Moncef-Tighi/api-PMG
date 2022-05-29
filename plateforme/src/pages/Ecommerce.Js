@@ -11,10 +11,10 @@ const Ecommerce = function() {
     const basicSearch= function(event) {
         event.preventDefault();
         const {select, recherche}= event.currentTarget.elements
-        setQuery({
-            key : `${select.value}[like]`,
-            value :  recherche.value
-        })
+        setQuery(()=> {return {
+            key : recherche.value ? `${select.value}[like]` : ` `,
+            value :  recherche.value || ' '
+        }})
     }
 
     return (
@@ -26,7 +26,7 @@ const Ecommerce = function() {
                         <option value="marque">Marque</option>
                         <option value="silhouette">Silhouette</option>
                     </NativeSelect>
-                    <TextField id='recherche' size="small" required variant="outlined" sx={{display: "block", marginLeft: "10px", width:"100%"}} 
+                    <TextField id='recherche' size="small" variant="outlined" sx={{display: "block", marginLeft: "10px", width:"100%"}} 
                     InputProps={{
                         startAdornment: (
                             <InputAdornment position="start">

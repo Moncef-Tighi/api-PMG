@@ -32,9 +32,9 @@ export const getAllArticles = async function(parametres,having={}) {
                     
     FROM DISPO
     INNER JOIN ARTICLE ON GA_ARTICLE=GQ_ARTICLE AND GQ_CLOTURE <> 'X' AND GA_TYPEARTICLE = 'MAR' 
-    LEFT JOIN CHOIXCOD AS A ON A.CC_CODE=GA_FAMILLENIV1 AND A.CC_LIBELLE<>'Reprise grilles de dimension'
-    LEFT JOIN CHOIXCOD AS B ON B.CC_CODE=GA_LIBREART4 AND B.CC_LIBELLE NOT IN ('Windows 2000', 'Taxe 5', 'ZIPPE')
-    WHERE GA_DATEMODIF> '2019' ${query.where(parametres, true)} 
+    LEFT JOIN CHOIXCOD  A ON A.CC_CODE=GA_FAMILLENIV1 AND A.CC_TYPE='FN1'
+    LEFT JOIN CHOIXCOD AS B ON B.CC_CODE=GA_LIBREART4 AND B.CC_TYPE='FN4'
+    WHERE GA_DATEMODIF> '2021' ${query.where(parametres, true)} 
     GROUP BY GA_CODEARTICLE
     ${query.having(having)}
     ${query.sort(parametres)}

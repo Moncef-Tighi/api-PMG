@@ -1,5 +1,5 @@
 CREATE TABLE employee (
-	id_employe INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+	id_employe SERIAL PRIMARY KEY,
 	email VARCHAR ( 50 ) UNIQUE NOT NULL,
 	password VARCHAR ( 255 ) NOT NULL,
     nom VARCHAR(25) NOT NULL,
@@ -10,7 +10,7 @@ CREATE TABLE employee (
 );
 
 CREATE TABLE roles (
-	id_role INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+	id_role SERIAL PRIMARY KEY,
     nom_role VARCHAR(25) NOT NULL
 );
 
@@ -18,12 +18,12 @@ CREATE TABLE permissions (
     id_employe INT NOT NULL,
     id_role INT NOT NULL,
     PRIMARY KEY(id_employe, id_role),
-    CONSTRAINT fk_employe FOREIGN KEY (id_employe) REFERENCES employé(id_employe),
+    CONSTRAINT fk_employe FOREIGN KEY (id_employe) REFERENCES employee(id_employe),
     CONSTRAINT fk_role FOREIGN KEY (id_role) REFERENCES roles(id_role)
 );
 
 CREATE TABLE historique_actions (
-	id_action INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+	id_action SERIAL PRIMARY KEY,
     --id_employe : l'employé ayant effectué l'action.
     id_employe INT NOT NULL,
     --Action_sur : ID de l'objet affecté par l'action.
@@ -35,7 +35,7 @@ CREATE TABLE historique_actions (
     type text,
     date_creation TIMESTAMP NOT NULL,
     description text,
-    CONSTRAINT fk_employe FOREIGN KEY (id_employe) REFERENCES employé(id_employe)
+    CONSTRAINT fk_employe FOREIGN KEY (id_employe) REFERENCES employee(id_employe)
 );
 
 CREATE TABLE article (
