@@ -32,9 +32,8 @@ const LoginForm = function() {
                 password: password.value
             })
             setError("");
-            console.log(response.data.employe)
             authContext.login(response.data.token, response.data.employe);
-            navigate("/ecommerce");
+            navigate("/accueil");
         } catch(error) {
             console.log(error);
             if (error.response) {

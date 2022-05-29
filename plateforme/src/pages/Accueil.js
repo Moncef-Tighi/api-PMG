@@ -2,7 +2,7 @@
 const Accueil = function() {
 
     return (
-            <div>Accueil</div>
+            <div></div>
         )
 }
 

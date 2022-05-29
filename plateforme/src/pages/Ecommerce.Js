@@ -5,7 +5,7 @@ import { useState } from "react";
 import {Search} from '@mui/icons-material';
 import { InputAdornment } from "@mui/material";
 
-const Ecommerce = function() {
+const Ecommerce = function(props) {
     const [query, setQuery] = useState("");
     const [sortBy] = useState("");
     const basicSearch= function(event) {
@@ -41,7 +41,7 @@ const Ecommerce = function() {
                     </Button>
                 </form>
             </aside>
-            <ListeArticle query={query} sortBy={sortBy} />
+            <ListeArticle query={query} sortBy={sortBy} modification={props.modification} />
         </>  
         )
 }

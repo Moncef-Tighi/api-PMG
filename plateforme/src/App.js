@@ -33,15 +33,20 @@ function App() {
       <Route element={<ProtectRoute login={login}/>}>
         <Route element={<Page/>}>
           <Route path="me" element={<FicheEmploye id={authContext?.employe?.id_employe}/>} />
-          <Route path='ecommerce' element={<Accueil />} />
-          <Route element={<Restrict permissions={permissions} allow={["modification", "admin"]}/>}>
-            <Route path='ecommerce/article/:code_article' element={<FicheArticle />}/>
-            <Route path='ecommerce/article' element={<Ecommerce />}/>
+          <Route path='/accueil' element={<Accueil />} />
+          <Route element={<Restrict permissions={permissions} allow={["community", "admin"]}/>}>
+            <Route path='/liste' element={<Ecommerce />}/>
           </Route>
-          <Route path='ecommerce/fiche/:article' element={<Ecommerce />}/>
-          <Route path='ecommerce/commande' element={<Ecommerce />}/>
-          <Route path='ecommerce/prix' element={<Ecommerce />}/>
-          <Route path='ecommerce/dimension' element={<Ecommerce />}/>
+          <Route element={<Restrict permissions={permissions} allow={["modification", "admin", "community"]}/>}>
+            <Route path='/article/:code_article' element={<FicheArticle/>}/>
+          </Route>
+          <Route element={<Restrict permissions={permissions} allow={["modification", "admin"]}/>}>
+            <Route path='/article' element={<Ecommerce  modification={true}/>}/>
+          </Route>
+          <Route path='/fiche/:article' element={<Ecommerce />}/>
+          <Route path='/commande' element={<Ecommerce />}/>
+          <Route path='/prix' element={<Ecommerce />}/>
+          <Route path='/dimension' element={<Ecommerce />}/>
           <Route element={<Restrict permissions={permissions} allow={["admin"]}/>}>
             <Route path='admin/employes' element={<EmployesListe />} />
             <Route path="admin/employes/:id" element={<FicheEmploye />} />

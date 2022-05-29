@@ -60,7 +60,8 @@ const AddEmployes = function({open, onClose, createEmploye}) {
                             defaultValue={"modification"}
                             inputProps={{name: 'permission',id: 'permission',}}
                             >
-                                <option value={"modification"}>Employé</option>
+                                <option value={"modification"}>E-Commerce</option>
+                                <option value={"community"}>Community manager</option>
                                 <option value={"admin"}>Admin</option>
                         </NativeSelect>
 

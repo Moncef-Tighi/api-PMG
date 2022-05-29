@@ -18,13 +18,24 @@ const Navigation = function() {
             <List
             sx={{ width: '100%'}}
             component="ul">
-                <NavLink to="/ecommerce/article" className={({ isActive }) =>isActive ? classes.activeLink : classes.navLink}>
-                    <ListItemButton sx={{ width: '100%', height: "60px"}} color="primary" >
-                        <ListItemIcon><Article  sx={{width:'1.3em', height: '1.3em', color: '#262626'}}/> </ListItemIcon>
-                        <ListItemText primary="Articles" className={classes.textLink}/>
-                    </ListItemButton>
-                </NavLink>
-                <NavLink  to="/ecommerce/commande" className={({ isActive }) =>isActive ? classes.activeLink : classes.navLink}>
+            {authContext.permissions.find(permission => (permission === "admin" || permission=== "modification") ) ?
+                <NavLink to="/article" className={({ isActive }) =>isActive ? classes.activeLink : classes.navLink}>
+                <ListItemButton sx={{ width: '100%', height: "60px"}} color="primary" >
+                    <ListItemIcon><Article  sx={{width:'1.3em', height: '1.3em', color: '#262626'}}/> </ListItemIcon>
+                    <ListItemText primary="Gestion Articles" className={classes.textLink}/>
+                </ListItemButton>
+              </NavLink> 
+            : "" }
+            {authContext.permissions.find(permission => (permission === "admin" || permission=== "community") ) ?
+                <NavLink to="/liste" className={({ isActive }) =>isActive ? classes.activeLink : classes.navLink}>
+                <ListItemButton sx={{ width: '100%', height: "60px"}} color="primary" >
+                    <ListItemIcon><Article  sx={{width:'1.3em', height: '1.3em', color: '#262626'}}/> </ListItemIcon>
+                    <ListItemText primary="Liste Articles" className={classes.textLink}/>
+                </ListItemButton>
+              </NavLink> 
+            : "" }
+
+                <NavLink  to="/commande" className={({ isActive }) =>isActive ? classes.activeLink : classes.navLink}>
                     <ListItemButton sx={{ width: '100%', height: "60px"}}>
                         <ListItemIcon>
                         <ContactPhone  sx={{width:'1.3em', height: '1.3em', color: '#262626'}}/>
@@ -32,7 +43,7 @@ const Navigation = function() {
                         <ListItemText primary="Commandes" className={classes.textLink}/>
                     </ListItemButton>
                 </NavLink>
-                <NavLink to="/ecommerce/prix" className={({ isActive }) =>isActive ? classes.activeLink : classes.navLink}> 
+                <NavLink to="/prix" className={({ isActive }) =>isActive ? classes.activeLink : classes.navLink}> 
                     <ListItemButton sx={{ width: '100%', height: "60px"}}>
                         <ListItemIcon>
                         <LocalOffer  sx={{width:'1.3em', height: '1.3em', color: '#262626'}}/>

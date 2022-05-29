@@ -78,7 +78,7 @@ const ListeArticle = function(props) {
     }
 
     const removeSelection= function(code_article) {
-        console.log(code_article);
+
         const newSelection = selection.filter(art => art.code_article!==code_article);
         setSelection(newSelection);
     }
@@ -95,16 +95,16 @@ const ListeArticle = function(props) {
         { name: "Date Modification", sort: true , trueName : "GA_DATEMODIF"},
         { name: "Prix Initial", sort: true , trueName : "GA_PVTTC"} ,
     ]
+    if (!props.modification) header.shift();
 
     const isSelected = (row) => {if (selection) return row.GA_CODEARTICLE in selection};
-    
     if (selection) var taille = Object.keys(selection).length
     else var taille = 0
     return (
 
         <>
         {error ? <aside className={classes.error}>{error}</aside>: "" }
-        {taille>0 ? 
+        {taille>0 && props.modification ? 
             <aside className={classes.aside}>
                 <p>{taille} articles sélectionnés</p>
                 <div>    
@@ -141,7 +141,8 @@ const ListeArticle = function(props) {
                 aria-checked={isItemSelected}
                 selected={isItemSelected}
                 >
-                <TableCell padding="checkbox" >
+                {props.modification ? 
+                    <TableCell padding="checkbox" >
                     <Checkbox
                         color="primary"
                         checked={isItemSelected}
@@ -150,7 +151,8 @@ const ListeArticle = function(props) {
                         'article': row.GA_CODEARTICLE,
                         }}
                     />
-                </TableCell>
+                </TableCell>            
+                : ""}
 
                 <TableCell component="th" scope="row">
                 <Link to={`${row.GA_CODEARTICLE}`}>{row.GA_CODEARTICLE}</Link>
@@ -164,8 +166,7 @@ const ListeArticle = function(props) {
                 <TableCell align="center" >{dateToYMD(row.GA_DATEMODIF)}</TableCell>
                 <TableCell align="center" >{numberWithDots(row.GA_PVTTC)}</TableCell>
 
-            </TableRow>
-            )})}
+            </TableRow>)})}
         </TableBody>
         </TableCustom>
 

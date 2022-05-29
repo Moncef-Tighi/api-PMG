@@ -62,8 +62,8 @@ export const findArticles = async function(articles) {
 
 
 const articleAyantChange= async () => {
-    // const code_articles = await axios.get(`${process.env.API_CEGID}/articles/update/${process.env.UPDATE_STOCK_EVERY_MINUTE}`);
-    const code_articles = await axios.get(`${process.env.API_CEGID}/articles/update/500000`);
+    const code_articles = await axios.get(`${process.env.API_CEGID}/articles/update/${process.env.UPDATE_STOCK_EVERY_MINUTE}`);
+    // const code_articles = await axios.get(`${process.env.API_CEGID}/articles/update/500000`);
 
     return code_articles.data.body.articles
 }
