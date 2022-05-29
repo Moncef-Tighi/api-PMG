@@ -10,10 +10,11 @@ router.use(protect)
 //Route qui permet à un employé de changer son propre mot de passe.
     router.get("/profile", controllers.profile);
     router.patch("/my_password", controllers.changeMyPassword);
-
+    router.put("/editProfile", controllers.modifySelf);
     router.use(restrict('admin'))
         router.post("/creation", controllers.createEmploye);
-        router.put("/modifier", controllers.modifyEmploye);
+        router.put("/modifier", controllers.modifyAnyEmploye);
+        
         //Route qui permet à un admin de changer n'importe quel mot de passe.
         router.patch('/password', controllers.changeAnyPassword);
         router.patch("/activer", controllers.enableEmploye);
