@@ -77,10 +77,14 @@ export const modifyAnyEmploye = catchAsync( async function(request, response, ne
     const nom = request.body.nom;
     const prenom= request.body.prenom;
     const poste = request.body.poste;
+    const active = request.body.active;
     if (!email || !nom || !id_employe) {
         return next(createError(400, `Impossible de modifier l'employé : une information obligatoire n'a pas été fournit.`))
     }
-    const data = await model.changeEmploye(id_employe, email, nom, prenom, poste, true);
+    const data = await model.changeEmploye(id_employe, email, nom, prenom, poste, active);
+
+    newAction(request.user.id_employe,data.id_employe,"employe", "modification",
+    `${request.user.nom} ${request.user.prenom} a modifié l'employé ${nom} ${prenom}`)
     delete data.password;
     return response.status(201).json({
         status: "ok",
@@ -97,14 +101,11 @@ export const modifySelf = catchAsync( async function(request, response, next) {
     const email = request.body.email;
     const nom = request.body.nom;
     const prenom= request.body.prenom;
-    const poste = request.body.poste;
-    const active = request.body.active;
+
     if (!email || !nom || !id_employe) {
         return next(createError(400, `Impossible de modifier l'employé : une information obligatoire n'a pas été fournit.`))
     }
-    const data = await model.changeEmploye(id_employe, email, nom, prenom, poste, active);
-    newAction(request.user.id_employe,data.id_employe,"employe", "modification",
-    `${request.user.nom} ${request.user.prenom} a modifié l'employé ${nom} ${prenom}`)
+    const data = await model.changeSelfEmploye(id_employe, email, nom, prenom);
     delete data.password;
     return response.status(201).json({
         status: "ok",
