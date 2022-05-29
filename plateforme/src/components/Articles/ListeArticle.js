@@ -9,10 +9,10 @@ import { API_CEGID } from "../../index";
 import TableHeadCustom from "../Table/TableHeadCustom";
 import useTable from "../../hooks/useTable";
 import {Checkbox, Button} from '@mui/material';
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import ModalAddArticles from "./ModalAddArticles";
-
+import Notification from "../util/Util";
 
 Object.defineProperty(String.prototype, 'capitalize', {
     value: function() {
@@ -49,10 +49,14 @@ const ListeArticle = function(props) {
     const [open, setModal] = useState(false);
     const closeModal= ()=> setModal(()=>false);
     const openModal= ()=> setModal(()=> true);
+    const [openWarn, setWarn] = useState("");
+
+    const closeNotif = (event, reason) => {
+        setWarn("");
+    };
 
     const selectionHandeler = function(event, article) {
         const code_article= article.GA_CODEARTICLE;
-
         if (!event.target.checked) {
             const newSelection = {...selection};
             delete newSelection[code_article]
@@ -65,6 +69,7 @@ const ListeArticle = function(props) {
             ...selection,
             ...newArticle
         })
+        if (Object.keys(selection).length>=20) setWarn("Attention ! Sélectionner plus de 20 articles peut causer des problèmes innatendus durant l'insertion");
         
     }
 
@@ -160,7 +165,7 @@ const ListeArticle = function(props) {
 
 
         <ModalAddArticles open={open} onClose={closeModal} selection={selection}/>
-
+        <Notification closeNotif={closeNotif} message={openWarn} status="warning"  />
 
         </>
     )

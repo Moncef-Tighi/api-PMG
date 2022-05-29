@@ -125,13 +125,13 @@ const ModalAddArticles = function({open, onClose, selection}) {
                 setReceived(()=> received+1);
             }
             setNotif(`Tout les articles ont étés inséré avec succès`);
-            setSending(false);
-            setReceived(0);
         } catch(error) {
-            if (error.response.data.statusCode===500) return setError("La plateforme E-Commerce OU le site pmg.dz n'a pas répondu.");
-            setError(`L'insertion a échouée ! Veuillez réessayer plus tard.`);
-            onClose();
+            if (error.response.data.statusCode===500) setError("La plateforme E-Commerce OU le site pmg.dz n'a pas répondu.");
+            else setError(`L'insertion a échouée ! Veuillez réessayer plus tard.`);   
         }
+        onClose();
+        setSending(false);
+        setReceived(0);
     }
 
     const handleChangeCategorie = (event, code_article) => {
@@ -171,7 +171,8 @@ const ModalAddArticles = function({open, onClose, selection}) {
                     page={1}
                     handleChangePage={handleChangePage}
                     loading={loading}
-                    heightSkeleton={{height: "400px"}}
+                    heightSkeleton={"30vh"}
+                    sx= {{maxHeight : "70vh"}}
                 >
                 <TableHeadCustom header={header} sortHandeler={sortHandeler}/>
                 <TableBody>

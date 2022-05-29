@@ -6,8 +6,8 @@ const TableCustom = function(props) {
 
     return (
         <>        
-            {!props.loading ? (<TableContainer component={Paper}  sx={props.sx} className="shadow">
-            <Table stickyHeader size="small" className="shadow">
+            {!props.loading ? (<TableContainer component={Paper} sx={props.sx} className="shadow">
+            <Table stickyHeader size="small" className="shadow" sx={{maxHeight : props.maxHeight || "100%"}} >
                 {props.children}
 
                 <TableFooter>
@@ -27,7 +27,7 @@ const TableCustom = function(props) {
             </TableContainer>
             ) : (<>
                 <Skeleton animation='pulse' width="100%" height={75} sx={{marginTop : '15px', bgcolor: 'grey.200' }} />
-                <Skeleton variant="rectangular"  animation="wave" width="100%" height="75vh" sx={{ bgcolor: 'grey.200' }} /> 
+                <Skeleton variant="rectangular"  animation="wave" width="100%" height={props.heightSkeleton || '60vh'} sx={{ bgcolor: 'grey.200' }} /> 
                 </>)
                 } 
 
