@@ -4,7 +4,7 @@ import classes from './Header.module.css';
 import icon from './pmg-icon.svg'
 import AuthContext from '../../state/AuthContext';
 import { IconButton } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Header = function() {
     const [nom, setNom] = useState(null)
@@ -31,7 +31,7 @@ const Header = function() {
             <div>
                 <img className={classes.icon} src={icon} alt="small-logo"></img>
                 <div className={classes.name}>
-                    <h2>{nom} {prenom}</h2>
+                <Link to='/me'><h2>{nom} {prenom}</h2></Link>
                     <h4>{poste}</h4>
                 </div>
             </div>

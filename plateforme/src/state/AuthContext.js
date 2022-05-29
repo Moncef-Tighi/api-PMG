@@ -59,7 +59,7 @@ export const AuthContextProvider = (props) => {
     } 
 
     const logoutHandeler = () => {
-        console.log("ok");
+
         setToken(null);
         setEmploye(null);
         localStorage.removeItem("token");

@@ -7,7 +7,7 @@ import axios from "axios";
 import Notification from "../util/Util";
 import { API_PLATEFORME } from "../..";
 
-const ChangePassword = function({id, openModal, handleClose}) {
+const ChangePassword = function({id, openModal, handleClose, link}) {
 
     const authContext= useContext(AuthContext);
 
@@ -31,7 +31,7 @@ const ChangePassword = function({id, openModal, handleClose}) {
         const {password}= event.currentTarget.elements
 
         try {
-            const response = await axios.patch(`${API_PLATEFORME}/employes/password`, {
+            const response = await axios.patch(`${API_PLATEFORME}/employes/${link}`, {
                 id_employe : id,
                 password: password.value
             }, {

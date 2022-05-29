@@ -11,11 +11,16 @@ import { useState } from "react";
 import axios from "axios";
 import ChangePassword from "../components/Employés/ChangePassword";
 
-const FicheEmploye = function() {
+const FicheEmploye = function(props) {
     const authContext = useContext(AuthContext);
-
-    const { id } = useParams();
-    const {data: employe, loading, error} = useGet(`${API_PLATEFORME}/employes/${id}`,null,authContext.token);
+    let { id } = useParams();
+    if (props.id) {
+        id = props.id 
+        var url =`${API_PLATEFORME}/employes/profile`
+    } else {
+        var url = `${API_PLATEFORME}/employes/${id}`
+    }
+    var {data: employe, loading, error} = useGet(url,null,authContext.token);
 
     const [openModal, setOpen] = useState(false);
 
@@ -33,26 +38,37 @@ const FicheEmploye = function() {
     const editEmploye =async  function(event) {
         event.preventDefault();
 
-        const {nom, prenom, email, poste ,active}= event.currentTarget.elements
+        const {nom, prenom, email, poste ,active}= event.currentTarget?.elements
 
+        const data = {
+            id_employe : id,
+            nom : nom.value,
+            prenom: prenom.value,
+            email: email.value,
+            poste: poste.value,
+        }
+        
         try {
-            const response = await axios.put(`${API_PLATEFORME}/employes/modifier`, {
-                id_employe : id,
-                nom : nom.value,
-                prenom: prenom.value,
-                email: email.value,
-                poste: poste.value,
-                active: active.value==="oui" ? true : false 
-            }, {
-                headers : {
-                    "Authorization" : `Bearer ${authContext.token}`
-                }
-            })
+            if (props.id) {
+                await axios.put(`${API_PLATEFORME}/employes/editProfile`, data, {
+                    headers : {
+                        "Authorization" : `Bearer ${authContext.token}`
+                    }
+                })    
+            }else {
+                data.active = active.value==="oui" ? true : false 
+
+                await axios.put(`${API_PLATEFORME}/employes/modifier`, data, {
+                    headers : {
+                        "Authorization" : `Bearer ${authContext.token}`
+                    }
+                })
+            }
             setNotif("L'employé a bien été modifié");
         } catch(error) {
             console.log(error);
             console.log(error.code);
-            if (error.code==="ERR_BAD_REQUEST") return setError("Impossible de créer cet utilisateur");
+            if (error.code==="ERR_BAD_REQUEST") return setError("Impossible de modifier cet utilisateur");
             if (error.code==="ERR_NETWORK") return setError("Erreur de connexion : Le serveur n'est pas accessible");
         }
     }
@@ -63,30 +79,34 @@ const FicheEmploye = function() {
             <>
 
                 <Box className={classes.page}>
-                    <h1>Modifier un employé</h1>
+                    <h1>{props.id ? "Modifier vos informations" : "Modifier un employé"}</h1>
                     <form onSubmit={editEmploye}> 
+
                         <InputLabel htmlFor="nom">Nom</InputLabel>
                         <OutlinedInput id='nom' color='primary' size='small' fullWidth={true} required
-                        value={employe?.body?.nom || ""} />
+                        defaultValue={employe?.body?.nom} key={employe?.body?.nom+'nom'}  />
                         <InputLabel htmlFor="prenom">prenom</InputLabel>
                         <OutlinedInput id='prenom' color='primary' size='small' fullWidth={true} required
-                        value={employe?.body?.prenom || ""}/>
+                        defaultValue={employe?.body?.prenom} key={employe?.body?.prenom+'prenom'} />
                         <InputLabel htmlFor="email">E-Mail</InputLabel>
                         <OutlinedInput id='email' color='primary' size='small' fullWidth={true} required
-                        value={employe?.body?.email || ""}/>
+                        defaultValue={employe?.body?.email} key={employe?.body?.email+'email'} />
                         
+                    {props.id ? "" :
+                    <>
                         <InputLabel htmlFor="poste">Poste</InputLabel>
                         <OutlinedInput id='poste' color='primary' size='small' fullWidth={true} required
-                        value={employe?.body?.poste || ""}/>
-                    <InputLabel htmlFor="active">Activé ?</InputLabel>
-                    <NativeSelect variant='outlined'
-                        color='primary' sx={{marginTop : "15px"}}
-                        defaultValue={"true"}
-                        inputProps={{name: 'active',id: 'active',}}
-                        >
-                            <option value={"oui"}>Oui</option>
-                            <option value={"non"}>Non</option>
-                    </NativeSelect>
+                        defaultValue={employe?.body?.poste} key={employe?.body?.poste+'poste'} />
+                        <InputLabel htmlFor="active">Activé ?</InputLabel>
+                        <NativeSelect variant='outlined'
+                            color='primary' sx={{marginTop : "15px"}}
+                            defaultValue={"true"}
+                            inputProps={{name: 'active',id: 'active',}}
+                            >
+                                <option value={"oui"}>Oui</option>
+                                <option value={"non"}>Non</option>
+                        </NativeSelect>
+                    </>}
                     <br/>
                     <Button onClick={handleOpen} sx={{marginTop: "10px"}}>Change Password</Button>
 
@@ -96,7 +116,7 @@ const FicheEmploye = function() {
                     Confirmer</Button>
                     </div>
                 </form>
-                <ChangePassword id={id} openModal={openModal} handleClose={handleClose}/>
+                <ChangePassword id={id} link={props.id ? "my_password" : "password"} openModal={openModal} handleClose={handleClose}/>
                 
             </Box>
             <Notification closeNotif={closeNotif} message={err} status="error"  />
