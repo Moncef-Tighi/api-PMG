@@ -1,5 +1,5 @@
 import { Modal, Box, Input, Button } from "@mui/material"
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import classes from './ModalAddArticles.module.css';
 import axios from "axios";
 import { API_CEGID, API_PLATEFORME } from "../..";
@@ -9,6 +9,7 @@ import useTable from "../../hooks/useTable";
 import { TableCell, TableRow, TableBody } from "@mui/material";
 import Notification from "../util/Util";
 import { Select, OutlinedInput, MenuItem, Checkbox, ListItemText } from "@mui/material";
+import AuthContext from "../../state/AuthContext";
 
 function numberWithDots(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -58,6 +59,7 @@ const ModalAddArticles = function({open, onClose, selection, removeSelection}) {
     const [categories, setCategories] = useState([]);
     const [selectedCategories, setSelectedCategories] = useState({});
     
+    const authContext = useContext(AuthContext);
     const [loading, setLoading] = useState(false);
     const [sending, setSending] = useState(false);
     const [received, setReceived] = useState(0);
@@ -119,14 +121,23 @@ const ModalAddArticles = function({open, onClose, selection, removeSelection}) {
                         dimension: taille.dimension 
                     })
                 })
+                console.log(code_article);
     
-                const response = await axios.post(`${API_PLATEFORME}/articles/insertion`, article)
+                const response = await axios.post(`${API_PLATEFORME}/articles/insertion`, article, {
+                    headers : {
+                        "Authorization" : `Bearer ${authContext.token}`
+                    }
+                })
+                console.log(response);
                 setReceived(()=> received+1);
             }
             setNotif(`Tout les articles ont étés inséré avec succès`);
         } catch(error) {
             if (error.response.data.statusCode===500) setError("La plateforme E-Commerce OU le site pmg.dz n'a pas répondu.");
-            else setError(`L'insertion a échouée ! Veuillez réessayer plus tard.`);   
+            else {
+                console.log(error);
+                setError(`L'insertion a échouée ! Veuillez réessayer plus tard.`);   
+            }
         }
         onClose();
         setSending(false);
