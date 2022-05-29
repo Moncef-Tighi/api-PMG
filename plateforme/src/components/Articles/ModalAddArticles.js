@@ -64,9 +64,11 @@ const ModalAddArticles = function({open, onClose, selection}) {
     const [received, setReceived] = useState(0);
     const {handleChangePage,sortHandeler} = useTable();
     const [openNotif, setNotif] = useState("");
+    const [openError, setError] = useState("");
 
     const closeNotif = (event, reason) => {
         setNotif("");
+        setError("");
     };
 
 
@@ -75,11 +77,17 @@ const ModalAddArticles = function({open, onClose, selection}) {
             if(open===true) {
                 setLoading(true);
                 setSelectedCategories({});
-                const data = await findTailles(selection);
-                const categorie = await getCategories();
-                setCategories(categorie);
-                setArticles(()=> data);
-                setLoading(false);
+                try {
+                    const data = await findTailles(selection);
+                    const categorie = await getCategories();
+                    setCategories(categorie);
+                    setArticles(()=> data);
+                    setLoading(false);
+                } catch(error) {
+                    setError('Impossible de contacter le serveur');
+                    onClose();
+                    setLoading(false);
+                }
             }
         }
         neededData();
@@ -89,42 +97,48 @@ const ModalAddArticles = function({open, onClose, selection}) {
         event.preventDefault();
         const inputs=event.currentTarget.elements;
         setSending(true);
+        try {
         for (const code_article of Object.keys(articles)) {
-
-            let article = {
-                "code_article" : code_article,
-                "marque" : articles[code_article].marque,
-                "gender" : articles[code_article].gender,
-                "division" : articles[code_article].division,
-                "silhouette" : articles[code_article].silhouette,
-                "libelle" : inputs[`${code_article}-libelle`].value,
-                "date_modification" : articles[code_article].GA_DATEMODIF,
-                "prix_initial" : articles[code_article].GA_PVTTC,
-                "prix_vente" : inputs[`${code_article}-prixVente`].value,
-                "description" : "",
-                taille : [],
-                categorie : selectedCategories[code_article],
-            }
-            articles[code_article].taille.forEach(taille=> {
-                article.taille.push({
-                    stock: taille.stockNet,
-                    code_barre: taille.GA_CODEBARRE,
-                    dimension: taille.dimension 
+                let article = {
+                    "code_article" : code_article,
+                    "marque" : articles[code_article].marque,
+                    "gender" : articles[code_article].gender,
+                    "division" : articles[code_article].division,
+                    "silhouette" : articles[code_article].silhouette,
+                    "libelle" : inputs[`${code_article}-libelle`].value,
+                    "date_modification" : articles[code_article].GA_DATEMODIF,
+                    "prix_initial" : articles[code_article].GA_PVTTC,
+                    "prix_vente" : inputs[`${code_article}-prixVente`].value,
+                    "description" : "",
+                    taille : [],
+                    categorie : selectedCategories[code_article],
+                }
+                articles[code_article].taille.forEach(taille=> {
+                    article.taille.push({
+                        stock: taille.stockNet,
+                        code_barre: taille.GA_CODEBARRE,
+                        dimension: taille.dimension 
+                    })
                 })
-            })
-
-            const response = await axios.post(`${API_PLATEFORME}/articles/insertion`, article)
-            setReceived(()=> received+1);
+    
+                const response = await axios.post(`${API_PLATEFORME}/articles/insertion`, article)
+                setReceived(()=> received+1);
+            }
+            setNotif(`Tout les articles ont étés inséré avec succès`);
+            setSending(false);
+            setReceived(0);
+        } catch(error) {
+            if (error.response.data.statusCode===500) return setError("La plateforme E-Commerce OU le site pmg.dz n'a pas répondu.");
+            setError(`L'insertion a échouée ! Veuillez réessayer plus tard.`);
+            onClose();
         }
-        setNotif(`Tout les articles ont étés inséré avec succès`);
-        setSending(false);
     }
 
     const handleChangeCategorie = (event, code_article) => {
         const {
           target: { value },
         } = event;
-        console.log(value);
+
         setSelectedCategories((prevState)=> {
             return {
                 ...prevState,
@@ -149,12 +163,15 @@ const ModalAddArticles = function({open, onClose, selection}) {
                 {(open === true && articles && sending===false) ? <>
                 <form onSubmit={insertion}>
                 <h1>Insertion</h1>
+                <p>Les articles sélectionnés seront ajoutés à la plateforme E-Commerce et au site pmg.dz</p>
+                <h3>Attention ! Si un article a déjà été mis en vente, il sera automatiquement modifié.</h3>
                 <TableCustom
                     tableData={articles}
                     totalSize={Object.keys(articles).length}
                     page={1}
                     handleChangePage={handleChangePage}
                     loading={loading}
+                    heightSkeleton={{height: "400px"}}
                 >
                 <TableHeadCustom header={header} sortHandeler={sortHandeler}/>
                 <TableBody>
@@ -218,6 +235,7 @@ const ModalAddArticles = function({open, onClose, selection}) {
             </Box>
         </Modal>
         <Notification closeNotif={closeNotif} message={openNotif} status="success"  />
+        <Notification closeNotif={closeNotif} message={openError} status="error"  />
 
         </>
     )

@@ -29,7 +29,7 @@ export const autoUpdateStock = new AsyncTask('simple task', async ()=> {
         const existingArticleWooCommerce = await apiWooCommerce.get(`products?sku=${Array.from(verifyArticles).join(",")}`)
 
         updateWooCommerce.forEach(async article=> {
-            console.log(existingArticleWooCommerce.data.some(art => art.id===article.id_article_woocommerce));
+
             if (existingArticleWooCommerce.data.some(art => art.id===article.id_article_woocommerce)) {
                 await apiWooCommerce.put(`products/${article.id_article_woocommerce}/variations/${article.id_taille_woocommerce}`,{
                     //Instock et outofStock sont inversés parce que updateWooCommerce a l'ancienne valeur de dispo
