@@ -1,6 +1,6 @@
 import { Button, TextField, NativeSelect } from "@mui/material"
 import classes from './Ecommerce.module.css';
-import ListeArticle from "../components/Articles/ListeArticle";
+import ListeArticleCegid from "../components/Articles/ListeArticleCegid";
 import { useContext, useState } from "react";
 import {Search} from '@mui/icons-material';
 import { InputAdornment } from "@mui/material";
@@ -45,7 +45,7 @@ const Ecommerce = function(props) {
                     </Button>
                 </form>
             </aside>
-            <ListeArticle query={query} sortBy={sortBy} 
+            <ListeArticleCegid query={query} sortBy={sortBy} 
             modification={authContext.permissions.some(permission => (permission === "admin" || permission=== "modification") ) } />
         </>  
         )

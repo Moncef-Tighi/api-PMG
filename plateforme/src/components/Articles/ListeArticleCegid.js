@@ -25,7 +25,7 @@ const emptyTable= {
     page : 1
 }
 
-const ListeArticle = function(props) {
+const ListeArticleCegid = function(props) {
 
     const {url, handleChangePage,sortHandeler} = useTable(props.query);
     const {data: tableData, loading, error} = useGet(`${API_CEGID}/articles?${url}`, emptyTable);
@@ -123,4 +123,4 @@ const ListeArticle = function(props) {
 }
 
 
-  export default ListeArticle
+  export default ListeArticleCegid
