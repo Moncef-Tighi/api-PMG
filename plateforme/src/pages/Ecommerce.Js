@@ -1,13 +1,15 @@
 import { Button, TextField, NativeSelect } from "@mui/material"
 import classes from './Ecommerce.module.css';
 import ListeArticle from "../components/Articles/ListeArticle";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import {Search} from '@mui/icons-material';
 import { InputAdornment } from "@mui/material";
+import AuthContext from "../state/AuthContext";
 
 const Ecommerce = function(props) {
     const [query, setQuery] = useState("");
     const [sortBy] = useState("");
+    const authContext = useContext(AuthContext);
     const basicSearch= function(event) {
         event.preventDefault();
         const {select, recherche}= event.currentTarget.elements
@@ -16,6 +18,8 @@ const Ecommerce = function(props) {
             value :  recherche.value || ' '
         }})
     }
+
+
 
     return (
         <>
@@ -41,7 +45,8 @@ const Ecommerce = function(props) {
                     </Button>
                 </form>
             </aside>
-            <ListeArticle query={query} sortBy={sortBy} modification={props.modification} />
+            <ListeArticle query={query} sortBy={sortBy} 
+            modification={authContext.permissions.some(permission => (permission === "admin" || permission=== "modification") ) } />
         </>  
         )
 }

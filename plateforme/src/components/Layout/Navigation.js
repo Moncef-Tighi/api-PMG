@@ -18,23 +18,12 @@ const Navigation = function() {
             <List
             sx={{ width: '100%'}}
             component="ul">
-            {authContext.permissions.find(permission => (permission === "admin" || permission=== "modification") ) ?
                 <NavLink to="/article" className={({ isActive }) =>isActive ? classes.activeLink : classes.navLink}>
                 <ListItemButton sx={{ width: '100%', height: "60px"}} color="primary" >
                     <ListItemIcon><Article  sx={{width:'1.3em', height: '1.3em', color: '#262626'}}/> </ListItemIcon>
-                    <ListItemText primary="Gestion Articles" className={classes.textLink}/>
+                    <ListItemText primary="Articles" className={classes.textLink}/>
                 </ListItemButton>
               </NavLink> 
-            : "" }
-            {authContext.permissions.find(permission => (permission === "admin" || permission=== "community") ) ?
-                <NavLink to="/liste" className={({ isActive }) =>isActive ? classes.activeLink : classes.navLink}>
-                <ListItemButton sx={{ width: '100%', height: "60px"}} color="primary" >
-                    <ListItemIcon><Article  sx={{width:'1.3em', height: '1.3em', color: '#262626'}}/> </ListItemIcon>
-                    <ListItemText primary="Liste Articles" className={classes.textLink}/>
-                </ListItemButton>
-              </NavLink> 
-            : "" }
-
                 <NavLink  to="/commande" className={({ isActive }) =>isActive ? classes.activeLink : classes.navLink}>
                     <ListItemButton sx={{ width: '100%', height: "60px"}}>
                         <ListItemIcon>
