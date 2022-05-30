@@ -130,9 +130,11 @@ export const listeArticle = catchAsync( async function(request, response) {
     //EndPoint pour l'API client, on réccupère l'article depuis la plateforme et le stock depuis CEGID
 
     const articles = await model.readAllArticles(request.query);
-
+    const totalSize = articles.length
     return response.status(200).json({
         status: "ok",
+        page : Number(request.query.page) || 1,
+        totalSize,
         body : articles
     });
 
