@@ -121,21 +121,19 @@ const ModalAddArticles = function({open, onClose, selection, removeSelection}) {
                         dimension: taille.dimension 
                     })
                 })
-                console.log(code_article);
-    
                 const response = await axios.post(`${API_PLATEFORME}/articles/insertion`, article, {
                     headers : {
                         "Authorization" : `Bearer ${authContext.token}`
                     }
                 })
-                console.log(response);
                 setReceived(()=> received+1);
             }
-            setNotif(`Tout les articles ont étés inséré avec succès`);
+            setNotif(`Tout les articles ont étés insérés avec succès`);
         } catch(error) {
+            console.log(error);
+            if (error.response.data.statusCode===403) setError("Le serveur a refusé d'effectuer cette opération, essayer de vous reconnecter");
             if (error.response.data.statusCode===500) setError("La plateforme E-Commerce OU le site pmg.dz n'a pas répondu.");
             else {
-                console.log(error);
                 setError(`L'insertion a échouée ! Veuillez réessayer plus tard.`);   
             }
         }
