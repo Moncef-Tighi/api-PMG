@@ -71,6 +71,7 @@ export const insertArticle = async function(code_article, libelle=null, marque=n
     date_modification=$7, prix_vente=$9, description=$10
     RETURNING *
     `
+
     const values = [code_article, libelle, marque,gender, division, silhouette, date_modification,prix_initial, prix_vente, description, id];
     const response = await db.query(sql, values)
     return response.rows[0];
@@ -111,14 +112,13 @@ export const updatePrix = async function(code_article, prix) {
 };
 
 export const updateArticle = async function(article, tailles) {
+    //Aucune idée de pourquoi cette fonction existe ou de quand je l'ai écris. En tout cas elle ne fonctionne pas actuellement
     try {
         await db.query("BEGIN");
         const sqlArticle = `UPDATE article
         SET prix_vente=$1, libelle=$2, description=$3`
         const values = [prix, code_article];
-        var responseArticle = await db.query(sql, values)
-    
-
+        var responseArticle = await db.query(sqlArticle, values)
     } catch(error) {
         await client.query('ROLLBACK')
         throw error

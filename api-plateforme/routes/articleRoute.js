@@ -9,10 +9,10 @@ router.use(protect);
     router.get('/liste', controllers.listeArticle);
     router.get('/vente', controllers.ventesArticle);
     router.get('/status', controllers.articleEtat);
-    router.post('/insertion', controllers.ajoutArticle);
-    router.patch('/prix', controllers.updatePrixArticle);
-    router.patch('/activer/:id', controllers.enableArticle);
-    router.patch('/desactiver/:id', controllers.disableArticle);
+    router.post('/insertion', restrict("admin", "modification"), controllers.ajoutArticle);
+    router.patch('/prix', restrict("admin", "modification"), controllers.updatePrixArticle);
+    router.patch('/activer/:id', restrict("admin", "modification"), controllers.enableArticle);
+    router.patch('/desactiver/:id', restrict("admin", "modification"), controllers.disableArticle);
     router.get('/:id', controllers.unArticle);
 
 export default router;

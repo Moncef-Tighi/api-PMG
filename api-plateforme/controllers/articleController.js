@@ -154,7 +154,7 @@ export const unArticle = catchAsync( async function(request, response, next) {
         message : "Aucun article n'a été trouvé",
         body : []
     });
-;
+
     const disponibilite = await model.checkDisponibilite([article.code_article]);
 
     const result = await addStockToArticles(article, disponibilite.articles);
@@ -172,45 +172,41 @@ export const unArticle = catchAsync( async function(request, response, next) {
 
 export const ajoutArticle = catchAsync(async function(request, response, next) {
     //On importe l'article depuis l'API Cegid et on le place dans la plateforme.
-    console.log("ok");
+
     const {code_article,prix_vente, tailles} = extractArticle(request.body);
 
     if (!code_article || !tailles || !prix_vente || prix_vente<10) return next(createError(400, `Impossible de créer l'article : une information obligatoire n'a pas été fournit`))
 
     const wooCommerceExistance= await apiWooCommerce.get(`products?sku=${code_article}`);
-    console.log(wooCommerceExistance);
-    // if (wooCommerceExistance.data[0]?.name) {
-    //     var {wooCommerce, wooCommerceVariations} = await updateOnearticleWooCommerce(request.body,wooCommerceExistance.data[0].id);
-    // } else {
 
-    //     var {wooCommerce, wooCommerceVariations} = await insertOneArticleWooCommerce(request.body);
-    // }
+    if (wooCommerceExistance.data[0]?.name) {
+        var {wooCommerce, wooCommerceVariations} = await updateOnearticleWooCommerce(request.body,wooCommerceExistance.data[0].id);
+    } else {
 
-    //L'ajout des l'ID de la variation sur WooCommerce avec deux options de paramètres c'est un peu bizarre comme logique
-    //Mais c'est obligé parce que parfois la réponse va être un create et parfois un update.
-    //Sauf que pour une meilleur UX on garde aucune différence entre les deux.
+        var {wooCommerce, wooCommerceVariations} = await insertOneArticleWooCommerce(request.body);
+    }
 
-    // const result = await insertOneArticlePlateforme(request.body, wooCommerce.data.id,
-    //     wooCommerceVariations.data?.create?.map(variation=> {
-    //         if (!variation.id) return
-    //         //Cette condition existe pour protéger contre le cas ou on reçoit une taille qui n'existe pas dans le stock détaillé.
-    //         return {
-    //             id : variation.id,
-    //             taille : variation.attributes[0].option
-    //         }
-    //     }) || wooCommerceVariations.data.update.map(variation=> {
-    //         if (!variation.id) return
-    //         //Cette condition existe pour protéger contre le cas ou on reçoit une taille qui n'existe pas dans le stock détaillé.
-    //         return {
-    //             id : variation.id,
-    //             taille : variation.attributes[0].option
-    //         }
-    //     })
-    //     );
+    // L'ajout des l'ID de la variation sur WooCommerce avec deux options de paramètres c'est un peu bizarre comme logique
+    // Mais c'est obligé parce que parfois la réponse va être un create et parfois un update.
+    // Sauf que pour une meilleur UX on garde aucune différence entre les deux.
 
-    const result = await insertOneArticlePlateforme(request.body, 10,11);
-
-
+    const result = await insertOneArticlePlateforme(request.body, wooCommerce.data.id,
+        wooCommerceVariations.data?.create?.map(variation=> {
+            if (!variation.id) return
+            //Cette condition existe pour protéger contre le cas ou on reçoit une taille qui n'existe pas dans le stock détaillé.
+            return {
+                id : variation.id,
+                taille : variation.attributes[0].option
+            }
+        }) || wooCommerceVariations.data.update.map(variation=> {
+            if (!variation.id) return
+            //Cette condition existe pour protéger contre le cas ou on reçoit une taille qui n'existe pas dans le stock détaillé.
+            return {
+                id : variation.id,
+                taille : variation.attributes[0].option
+            }
+        })
+        );
 
     return response.status(201).json({
         status : "ok",
