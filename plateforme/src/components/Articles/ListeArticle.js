@@ -1,37 +1,22 @@
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableRow from '@mui/material/TableRow';
+import {useState} from "react";
 import classes from './ListeArticle.module.css';
 import { Link } from 'react-router-dom';
-import TableCustom from "../Table/TableCustom";
-import useGet from "../../hooks/useGet";
 import { API_CEGID } from "../../index";
+
+import {TableBody, TableCell, TableRow,Checkbox} from '@mui/material'
+
+import TableCustom from "../Table/TableCustom";
 import TableHeadCustom from "../Table/TableHeadCustom";
-import useTable from "../../hooks/useTable";
-import {Checkbox, Button} from '@mui/material';
-import {useEffect, useState} from "react";
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import ModalAddArticles from "./ModalAddArticles";
+import InsertionArticle from "./InsertionArticle.js"
+
 import Notification from "../util/Util";
+import useGet from "../../hooks/useGet";
+import useTable from "../../hooks/useTable";
+import useSelection from '../../hooks/useSelection.js';
 
-Object.defineProperty(String.prototype, 'capitalize', {
-    value: function() {
-      return this.charAt(0).toUpperCase() + this.slice(1);
-    },
-    enumerable: false
-  });
+import { capitalize, dateToYMD, numberWithDots } from '../util/stringFunctions.js';
 
-function numberWithDots(x) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-}
-
-function dateToYMD(dateString) {
-    const date = new Date(dateString);
-    const d = date.getDate();
-    const m = date.getMonth() + 1;
-    const y = date.getFullYear();
-    return '' + (d <= 9 ? '0' + d : d) + '/' + (m<=9 ? '0' + m : m) + '/' + y ;
-}
 const emptyTable= {
     body: {
         articles : []
@@ -44,44 +29,16 @@ const ListeArticle = function(props) {
 
     const {url, handleChangePage,sortHandeler} = useTable(props.query);
     const {data: tableData, loading, error} = useGet(`${API_CEGID}/articles?${url}`, emptyTable);
-    const [selection, setSelection] = useState({});
     const article = tableData.body.articles
     const [open, setModal] = useState(false);
     const closeModal= ()=> setModal(()=>false);
     const openModal= ()=> setModal(()=> true);
     const [openWarn, setWarn] = useState("");
+    const {selection, selectionHandeler, deselectionHadeler, removeSelection}=useSelection(setWarn);
 
     const closeNotif = (event, reason) => {
         setWarn("");
     };
-
-    const selectionHandeler = function(event, article) {
-        const code_article= article.GA_CODEARTICLE;
-        if (!event.target.checked) {
-            const newSelection = {...selection};
-            delete newSelection[code_article]
-            return setSelection(newSelection);
-        }
-        let newArticle= {}
-        newArticle[code_article]= article;
-
-        setSelection({
-            ...selection,
-            ...newArticle
-        })
-        if (Object.keys(selection).length>=20) setWarn("Attention ! Sélectionner plus de 20 articles peut causer des problèmes innatendus durant l'insertion");
-        
-    }
-
-    const deselectionHadeler= function() {
-        setSelection( ()=> {})
-    }
-
-    const removeSelection= function(code_article) {
-
-        const newSelection = selection.filter(art => art.code_article!==code_article);
-        setSelection(newSelection);
-    }
 
     const header = [
         { name: "", sort: false},
@@ -105,20 +62,7 @@ const ListeArticle = function(props) {
         <>
         {error ? <aside className={classes.error}>{error}</aside>: "" }
         {taille>0 && props.modification ? 
-            <aside className={classes.aside}>
-                <p>{taille} articles sélectionnés</p>
-                <div>    
-                    <Button color='primary'sx={{maginRight: "25px"}} onClick={deselectionHadeler}>
-                        Tout Déselectionner
-                    </Button>    
-                    <Button variant="contained" size='small'
-                    startIcon={<AddCircleOutlineIcon />}
-                    onClick={openModal}
-                    >
-                        Insérer
-                    </Button>
-                </div>
-            </aside>
+        <InsertionArticle   taille={taille} deselectionHadeler={deselectionHadeler} openModal={openModal}  />        
         : ""}
 
         <TableCustom
@@ -158,7 +102,7 @@ const ListeArticle = function(props) {
                 <Link to={`${row.GA_CODEARTICLE}`}>{row.GA_CODEARTICLE}</Link>
                 </TableCell>
                 <TableCell align="left">{row.GA_LIBELLE?.toLowerCase()}</TableCell>
-                <TableCell align="left" >{row.marque?.toLowerCase().capitalize()}</TableCell>
+                <TableCell align="left" >{capitalize(row.marque?.toLowerCase())}</TableCell>
                 <TableCell align="left" >{row.gender || ""}</TableCell>
                 <TableCell align="left" >{row.division || ""}</TableCell>
                 <TableCell align="left" >{row.silhouette || ""}</TableCell>
@@ -178,4 +122,5 @@ const ListeArticle = function(props) {
     )
 }
 
-export default ListeArticle
+
+  export default ListeArticle

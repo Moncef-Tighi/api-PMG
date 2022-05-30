@@ -27,6 +27,7 @@ app.all('*', (request, response, next)=> {
     return next(createError(404, `Erreur 404 : Impossible de trouver l'URL ${request.originalUrl} sur ce serveur`))
 });
 
+
 const scheduler = new ToadScheduler();
 
 const jobForStockUpdate = new SimpleIntervalJob(
