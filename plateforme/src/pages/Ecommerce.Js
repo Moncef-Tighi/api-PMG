@@ -1,4 +1,6 @@
-import { Button, TextField, NativeSelect } from "@mui/material"
+import { Button, TextField, NativeSelect, Box, Tab } from "@mui/material"
+import {TabContext,TabList, TabPanel} from '@mui/lab';
+import { useLocation, useNavigate } from "react-router-dom";
 import classes from './Ecommerce.module.css';
 import ListeArticleCegid from "../components/Articles/ListeArticleCegid";
 import { useContext, useState } from "react";
@@ -10,6 +12,8 @@ import ListeArticlePlateforme from "../components/Articles/ListeArticlePlateform
 const Ecommerce = function(props) {
     const [query, setQuery] = useState("");
     const [sortBy] = useState("");
+    const navigate= useNavigate();
+
     const authContext = useContext(AuthContext);
     const basicSearch= function(event) {
         event.preventDefault();
@@ -20,8 +24,14 @@ const Ecommerce = function(props) {
         }})
     }
 
+    const [tab, setTab] = useState(useLocation().pathname || '/article');
 
-
+    const handleChange = (event, newValue) => {
+        setTab(newValue);
+        navigate(newValue);
+        setQuery(()=> {});
+      
+    };
     return (
         <>
             <aside style={{marginBottom: "25px"}}>
@@ -46,10 +56,30 @@ const Ecommerce = function(props) {
                     </Button>
                 </form>
             </aside>
-            {/* <ListeArticleCegid query={query} sortBy={sortBy} 
-            modification={authContext.permissions.some(permission => (permission === "admin" || permission=== "modification") ) } /> */}
-            <ListeArticlePlateforme query={query} sortBy={sortBy} 
-            modification={authContext.permissions.some(permission => (permission === "admin" || permission=== "modification") ) } />
+            <TabContext value={tab}>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider', marginLeft: 6, marginRight: 6}}>
+                <TabList onChange={handleChange} aria-label="lab API tabs example">
+                <Tab label="Cegid" value="/article" sx={{fontSize: 20 }} /> 
+                <Tab label="Plateforme" value="/article/plateforme" sx={{fontSize: 20 }}/>    
+                <Tab label="PMG.dz" value="/article/pmg" sx={{fontSize: 20 }}/>   
+                <Tab label="Corbeille" value="/article/corbeille" sx={{fontSize: 20 }} /> 
+                </TabList>
+            </Box>
+            <TabPanel value="/article">
+                <ListeArticleCegid query={query} sortBy={sortBy} 
+                modification={authContext.permissions.some(permission => (permission === "admin" || permission=== "modification") ) } />
+            </TabPanel>
+            <TabPanel value="/article/plateforme">
+                <ListeArticlePlateforme query={query} sortBy={sortBy} 
+                modification={authContext.permissions.some(permission => (permission === "admin" || permission=== "modification") ) } />
+            </TabPanel>
+            <TabPanel value="/article/pmg">Soon...</TabPanel>
+            <TabPanel value="/article/corbeille">
+                <ListeArticlePlateforme query={query} activé={true} sortBy={sortBy} 
+                modification={authContext.permissions.some(permission => (permission === "admin" || permission=== "modification") ) } />
+            </TabPanel>
+            </TabContext>
+
 
         </>  
         )

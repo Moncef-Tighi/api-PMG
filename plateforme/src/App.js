@@ -36,6 +36,9 @@ function App() {
           <Route path='/accueil' element={<Accueil />} />
           <Route element={<Restrict permissions={permissions} allow={["modification", "admin", "community"]}/>}>
             <Route path='/article' element={<Ecommerce />}/>
+            <Route path='/article/plateforme' element={<Ecommerce />}/>
+            <Route path='/article/pmg' element={<Ecommerce />}/>
+            <Route path='/article/corbeille' element={<Ecommerce />}/>
             <Route path='/article/:code_article' element={<FicheArticle/>}/>
           </Route>
           <Route path='/commande' element={<Ecommerce />}/>
