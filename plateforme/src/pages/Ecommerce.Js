@@ -5,6 +5,7 @@ import { useContext, useState } from "react";
 import {Search} from '@mui/icons-material';
 import { InputAdornment } from "@mui/material";
 import AuthContext from "../state/AuthContext";
+import ListeArticlePlateforme from "../components/Articles/ListeArticlePlateforme";
 
 const Ecommerce = function(props) {
     const [query, setQuery] = useState("");
@@ -45,8 +46,11 @@ const Ecommerce = function(props) {
                     </Button>
                 </form>
             </aside>
-            <ListeArticleCegid query={query} sortBy={sortBy} 
+            {/* <ListeArticleCegid query={query} sortBy={sortBy} 
+            modification={authContext.permissions.some(permission => (permission === "admin" || permission=== "modification") ) } /> */}
+            <ListeArticlePlateforme query={query} sortBy={sortBy} 
             modification={authContext.permissions.some(permission => (permission === "admin" || permission=== "modification") ) } />
+
         </>  
         )
 }

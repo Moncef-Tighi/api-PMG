@@ -1,7 +1,7 @@
-import {useState} from "react";
+import {useContext, useState} from "react";
 import classes from './ListeArticle.module.css';
 import { Link } from 'react-router-dom';
-import { API_CEGID, API_PLATEFORME } from "../../index";
+import { API_PLATEFORME } from "../../index";
 
 import {TableBody, TableCell, TableRow,Checkbox} from '@mui/material'
 
@@ -16,11 +16,10 @@ import useTable from "../../hooks/useTable";
 import useSelection from '../../hooks/useSelection.js';
 
 import { capitalize, dateToYMD, numberWithDots } from '../util/stringFunctions.js';
+import AuthContext from "../../state/AuthContext";
 
 const emptyTable= {
-    body: {
-        articles : []
-    },
+    body: [],
     totalSize: 0,
     page : 1
 }
@@ -28,8 +27,10 @@ const emptyTable= {
 const ListeArticlePlateforme = function(props) {
 
     const {url, handleChangePage,sortHandeler} = useTable(props.query);
-    const {data: tableData, loading, error} = useGet(`${API_PLATEFORME}/articles/liste?${url}`, emptyTable);
-    const article = tableData.body.articles
+    const authContext = useContext(AuthContext);
+    const {data: tableData, loading, error} = useGet(`${API_PLATEFORME}/articles/liste?${url}`, emptyTable, authContext.token);
+    const article = tableData.body
+    console.log(article);
     const [open, setModal] = useState(false);
     const closeModal= ()=> setModal(()=>false);
     const openModal= ()=> setModal(()=> true);
@@ -50,11 +51,11 @@ const ListeArticlePlateforme = function(props) {
         { name: "Silhouette", sort: true, trueName : "silhouette"},
         { name: "Stock", sort: true, trueName : "stock"},
         { name: "Date Modification", sort: true , trueName : "date_modification"},
-        { name: "Prix vente", sort: true , trueName : "GA_PVTTC"} ,
+        { name: "Prix vente", sort: true , trueName : "prix_vente"} ,
     ]
     if (!props.modification) header.shift();
 
-    const isSelected = (row) => {if (selection) return row.GA_CODEARTICLE in selection};
+    const isSelected = (row) => {if (selection) return row.code_article in selection};
     if (selection) var taille = Object.keys(selection).length
     else var taille = 0
     return (
@@ -77,11 +78,11 @@ const ListeArticlePlateforme = function(props) {
         <TableHeadCustom header={header} sortHandeler={sortHandeler}/>
 
         <TableBody>
-            {article.map((row) => {
+            {article?.map((row) => {
                 const isItemSelected= isSelected(row)
                 return (
                 <TableRow
-                key={row.GA_CODEARTICLE}
+                key={row.code_article}
                 aria-checked={isItemSelected}
                 selected={isItemSelected}
                 >
@@ -92,23 +93,23 @@ const ListeArticlePlateforme = function(props) {
                         checked={isItemSelected}
                         onClick={(event) => selectionHandeler(event, row)}
                         inputProps={{
-                        'article': row.GA_CODEARTICLE,
+                        'article': row.code_article,
                         }}
                     />
                 </TableCell>            
                 : ""}
 
                 <TableCell component="th" scope="row">
-                <Link to={`${row.GA_CODEARTICLE}`}>{row.GA_CODEARTICLE}</Link>
+                <Link to={`${row.code_article}`}>{row.code_article}</Link>
                 </TableCell>
-                <TableCell align="left">{row.GA_LIBELLE?.toLowerCase()}</TableCell>
+                <TableCell align="left">{row.libelle?.toLowerCase()}</TableCell>
                 <TableCell align="left" >{capitalize(row.marque?.toLowerCase())}</TableCell>
                 <TableCell align="left" >{row.gender || ""}</TableCell>
                 <TableCell align="left" >{row.division || ""}</TableCell>
                 <TableCell align="left" >{row.silhouette || ""}</TableCell>
                 <TableCell align="center" >{row.stock}</TableCell>
-                <TableCell align="center" >{dateToYMD(row.GA_DATEMODIF)}</TableCell>
-                <TableCell align="center" >{numberWithDots(row.GA_PVTTC)}</TableCell>
+                <TableCell align="center" >{dateToYMD(row.date_modification)}</TableCell>
+                <TableCell align="center" >{numberWithDots(row.prix_vente)}</TableCell>
 
             </TableRow>)})}
         </TableBody>

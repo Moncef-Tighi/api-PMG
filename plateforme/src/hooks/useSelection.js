@@ -7,6 +7,7 @@ const useSelection= function(setWarn=null) {
     const selectionHandeler = function(event, article) {
         let code_article= article?.GA_CODEARTICLE;
         if (!code_article) code_article = article.code_article;
+
         if (!event.target.checked) {
             const newSelection = {...selection};
             delete newSelection[code_article]

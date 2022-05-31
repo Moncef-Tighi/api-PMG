@@ -16,7 +16,8 @@ export const readAllArticles = async function(param) {
         delete param.code_article;
     }
     const sql = `
-        SELECT article.code_article,prix_initial, prix_vente, libelle, marque, gender,division, silhouette, array_agg(dimension) as "dimension"  
+        SELECT article.code_article,prix_initial, prix_vente, libelle, marque, gender,division, silhouette
+        ,SUM(stock_dimension) as "stock", array_agg(dimension) as "dimension"  
         , date_ajout,date_modification, description, id_article_wooCommerce 
         FROM article 
         INNER JOIN article_taille ON article.code_article=article_taille.code_article
