@@ -65,7 +65,7 @@ const ListeArticlePlateforme = function(props) {
         {taille>0 && props.modification ? 
         <InsertionArticle   taille={taille} deselectionHadeler={deselectionHadeler} openModal={openModal}  />        
         : ""}
-        {article.length===0 ?<div>Aucun article n'a été trouvé</div> : ""}
+        {article.length===0 && !loading ?<div>Aucun article n'a été trouvé</div> : ""}
 
         <TableCustom
             tableData={tableData.body.articles}
@@ -101,7 +101,7 @@ const ListeArticlePlateforme = function(props) {
                 : ""}
 
                 <TableCell component="th" scope="row">
-                <Link to={`${row.code_article}`}>{row.code_article}</Link>
+                <Link to={`/article/${row.code_article}`}>{row.code_article}</Link>
                 </TableCell>
                 <TableCell align="left">{row.libelle?.toLowerCase()}</TableCell>
                 <TableCell align="left" >{capitalize(row.marque?.toLowerCase())}</TableCell>

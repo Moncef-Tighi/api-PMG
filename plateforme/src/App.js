@@ -10,7 +10,7 @@ import ProtectRoute from './components/ProtectRoute';
 
 const FicheEmploye = React.lazy(() => import('./pages/FicheEmploye'));
 const Accueil = React.lazy(() => import('./pages/Accueil'));
-const Ecommerce = React.lazy(() => import('./pages/Ecommerce'));
+const Article = React.lazy(() => import('./pages/Article'));
 const EmployesListe = React.lazy(() => import('./pages/EmployesListe'));
 const Permissions = React.lazy(() => import('./pages/Permissions'));
 const Historique = React.lazy(() => import('./pages/Historique'));
@@ -35,14 +35,14 @@ function App() {
           <Route path="me" element={<FicheEmploye id={authContext?.employe?.id_employe}/>} />
           <Route path='/accueil' element={<Accueil />} />
           <Route element={<Restrict permissions={permissions} allow={["modification", "admin", "community"]}/>}>
-            <Route path='/article' element={<Ecommerce />}/>
-            <Route path='/article/plateforme' element={<Ecommerce />}/>
-            <Route path='/article/pmg' element={<Ecommerce />}/>
-            <Route path='/article/corbeille' element={<Ecommerce />}/>
+            <Route path='/article' element={<Article />}/>
+            <Route path='/article/plateforme' element={<Article />}/>
+            <Route path='/article/pmg' element={<Article />}/>
+            <Route path='/article/corbeille' element={<Article />}/>
             <Route path='/article/:code_article' element={<FicheArticle/>}/>
           </Route>
-          <Route path='/commande' element={<Ecommerce />}/>
-          <Route path='/prix' element={<Ecommerce />}/>
+          <Route path='/commande' element={<Article />}/>
+          <Route path='/prix' element={<Article />}/>
           <Route element={<Restrict permissions={permissions} allow={["admin"]}/>}>
             <Route path='admin/employes' element={<EmployesListe />} />
             <Route path="admin/employes/:id" element={<FicheEmploye />} />

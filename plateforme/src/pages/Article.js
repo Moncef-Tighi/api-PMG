@@ -1,7 +1,7 @@
 import { Button, TextField, NativeSelect, Box, Tab } from "@mui/material"
 import {TabContext,TabList, TabPanel} from '@mui/lab';
 import { useLocation, useNavigate } from "react-router-dom";
-import classes from './Ecommerce.module.css';
+import classes from './Article.module.css';
 import ListeArticleCegid from "../components/Articles/ListeArticleCegid";
 import { useContext, useState } from "react";
 import {Search} from '@mui/icons-material';
@@ -9,7 +9,7 @@ import { InputAdornment } from "@mui/material";
 import AuthContext from "../state/AuthContext";
 import ListeArticlePlateforme from "../components/Articles/ListeArticlePlateforme";
 
-const Ecommerce = function(props) {
+const Article = function(props) {
     const [query, setQuery] = useState("");
     const [sortBy] = useState("");
     const navigate= useNavigate();
@@ -37,7 +37,9 @@ const Ecommerce = function(props) {
             <aside style={{marginBottom: "25px"}}>
                 <form className={classes.form} onSubmit={basicSearch}>
                     <NativeSelect id="select" variant='outlined'>
+                        {useLocation().pathname==='/article' ? 
                         <option value="GA_CODEARTICLE">Code Article</option>
+                    :   <option value="code_article">Code Article</option>}
                         <option value="marque">Marque</option>
                         <option value="silhouette">Silhouette</option>
                     </NativeSelect>
@@ -85,4 +87,4 @@ const Ecommerce = function(props) {
         )
 }
 
-export default Ecommerce
+export default Article
