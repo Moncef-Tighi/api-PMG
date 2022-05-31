@@ -28,9 +28,9 @@ const ListeArticlePlateforme = function(props) {
 
     const {url, handleChangePage,sortHandeler} = useTable(props.query);
     const authContext = useContext(AuthContext);
-    const {data: tableData, loading, error} = useGet(`${API_PLATEFORME}/articles/liste?${url}`, emptyTable, authContext.token);
+    const active= props.activé ? "&activé=false" : ""
+    const {data: tableData, loading, error} = useGet(`${API_PLATEFORME}/articles/liste?${url}${active}`, emptyTable, authContext.token);
     const article = tableData.body
-    console.log(article);
     const [open, setModal] = useState(false);
     const closeModal= ()=> setModal(()=>false);
     const openModal= ()=> setModal(()=> true);
@@ -65,6 +65,7 @@ const ListeArticlePlateforme = function(props) {
         {taille>0 && props.modification ? 
         <InsertionArticle   taille={taille} deselectionHadeler={deselectionHadeler} openModal={openModal}  />        
         : ""}
+        {article.length===0 ?<div>Aucun article n'a été trouvé</div> : ""}
 
         <TableCustom
             tableData={tableData.body.articles}

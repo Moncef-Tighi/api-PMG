@@ -64,7 +64,7 @@ const ListeArticleCegid = function(props) {
         {taille>0 && props.modification ? 
         <InsertionArticle   taille={taille} deselectionHadeler={deselectionHadeler} openModal={openModal}  />        
         : ""}
-
+        {article.length===0 ?<div>Aucun article n'a été trouvé</div> : ""}
         <TableCustom
             tableData={tableData.body.articles}
             totalSize={tableData.totalSize}
