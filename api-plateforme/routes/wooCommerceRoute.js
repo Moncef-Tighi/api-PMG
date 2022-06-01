@@ -5,7 +5,8 @@ const router = express.Router();
 
 
 router.get("/categorie", controllers.getCategorie);
-router.get("/ajout", controllerArticle.insertArticlesWooCommerce);
+router.post("/ajout/taille", controllerArticle.insertTailleWooCommerce);
+router.post("/ajout", controllerArticle.insertArticlesWooCommerce);
 
 // router.patch("/prix", controllers.updatePrixArticle);
 // router.patch("/stock", controllers.updateStock);
