@@ -1,5 +1,4 @@
 import { catchAsync } from "./errorController.js";
-import * as cegid from "../models/article.js";
 import createError from 'http-errors';
 import apiWooCommerce from "../models/api.js";
 
@@ -100,6 +99,7 @@ export const insertTailleWooCommerce = catchAsync( async function(request, respo
 
     //TODO : Actuellement si il y a une erreur dans l'insertion ou l'update d'un article, l'opération continue comme si de rien n'était
     //l'API de WooCommerce s'en fout et insert ce qui peut être insérer en signalant une erreur mais sans annuler quoi que ce soit.
+    //On doit faire la vérification qu'il n'y a pas eu d'erreurs après l'insert ET après l'update.
 
     const insertResult= await Promise.all(insertionRequests);
     const wooCommerceInsertVariation = insertResult?.map(promesse => promesse.data.create)

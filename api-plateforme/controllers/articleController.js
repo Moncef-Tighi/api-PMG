@@ -105,26 +105,6 @@ const updateOnearticleWooCommerce = async function(body,id) {
 }
 
 
-const addStockToArticles = async function(articles, articlesDispo) {
-    //Fonction utilitaire qui combine les infos de l'article extraite de la plateforme 
-    //Avec les informations de stock extraite de l'API Cegid
-    const output=[];
-    for(const [code_article, stock] of Object.entries(articlesDispo)) {
-        let article;
-        try {
-            article = articles.find(art=> art.code_article===code_article);
-        } catch(error) {
-            article = articles
-        }
-
-        if (stock>=process.env.MINSTOCK) await wooCommerce.updateDisponibilite(code_article, "instock")
-        else await wooCommerce.updateDisponibilite(code_article, "outofstock")
-        article.stock=stock;
-        //On a besoin de destructurer l'article, sinon le push le copie sur chaque case de l'array au lieu de le mettre à la fin
-        output.push({ ...article});
-    }
-    return output
-}
 
 export const listeArticle = catchAsync( async function(request, response) {
     //EndPoint pour l'API client, on réccupère l'article depuis la plateforme et le stock depuis CEGID
@@ -154,13 +134,13 @@ export const unArticle = catchAsync( async function(request, response, next) {
 
     const disponibilite = await model.checkDisponibilite([article.code_article]);
 
-    const result = await addStockToArticles(article, disponibilite.articles);
+    // const result = await addStockToArticles(article, disponibilite.articles);
     const WooCommerce = await apiWooCommerce.get("products", {sku : id})
 
     return response.status(200).json({
         status: 'ok',
         body : {
-            Plateforme : result,
+            Plateforme : disponibilite.articles,
             WooCommerce : WooCommerce.data
         }
     });
@@ -215,6 +195,35 @@ export const ajoutArticle = catchAsync(async function(request, response, next) {
         }    
     })
 })
+
+export const insertArticle = catchAsync(async function(request, response, next) {
+    //On importe l'article depuis l'API Cegid et on le place dans la plateforme.
+
+    const articles= request.body.articles
+    const insertion= request.body.insertion;
+    const update= request.body.update;
+    //On merge les deux parce que sur la plateforme on utilise un upSert pour détecter les update
+    
+    if (!articles) return next(createError(400, `Impossible de trouver la liste d'articles`))
+    Array.prototype.push.apply(insertion,update); 
+        
+    const result = await model.insertArticle(code_article, libelle, marque, date_modification,
+        gender, division, silhouette ,prix_initial, prix_vente, description,id);
+    tailles.forEach( async taille => {
+        await model.insertTaille(code_article, taille.dimension, taille.code_barre, taille.stock,
+            variation.find(art=> art?.taille===taille.dimension)?.id)
+    })
+    
+
+    return response.status(201).json({
+        status : "ok",
+        message : "L'article a bien été mis en vente sur la plateforme",
+        body : {
+            plateforme : result,
+        }    
+    })
+})
+
 
 
 export const ventesArticle = catchAsync( async function(request, response) {
