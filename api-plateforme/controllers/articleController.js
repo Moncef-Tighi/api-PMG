@@ -5,110 +5,10 @@ import apiWooCommerce from "../models/api.js";
 import db from "../models/postGreSql.js";
 
 
-const extractArticle= function(body) {
-    const code_article= body.code_article;
-    const libelle= body.libelle;
-    const marque = body.marque;
-    const date_modification = body.date_modification;
-    const prix_vente = body.prix_vente;
-    const prix_initial = body.prix_initial;
-    const description = body.description;
-    const tailles = body.taille;
-    const gender = body.gender;
-    const division = body.division;
-    const silhouette = body.silhouette;
-    const categorie= body.categorie;
-    return {code_article,libelle,marque,date_modification,prix_vente,prix_initial, description, tailles
-        ,gender,division,silhouette, categorie}
-}
-
-
-const insertOneArticlePlateforme= async function(body, id, variation) {
-
-    const {code_article,libelle,marque,date_modification,prix_vente,prix_initial, description, tailles
-    , gender, division, silhouette} = extractArticle(body);
-    
-    const result = await model.insertArticle(code_article, libelle, marque, date_modification,
-        gender, division, silhouette ,prix_initial, prix_vente, description,id);
-    tailles.forEach( async taille => {
-        await model.insertTaille(code_article, taille.dimension, taille.code_barre, taille.stock,
-            variation.find(art=> art?.taille===taille.dimension)?.id)
-    })
-
-    return {result};
-}
-
-const insertOneArticleWooCommerce= async function(body) {
-    const {code_article,libelle,prix_vente,prix_initial, tailles, categorie} = extractArticle(body);
-
-    const wooCommerce = await apiWooCommerce.post("products",{
-        name : libelle,
-        type: "variable",
-        regular_price: String(prix_initial),
-        sale_price: String(prix_vente) ,
-        sku: code_article,
-        stock_status: "instock",
-        attributes : [{
-            id : 3,
-            variation : true,
-            visible: true,
-            options :  tailles.map(dim => dim.dimension)
-        }
-        ],
-        categories : categorie?.map(cat=> {return {"id" : cat}}) || []
-    })
-    const wooCommerceVariations = await apiWooCommerce.post(`products/${wooCommerce.data.id}/variations/batch`,{
-        create :  tailles.map(taille=>{
-            return {
-
-                stock_status: taille.stock > process.env.MINSTOCK ? "instock" : "outofstock", 
-                regular_price: String(prix_initial),
-                sale_price: String(prix_vente) ,
-                attributes : [{
-                    id : 3,
-                    option : taille.dimension
-                }]
-            }
-        })
-        })
-
-    return {wooCommerce, wooCommerceVariations}
-
-}
-
-const updateOnearticleWooCommerce = async function(body,id) {
-    const {libelle,prix_vente, tailles,categorie} = extractArticle(body);
-    const wooCommerce = await apiWooCommerce.put(`products/${id}`,{
-        sale_price: String(prix_vente),
-        date_modified: Date.now(),
-        name : libelle,
-        categories : categorie ? categorie.map(cat=> {return {"id" : cat}}) : []
-    });
-
-    const allVariations = await apiWooCommerce.get(`products/${id}/variations`);
-
-    const wooCommerceVariations = await apiWooCommerce.post(`products/${id}/variations/batch`,{
-        update :  tailles.map(taille=>{
-            if (allVariations.data.some(art=> art.attributes[0].option===taille.dimension)) {
-                //Cette condition existe pour protéger contre le cas ou on reçoit une taille qui n'existe pas dans le stock détaillé.
-                return {
-                    id : allVariations.data.find(article => {
-                        return article.attributes[0].option===taille.dimension
-                    }).id,
-                    stock_status: taille.stock > process.env.MINSTOCK ? "instock" : "outofstock", 
-                    regular_price: String(prix_vente),
-                }
-            }
-        })
-        })
-
-    return  {wooCommerce, wooCommerceVariations}
-}
-
-
 
 export const listeArticle = catchAsync( async function(request, response) {
     //EndPoint pour l'API client, on réccupère l'article depuis la plateforme et le stock depuis CEGID
+    if (!request.query.activé) request.query.activé='true';
 
     const articles = await model.readAllArticles(request.query);
     const totalSize = articles.length
@@ -148,55 +48,6 @@ export const unArticle = catchAsync( async function(request, response, next) {
 
 });
 
-export const ajoutArticle = catchAsync(async function(request, response, next) {
-    //On importe l'article depuis l'API Cegid et on le place dans la plateforme.
-
-    const {code_article,prix_vente, tailles} = extractArticle(request.body);
-
-    if (!code_article || !tailles || !prix_vente || prix_vente<10) return next(createError(400, `Impossible de créer l'article : une information obligatoire n'a pas été fournit`))
-
-    const wooCommerceExistance= await apiWooCommerce.get(`products?sku=${code_article}`);
-
-    if (wooCommerceExistance.data[0]?.name) {
-        var {wooCommerce, wooCommerceVariations} = await updateOnearticleWooCommerce(request.body,wooCommerceExistance.data[0].id);
-    } else {
-
-        var {wooCommerce, wooCommerceVariations} = await insertOneArticleWooCommerce(request.body);
-    }
-
-    // L'ajout des l'ID de la variation sur WooCommerce avec deux options de paramètres c'est un peu bizarre comme logique
-    // Mais c'est obligé parce que parfois la réponse va être un create et parfois un update.
-    // Sauf que pour une meilleur UX on garde aucune différence entre les deux.
-
-    const result = await insertOneArticlePlateforme(request.body, wooCommerce.data.id,
-        wooCommerceVariations.data?.create?.map(variation=> {
-            if (!variation.id) return
-            //Cette condition existe pour protéger contre le cas ou on reçoit une taille qui n'existe pas dans le stock détaillé.
-            return {
-                id : variation.id,
-                taille : variation.attributes[0].option
-            }
-        }) || wooCommerceVariations.data.update.map(variation=> {
-            if (!variation.id) return
-            //Cette condition existe pour protéger contre le cas ou on reçoit une taille qui n'existe pas dans le stock détaillé.
-            return {
-                id : variation.id,
-                taille : variation.attributes[0].option
-            }
-        })
-        );
-
-    return response.status(201).json({
-        status : "ok",
-        message : "L'article a bien été mis en vente sur la plateforme",
-        body : {
-            plateforme : result,
-            wooCommerce : wooCommerce.data,
-            wooCommerceVariations : wooCommerceVariations.data
-        }    
-    })
-})
-
 export const insertArticles = catchAsync(async function(request, response, next) {
     //On importe l'article depuis l'API Cegid et on le place dans la plateforme.
 
@@ -232,6 +83,31 @@ export const insertArticles = catchAsync(async function(request, response, next)
     })
 })
 
+export const activateArticles = catchAsync(async function(request,response, next) {
+    // ATTENTION ! Le jour ou WooCommerce sera retiré, il faudra retirer l'activation des articles côté WooCommerce
+    // Actuellement on actualise côté plateforme ET côté WooCommerce.
+    const articlePlateforme= request.body.code_article;
+    const articleWooCommerce= request.body.id;
+    if (!articlePlateforme && !articleWooCommerce) return next(createError(400, "aucun article à activé n'a été trouvé."))
+    
+    if (articlePlateforme) {
+        var plateforme = await model.activationArticle(articlePlateforme, true);
+    }
+    if (articleWooCommerce) {
+        var wooCommerce = await apiWooCommerce.post("products/batch", 
+        {
+            update: articleWooCommerce.map(id=> {return {id, status : "publish"}})
+        })
+    }
+    return response.status(200).json({
+        status : "ok",
+        body : {
+            plateforme,
+            wooCommerce: wooCommerce?.data?.body, 
+        }    
+    })
+ 
+})
 
 
 export const ventesArticle = catchAsync( async function(request, response) {
