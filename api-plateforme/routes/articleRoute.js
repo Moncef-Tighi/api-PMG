@@ -10,6 +10,7 @@ router.use(protect);
     router.get('/vente', controllers.ventesArticle);
     router.get('/status', controllers.articleEtat);
     router.post('/insertion', restrict("admin", "modification"), controllers.ajoutArticle);
+    router.post('/batch/insert', restrict("admin", "modification"), controllers.insertArticles);
     router.patch('/prix', restrict("admin", "modification"), controllers.updatePrixArticle);
     router.patch('/activer/:id', restrict("admin", "modification"), controllers.enableArticle);
     router.patch('/desactiver/:id', restrict("admin", "modification"), controllers.disableArticle);

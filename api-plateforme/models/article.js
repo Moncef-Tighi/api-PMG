@@ -59,11 +59,21 @@ export const readOneArticle = async function(code_article) {
 
 }
 
+export const batchCreateArticles = async function(articles) {
+    const data = await articles.map(async article=> {
+        const data = await insertArticle(article.code_article, article.libelle, article.marque, article.date_modification,
+            article.gender, article.division, article.silhouette, article.prix_initial, article.prix_vente,
+            article.description, false);
+        return data
+    })
+    return data;
+}
+
 export const insertArticle = async function(code_article, libelle=null, marque=null, date_modification=null,
-    gender=null, division=null, silhouette=null ,prix_initial, prix_vente, description=null,id){
+    gender=null, division=null, silhouette=null ,prix_initial, prix_vente, description=null, activé=true){
     const sql = `
     INSERT INTO article(code_article, libelle, marque, gender, division, silhouette,
-    date_modification, date_ajout,prix_initial, prix_vente, description, id_article_WooCommerce)
+    date_modification, date_ajout,prix_initial, prix_vente, description, activé)
     VALUES 
     ($1, $2, $3, $4,$5, $6 , $7, CURRENT_TIMESTAMP,$8,$9,$10,$11 )
     ON CONFLICT (code_article) DO UPDATE
@@ -72,25 +82,39 @@ export const insertArticle = async function(code_article, libelle=null, marque=n
     RETURNING *
     `
 
-    const values = [code_article, libelle, marque,gender, division, silhouette, date_modification,prix_initial, prix_vente, description, id];
+    const values = [code_article, libelle, marque,gender, division, silhouette
+        , date_modification,prix_initial, prix_vente, description, activé];
     const response = await db.query(sql, values)
     return response.rows[0];
 }
 
-export const insertTaille = async function(code_article, dimension, code_barre, stock_dimension, id) {
+export const batchCreateTailles = async function(articles) {
+    const data =  articles.map(async article=> {
+        if (!article.tailles) throw "Impossible de trouver les tailles dans l'article : " + article.code_article
+        const tailles = article.tailles;
+        const data = await tailles.map(async taille=> {
+            return await insertTaille(article.code_article, taille.dimension, taille.code_barre, taille.stock);
+        })
+        var articlesCreated = await Promise.all(data);
+        return articlesCreated
+    })
+    return data
+}
+
+export const insertTaille = async function(code_article, dimension, code_barre, stock_dimension) {
 
     let disponible=false
     if (stock_dimension>process.env.MINSTOCK) disponible=true
     const sql = `
-    INSERT INTO article_taille(code_article,dimension, code_barre, stock_dimension,disponible,id_taille_WooCommerce)
+    INSERT INTO article_taille(code_article,dimension, code_barre, stock_dimension,disponible)
     VALUES
-    ($1,$2,$3,$4,${disponible}, $5)
+    ($1,$2,$3,$4,${disponible})
     ON CONFLICT (code_barre) DO UPDATE
-    SET stock_dimension=$4, disponible=${disponible},id_taille_WooCommerce=$5
-
+    SET stock_dimension=$4, disponible=${disponible}
+    RETURNING *
     `
-
-    const values = [code_article, dimension, code_barre, Number(stock_dimension), id];
+    
+    const values = [code_article, dimension, code_barre, Number(stock_dimension)];
     const response = await db.query(sql, values)
     return response.rows[0];
 

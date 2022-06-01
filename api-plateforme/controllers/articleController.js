@@ -1,8 +1,9 @@
 import { catchAsync } from './errorController.js';
 import * as model from '../models/article.js';
 import createError from 'http-errors';
-import * as wooCommerce from '../models/wooCommerce.js';
 import apiWooCommerce from "../models/api.js";
+import db from "../models/postGreSql.js";
+
 
 const extractArticle= function(body) {
     const code_article= body.code_article;
@@ -196,30 +197,37 @@ export const ajoutArticle = catchAsync(async function(request, response, next) {
     })
 })
 
-export const insertArticle = catchAsync(async function(request, response, next) {
+export const insertArticles = catchAsync(async function(request, response, next) {
     //On importe l'article depuis l'API Cegid et on le place dans la plateforme.
 
     const articles= request.body.articles
-    const insertion= request.body.insertion;
-    const update= request.body.update;
-    //On merge les deux parce que sur la plateforme on utilise un upSert pour détecter les update
     
     if (!articles) return next(createError(400, `Impossible de trouver la liste d'articles`))
-    Array.prototype.push.apply(insertion,update); 
-        
-    const result = await model.insertArticle(code_article, libelle, marque, date_modification,
-        gender, division, silhouette ,prix_initial, prix_vente, description,id);
-    tailles.forEach( async taille => {
-        await model.insertTaille(code_article, taille.dimension, taille.code_barre, taille.stock,
-            variation.find(art=> art?.taille===taille.dimension)?.id)
-    })
-    
+    try {
+        db.query('BEGIN');
+        const articlesResponse = await model.batchCreateArticles(articles);
+        var articlesCreated = await Promise.all(articlesResponse);
+        db.query("COMMIT");
+    } catch(error) {
+        db.query("ROLLBACK");
+        throw error
+    }
+    try {
+        db.query('BEGIN');
+        const taillesResponse = await model.batchCreateTailles(articles)
+        var taillesCreated = await Promise.all(taillesResponse);
+        db.query("COMMIT");
+    } catch(error) {
+        db.query("ROLLBACK");
+        throw error
+    }
 
     return response.status(201).json({
         status : "ok",
         message : "L'article a bien été mis en vente sur la plateforme",
         body : {
-            plateforme : result,
+            articles : articlesCreated,
+            tailles : taillesCreated
         }    
     })
 })
@@ -227,11 +235,11 @@ export const insertArticle = catchAsync(async function(request, response, next) 
 
 
 export const ventesArticle = catchAsync( async function(request, response) {
-    const ventes = await wooCommerce.totalVentes();
+    // const ventes = await wooCommerce.totalVentes();
 
     return response.status(200).json({
         status : "ok",
-        body : ventes    
+        // body : ventes    
     })
 })
 
