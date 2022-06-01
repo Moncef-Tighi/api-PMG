@@ -170,10 +170,11 @@ export const activationArticle = async function(code_article, activation) {
     //Fonction utilisée pour activer ET désactiver un article
     const sql = `
         UPDATE article SET activé=$2 
-        WHERE code_article=$1
+        WHERE code_article = ANY($1::varchar[])
         RETURNING *
     `
     const values = [code_article, activation];
     const response = await db.query(sql, values)
+
     return response.rows[0];
 }

@@ -67,12 +67,13 @@ export const insertTailleWooCommerce = catchAsync( async function(request, respo
 
     // ATTENTION ! Si l'inseriton a lieu plusieurs fois au lieu d'update, les tailles vont se répéter
     const insertionRequests = await insertion?.map( async info=> {
+        const variationInsert= variations.find(art=> art.code_article===info.code_article)
         return await apiWooCommerce.post(`products/${info.id}/variations/batch`,{
-        create :  variations[info.code_article].tailles.map(taille=>{
+        create :  variationInsert.tailles.map(taille=>{
             return {
                 stock_status: taille.stock > process.env.MINSTOCK ? "instock" : "outofstock", 
-                regular_price: String(variations[info.code_article].prix_initial),
-                sale_price: String(variations[info.code_article].prix_vente) ,
+                regular_price: String(variationInsert.prix_initial),
+                sale_price: String(variationInsert.prix_vente) ,
                 attributes : [{
                     id : 3,
                     option : taille.dimension
@@ -83,16 +84,17 @@ export const insertTailleWooCommerce = catchAsync( async function(request, respo
     })
 
     const updateRequests = await  update?.map( async info=> {
-        console.log(variations.find(art=> art.code_article===info.code_article))
+
         const allVariations = await apiWooCommerce.get(`products/${info.id}/variations`);
+        const variationUpdate= variations.find(art=> art.code_article===info.code_article)
         return await apiWooCommerce.post(`products/${info.id}/variations/batch`,{
-        update :  variations.find(art=> art.code_article===info.code_article).tailles.map(taille=>{
+        update :  variationUpdate.tailles.map(taille=>{
                 return {
                     id : allVariations.data.find(article => {
                         return article.attributes[0].option===taille.dimension
-                    }).id,
+                    })?.id,
                     stock_status: taille.stock > process.env.MINSTOCK ? "instock" : "outofstock", 
-                    regular_price: String(variations[info.code_article]),
+                    regular_price: String(variationUpdate.prix_vente),
                 }
             }
         )})
