@@ -82,6 +82,7 @@ const ModalAddArticles = function({open, onClose, selection, removeSelection}) {
                     setArticles(()=> data);
                     setLoading(false);
                 } catch(error) {
+                    console.log(error);
                     setError('Impossible de contacter le serveur');
                     onClose();
                     setLoading(false);
@@ -120,14 +121,19 @@ const ModalAddArticles = function({open, onClose, selection, removeSelection}) {
                     })
                 })
             }
-        console.log(article)
 
+            const plateforme = await axios.post(`${API_PLATEFORME}/articles/batch/insert`, {articles : article}, {
+                headers : {
+                    "Authorization" : `Bearer ${authContext.token}`
+                }
+            })
+            console.log(plateforme);
             const wooCommerce = await axios.post(`${API_PLATEFORME}/woocommerce/ajout`, {articles : article}, {
                 headers : {
                     "Authorization" : `Bearer ${authContext.token}`
                 }
             })
-
+            console.log(wooCommerce);
             const wooCommerceVariation = await axios.post(`${API_PLATEFORME}/woocommerce/ajout/taille`, {
                 variations : article,
                 insertion: wooCommerce.data.body.insertion,
@@ -137,9 +143,15 @@ const ModalAddArticles = function({open, onClose, selection, removeSelection}) {
                     "Authorization" : `Bearer ${authContext.token}`
                 }
             })
-
             console.log(wooCommerceVariation);
-                setReceived(()=> received+1);
+            const activation = await axios.patch(`${API_PLATEFORME}/articles/batch/activation`, {
+                code_article : plateforme.data.body?.articles?.map(article=> article.code_article),
+                id: wooCommerce.data.body?.insertion?.map(article=> article.id)
+            },{headers : {
+                "Authorization" : `Bearer ${authContext.token}`
+            }})
+            console.log(activation);
+            setReceived(()=> received+1);
             setNotif(`Tout les articles ont étés insérés avec succès`);
         } catch(error) {
             console.log(error);
