@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom"
-import TailleTable from "../components/Articles/TailleTable";
+import TailleTable from "../components/Table/TailleTable";
 import classes from './FicheArticle.module.css';
 
 const query = async function(code_article) {

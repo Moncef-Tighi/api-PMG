@@ -10,10 +10,7 @@ import { TableCell, TableRow, TableBody } from "@mui/material";
 import Notification from "../util/Util";
 import { Select, OutlinedInput, MenuItem, Checkbox, ListItemText } from "@mui/material";
 import AuthContext from "../../state/AuthContext";
-
-function numberWithDots(x) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-}
+import { numberWithDots } from "../util/stringFunctions";
 
 const findTailles = async function(articles) {
     for(const code_article of Object.keys(articles)) {

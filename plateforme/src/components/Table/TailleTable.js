@@ -6,11 +6,11 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { DepotTable } from './DepotTable';
+import { DepotTable } from '../Articles/DepotTable';
 
 
 const TailleTable = function({tailles, stock}) {
-
+    //Tableau utilisé dans la fiche Article
     return ( <>
         <TableContainer component={Paper} sx={{width: "100%",marginTop: "30px", fontSize: "2em"}}>
         <Table>

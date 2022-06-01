@@ -216,6 +216,57 @@ export const ajoutArticle = catchAsync(async function(request, response, next) {
     })
 })
 
+export const insertArticlesWooCommerce = catchAsync( async function(request, response, next) {
+    const articles = request.body.articles
+
+    const wooCommerceExistance= await apiWooCommerce.get(`products?sku=${articles.map(article => article.code_article).join(',')}`);
+
+    const updateArticles = articles.filter(article => wooCommerceExistance.data?.find(art => art?.sku === article?.code_article))
+    const insertArticles = articles.filter(article=> !updateArticles.some(art=> art.code_article===article.code_article));
+
+    const data = {
+        create : insertArticles?.map(article=>{
+            return {
+                name : article.libelle,
+                type: "variable",
+                regular_price: String(article.prix_initial),
+                sale_price: String(article.prix_vente) ,
+                sku: article.code_article,
+                stock_status: "instock",
+                status: "draft",
+                attributes : [{
+                    id : 3,
+                    variation : true,
+                    visible: true,
+                    options :  article.tailles.map(dim => dim.dimension)
+                }],
+                categories : article?.categorie?.map(cat=> {return {"id" : cat}}) || []
+            }}),
+        update : updateArticles?.map(article=> {
+            return {
+                id: article.id_article_WooCommerce,
+                default_attributes: {
+                sale_price: String(article.prix_vente),
+                date_modified: Date.now(),
+                name : article.libelle,
+                categories : article.categorie ? article.categorie.map(cat=> {return {"id" : cat}}) : []
+        }}
+    })
+    }
+    const creationWooCommerce = await apiWooCommerce.post('products/batch', data)
+
+    return response.status(201).json({
+        status: "ok",
+        message : "Les articles ont bien étés ajoutés sur la plateforme",
+        body : {
+            insertionId : creationWooCommerce.data?.create?.filter(article=> !article.error)?.map(article=> article.id),
+            insertionCode : creationWooCommerce.data?.create?.filter(article=> !article.error)?.map(article=> article.sku),
+            updateId : creationWooCommerce.data?.update?.filter(article=> !article.error)?.map(article=> article.id),
+            updateCode : creationWooCommerce.data?.update?.filter(article=> !article.error)?.map(article=> article.sku),
+        }
+    })
+})
+
 export const ventesArticle = catchAsync( async function(request, response) {
     const ventes = await wooCommerce.totalVentes();
 
