@@ -32,7 +32,7 @@ export const insertArticlesWooCommerce = catchAsync( async function(request, res
             }}),
         update : updateArticles?.map(article=> {
             return {
-                id: article.id_article_WooCommerce,
+                id: wooCommerceExistance.data.find(art=> art.sku===article.code_article).id,
                 default_attributes: {
                 sale_price: String(article.prix_vente),
                 date_modified: Date.now(),
