@@ -66,7 +66,7 @@ export const insertTailleWooCommerce = catchAsync( async function(request, respo
     if (!update && !insertion) return next(createError(400, "Aucune taille n'a été insérée ou modifiée sur WooCommerce"))
 
     // ATTENTION ! Si l'inseriton a lieu plusieurs fois au lieu d'update, les tailles vont se répéter
-    const insertionRequests = await insertion.map( async info=> {
+    const insertionRequests = await insertion?.map( async info=> {
         return await apiWooCommerce.post(`products/${info.id}/variations/batch`,{
         create :  variations[info.code_article].tailles.map(taille=>{
             return {
@@ -81,11 +81,12 @@ export const insertTailleWooCommerce = catchAsync( async function(request, respo
         })
         })
     })
-    
-    const updateRequests = await  update.map( async info=> {
+
+    const updateRequests = await  update?.map( async info=> {
+        console.log(variations.find(art=> art.code_article===info.code_article))
         const allVariations = await apiWooCommerce.get(`products/${info.id}/variations`);
         return await apiWooCommerce.post(`products/${info.id}/variations/batch`,{
-        update :  variations[info.code_article].tailles.map(taille=>{
+        update :  variations.find(art=> art.code_article===info.code_article).tailles.map(taille=>{
                 return {
                     id : allVariations.data.find(article => {
                         return article.attributes[0].option===taille.dimension
@@ -101,10 +102,10 @@ export const insertTailleWooCommerce = catchAsync( async function(request, respo
     //l'API de WooCommerce s'en fout et insert ce qui peut être insérer en signalant une erreur mais sans annuler quoi que ce soit.
     //On doit faire la vérification qu'il n'y a pas eu d'erreurs après l'insert ET après l'update.
 
-    const insertResult= await Promise.all(insertionRequests);
+    const insertResult= await Promise.all(insertionRequests || []);
     const wooCommerceInsertVariation = insertResult?.map(promesse => promesse.data.create)
 
-    const updateResult= await Promise.all(updateRequests);
+    const updateResult= await Promise.all(updateRequests || []);
     const wooCommerceUpdateVariation = updateResult?.map(promesse => promesse.data.update)
 
 

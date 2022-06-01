@@ -96,8 +96,9 @@ const ModalAddArticles = function({open, onClose, selection, removeSelection}) {
         const inputs=event.currentTarget.elements;
         setSending(true);
         try {
-        for (const code_article of Object.keys(articles)) {
-                let article = {
+            let article= [];
+            for (const code_article of Object.keys(articles)) {
+                article.push({
                     "code_article" : code_article,
                     "marque" : articles[code_article].marque,
                     "gender" : articles[code_article].gender,
@@ -108,23 +109,37 @@ const ModalAddArticles = function({open, onClose, selection, removeSelection}) {
                     "prix_initial" : articles[code_article].GA_PVTTC,
                     "prix_vente" : inputs[`${code_article}-prixVente`].value,
                     "description" : "",
-                    taille : [],
+                    tailles : [],
                     categorie : selectedCategories[code_article],
-                }
+                })
                 articles[code_article].taille.forEach(taille=> {
-                    article.taille.push({
+                    article[article.length-1].tailles.push({
                         stock: taille.stockNet,
                         code_barre: taille.GA_CODEBARRE,
                         dimension: taille.dimension 
                     })
                 })
-                const response = await axios.post(`${API_PLATEFORME}/articles/insertion`, article, {
-                    headers : {
-                        "Authorization" : `Bearer ${authContext.token}`
-                    }
-                })
-                setReceived(()=> received+1);
             }
+        console.log(article)
+
+            const wooCommerce = await axios.post(`${API_PLATEFORME}/woocommerce/ajout`, {articles : article}, {
+                headers : {
+                    "Authorization" : `Bearer ${authContext.token}`
+                }
+            })
+
+            const wooCommerceVariation = await axios.post(`${API_PLATEFORME}/woocommerce/ajout/taille`, {
+                variations : article,
+                insertion: wooCommerce.data.body.insertion,
+                update: wooCommerce.data.body.update
+            }, {
+                headers : {
+                    "Authorization" : `Bearer ${authContext.token}`
+                }
+            })
+
+            console.log(wooCommerceVariation);
+                setReceived(()=> received+1);
             setNotif(`Tout les articles ont étés insérés avec succès`);
         } catch(error) {
             console.log(error);
