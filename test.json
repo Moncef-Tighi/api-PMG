@@ -1,0 +1,95 @@
+{
+    "insertion": [
+        {
+            "id": 100000184,
+            "code_article": "4846584-024"
+        },
+        {
+            "id": 100000185,
+            "code_article": "954386-024"
+        }
+    ],
+    "update": [
+        {
+            "id": 100000109,
+            "code_article": "954385-024"
+        }],
+    "variations" : {
+        "954385-024" : {
+            "prix_initial" : 2000,
+            "prix_vente" : 777,
+            "tailles" : [
+                {
+                "dimension" : "SM",
+                "stock" : 66,
+                "code_barre" : "009328920502"
+                },
+                {
+                "dimension" : "MED",
+                "stock" : 0,
+                "code_barre" : "009328920519"
+                },
+                {
+                "dimension" : "LRG" ,
+                "stock" : 100,
+                "code_barre" : "009328920526"
+                },
+                {
+                "dimension" : "XLG" ,
+                "stock" : 0,
+                "code_barre" : "009328920533"
+                }]
+        },
+        "954386-024" : {
+            "prix_initial" : 2000,
+            "prix_vente" : 777,
+            "tailles" : [
+                {
+                "dimension" : "SM",
+                "stock" : 66,
+                "code_barre" : "009328920502"
+                },
+                {
+                "dimension" : "MED",
+                "stock" : 0,
+                "code_barre" : "009328920519"
+                },
+                {
+                "dimension" : "LRG" ,
+                "stock" : 100,
+                "code_barre" : "009328920526"
+                },
+                {
+                "dimension" : "XLG" ,
+                "stock" : 0,
+                "code_barre" : "009328920533"
+                }]
+        },
+        "4846584-024" : {
+                "prix_initial" : 2000,
+                "prix_vente" : 777,
+                "tailles" : [
+                    {
+                    "dimension" : "SM",
+                    "stock" : 66,
+                    "code_barre" : "009328920502"
+                    },
+                    {
+                    "dimension" : "MED",
+                    "stock" : 0,
+                    "code_barre" : "009328920519"
+                    },
+                    {
+                    "dimension" : "LRG" ,
+                    "stock" : 100,
+                    "code_barre" : "009328920526"
+                    },
+                    {
+                    "dimension" : "XLG" ,
+                    "stock" : 0,
+                    "code_barre" : "009328920533"
+                    }
+                ]
+        }
+    }
+}
