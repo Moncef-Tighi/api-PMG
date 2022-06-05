@@ -35,7 +35,7 @@ const FicheArticle = function() {
     const [article, setArticle] =  useState(emptyArticle);
     const [stock, setStock] =  useState([]);
     const [taille, setTaille] =  useState([]);
-    console.log(article);
+
     useEffect(()=> {
         const fetch = async () => {
             try {
