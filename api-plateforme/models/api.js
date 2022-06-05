@@ -11,6 +11,8 @@ try {
         headers: {'Content-Type': 'application/json'},
     }
     });
+    const result = await apiWooCommerce.get("products/categories");
+    if (result) console.log(`Connexion à l'API de WooCommerce réussie`);
 } catch(error) {
     console.log(`Impossible de se connecter à l'API wooCommerce.
     Erreur : ${error}`);
