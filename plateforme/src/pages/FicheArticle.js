@@ -15,7 +15,7 @@ const query = async function(code_article) {
 const emptyArticle = {
         "GA_LIBELLE" : "",
         "GA2_LIBREARTE": "",
-        "GA_DATECREATION": "",
+        "GA_DATECREATION": "01/01/2000",
         "GFM_NATURETYPE": "",
         "GFM_PERTARIF": "",
         "GFM_TYPETARIF": "",
@@ -24,8 +24,8 @@ const emptyArticle = {
         "dernierTarif": "",
         "descriptionTarif": "",
         marque: "",
-        prixActuel: 0,
-        prixInitial: 0,
+        prixActuel: "",
+        prixInitial: "",
         type: ""
 }
 
