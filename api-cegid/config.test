@@ -1,9 +1,9 @@
-PORT=
+PORT=5000
 
 #Configuration de l'accés à la base de donnée de CEGID
 #########################
-DB_USER=
+DB_USER=api
 DB_PWD=
-DB_NAME=BNG
-DB_ADDRESS=(HOST OR IP)
+DB_NAME=PMG2015
+DB_ADDRESS=172.31.66.5
 #########################

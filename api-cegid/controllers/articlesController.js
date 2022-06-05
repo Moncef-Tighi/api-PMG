@@ -31,6 +31,7 @@ export const listArticles = catchAsync( async function(request, response,next){
     
     const totalSize = articles[0].total;
     //TODO : L'URL sera très certainement invalide en PROD
+    console.log(`http://${request.get('host')}${request.originalUrl.split('?')[0]}/${article.GA_CODEARTICLE}`);
     articles.map(article => {
         delete article.total;
         article.details = encodeURI(`http://${request.get('host')}${request.originalUrl.split('?')[0]}/${article.GA_CODEARTICLE}`);
@@ -55,11 +56,12 @@ export const unArticle = catchAsync(async function(request, response, next) {
     const taille = await model.dispoArticleTaille(request.params.article);
 
     //TODO : L'URL sera très certainement invalide en PROD
+    
     return response.status(200).json({
         status : "ok",
         codeArticlce : request.params.article,
-        details_stock : encodeURI(`http://${request.get('host')}/api/v1/articles/detail_stock/${request.params.article}`),
-        historiqueTarif : encodeURI(`http://${request.get('host')}/api/v1/tarifs/${request.params.article}`),
+        details_stock : encodeURI(`http://${request.get('host')}/api/v1/cegid/articles/detail_stock/${request.params.article}`),
+        historiqueTarif : encodeURI(`http://${request.get('host')}/api/v1/cegid/tarifs/${request.params.article}`),
         body : {
             "info" : infoArticle[0],
             taille,

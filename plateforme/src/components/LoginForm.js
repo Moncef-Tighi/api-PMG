@@ -5,6 +5,7 @@ import { useState, useContext } from "react";
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
 import AuthContext from '../state/AuthContext';
+import { API_PLATEFORME } from "../index.js";
 
 const LoginForm = function() {
     const [showPassword, setPasswordVisibility]=useState(false);
@@ -27,7 +28,7 @@ const LoginForm = function() {
         if(password.value.trim()==="" || email.value.trim()==="") return setError("L'email et le mot de passe ne peuvent pas être vide");
 
         try {
-            const response = await axios.post('http://localhost:4001/api/v1/connexion', {
+            const response = await axios.post(`${API_PLATEFORME}/connexion`, {
                 email: email.value,
                 password: password.value
             })

@@ -1,57 +1,24 @@
-#La plateforme fait des requêtes à l'API CEGID, il faut donc l'URL de l'API
-API_CEGID=
-
+API_CEGID=http://localhost:5000/api/v1
 # Config PostGre (DB de la platforme)
 #####################
-PG_HOST=(IP OR DNS)
-PG_USER=
-PG_DATABASE=
+PG_HOST=82.196.25.85
+PG_USER=api_e-commerce
+PG_DATABASE=e-commerce
 PG_PASSWORD=
 PG_PORT=5432
 #####################
+192.168.0.81
+PmGlocal
+WOOCOMMERCE_URL=https://www.pmg.dz
+KEY_WOOCOMMERCE=
+SECRET_WOOCOMMERCE=
 
-# Config MySQL (DB utilisée par WordPress)
-####################
-MY_HOST=(IP OR DNS)
-MY_USER=
-MY_PASSWORD=
-MY_DATABASE=
-####################
-
-# Si le stock d'un article est inférieur à cette valeur, il sera marqué comme hors-stock
-MINSTOCK=2
+# Si le stock d'un article est EGAL OU INFERIEUR à cette valeur, il sera marqué comme hors-stock
+MINSTOCK=5
+UPDATE_STOCK_EVERY_MINUTE=5
 
 #Défini quand est-ce qu'un employé sera automatiquement déconnecté
 JWT_EXPIRATION=1d
 
-PORT=4000
-
-API_CEGID=http://192.168.150.18:5000/api/v1
-
-# Config PostGre (DB de la platforme)
-#####################
-PG_HOST=192.168.150.18
-PG_USER=Moncef
-PG_DATABASE=plateforme
-PG_PASSWORD=root
-PG_PORT=5432
-#####################
-
-# Config MySQL (DB utilisée par WordPress)
-####################
-MY_HOST=192.168.150.18
-MY_USER=API
-MY_PASSWORD=root
-MY_DATABASE=pmg-test
-####################
-
-# Si le stock d'un article est inférieur à cette valeur, il sera marqué comme hors-stock
-MINSTOCK=5
-
-#Défini quand est-ce qu'un employé sera automatiquement déconnecté
-JWT_EXPIRATION=2d
-
 PORT=4001
-OLD_IP=192.168.1.13
-
 

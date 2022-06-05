@@ -24,7 +24,7 @@ const Navigation = function() {
                     <ListItemText primary="Articles" className={classes.textLink}/>
                 </ListItemButton>
               </NavLink> 
-                <NavLink  to="/commande" className={({ isActive }) =>isActive ? classes.activeLink : classes.navLink}>
+                {/* <NavLink  to="/commande" className={({ isActive }) =>isActive ? classes.activeLink : classes.navLink}>
                     <ListItemButton sx={{ width: '100%', height: "60px"}}>
                         <ListItemIcon>
                         <ContactPhone  sx={{width:'1.3em', height: '1.3em', color: '#262626'}}/>
@@ -39,7 +39,7 @@ const Navigation = function() {
                         </ListItemIcon>
                         <ListItemText primary="Prix" className={classes.textLink} />
                     </ListItemButton>
-                </NavLink>
+                </NavLink> */}
                 {authContext.permissions.find(permission => permission==="admin" ) ?
                 <>
                 <NavLink to="/admin/employes" className={({ isActive }) =>isActive ? classes.activeLink : classes.navLink}>

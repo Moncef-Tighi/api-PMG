@@ -1,12 +1,13 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom"
+import { API_CEGID } from "..";
 import TailleTable from "../components/Table/TailleTable";
 import classes from './FicheArticle.module.css';
 
 const query = async function(code_article) {
 
-    const article = await axios.get(`http://localhost:5000/api/v1/articles/${code_article}`);
+    const article = await axios.get(`${API_CEGID}/articles/${code_article}`);
     const detail_stock = await axios.get(article.data.details_stock);
     return {article : article.data.body.info, taille : article.data.body.taille ,stock : detail_stock.data.body.depots}
 }

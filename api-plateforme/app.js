@@ -20,7 +20,7 @@ app.use(express.json({
 }));
 app.use(express.urlencoded({extended: true}));
 
-app.use('/api/v1', apiRouter);
+app.use('/plateforme/api/v1', apiRouter);
 app.use(express.static('public'));
 app.all('*', (request, response, next)=> {    
     //Ce middelware a pour seul but de catch les erreurs 404 

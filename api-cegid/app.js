@@ -21,9 +21,9 @@ app.use(express.urlencoded({extended: true}));
 
 
 app.use(express.static('public'));
-app.use('/api/v1/articles', produitsRouter);
-app.use('/api/v1/tarifs', tarifsRouter);
-app.use('/', viewRouter);
+app.use('/cegid/api/v1/articles', produitsRouter);
+app.use('/cegid/api/v1/tarifs', tarifsRouter);
+app.use('/cegid', viewRouter);
 
 app.all('*', (request, response, next)=> {    
     //Ce middelware a pour seul but de catch les erreurs 404 
