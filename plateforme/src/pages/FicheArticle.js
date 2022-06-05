@@ -64,8 +64,8 @@ const FicheArticle = function() {
             <section className={classes.fiche}>
             <div>
                 <h1 style={{marginLeft: '0px'}}>Code article : {code_article}</h1>
-                <h2 style={{textDecoration: 'line-through', fontSize: "17px", fontWeight: 500}}>Prix Initial : {article.prixInitial } DA</h2>
-                <h2>Prix Actuel : {article.prixActuel } DA</h2>
+                <h2 className={article.prixActuel? classes.prixInitial : classes.prixUnique}>Prix Initial : {article.prixInitial} DA</h2>
+                {article.prixActuel ? <h2>Prix Actuel : {article.prixActuel } DA</h2> : ""}
                 <img style={{width:"300px", height:"300px", backgroundColor: "lightgrey"}} alt="illustration de l'article"></img>
             </div>
             <div>
@@ -74,18 +74,22 @@ const FicheArticle = function() {
                     <li><b>Marque : </b>{article.marque  }</li>
                     <li><b>Silhouette : </b>{article.type  }</li>
                     <li><b>Date création : </b>{new Date(article.GA_DATECREATION).toLocaleDateString('fr-fr')  }</li>
-                    <li><b>LibreARTE : </b>{article.GA2_LIBREARTE  }</li>
+                    {/* <li><b>LibreARTE : </b>{article.GA2_LIBREARTE  }</li> */}
                 </ul>
-                <h3>Informations Tarif :</h3>
-                <ul>
-                    <li><b>Date du Tarif : </b>{ new Date(article.dernierTarif).toLocaleDateString('fr-fr') }</li>
-                    <li><b>Description Tarif : </b>{ article.descriptionTarif }</li>
-                    <li><b>Début Tarif : </b>{ new Date(article.GF_DATEDEBUT).toLocaleDateString('fr-fr') }</li>
-                    <li><b>Fin Tarif : </b>{ new Date(article.GF_DATEFIN).toLocaleDateString('fr-fr') }</li>
-                    <li><b>Type Tarif : </b>{ article.GFM_TYPETARIF }</li>
-                    <li><b>Nature Tarif : </b>{ article.GFM_NATURETYPE }</li>
-                    <li><b>PerTarif : </b>{ article.GFM_PERTARIF }</li>
-                </ul>
+                {article.prixActuel ?
+                <>
+                    <h3>Informations Tarif :</h3>
+                    <ul>
+                        <li><b>Date du Tarif : </b>{ new Date(article.dernierTarif).toLocaleDateString('fr-fr') }</li>
+                        <li><b>Description Tarif : </b>{ article.descriptionTarif }</li>
+                        <li><b>Début Tarif : </b>{ new Date(article.GF_DATEDEBUT).toLocaleDateString('fr-fr') }</li>
+                        <li><b>Fin Tarif : </b>{ new Date(article.GF_DATEFIN).toLocaleDateString('fr-fr') }</li>
+                        <li><b>Type Tarif : </b>{ article.GFM_TYPETARIF }</li>
+                        <li><b>Nature Tarif : </b>{ article.GFM_NATURETYPE }</li>
+                        <li><b>PerTarif : </b>{ article.GFM_PERTARIF }</li>
+                    </ul>
+                </> : <h3>Aucun Tarif trouvé</h3>
+                 }
             </div>
 
                 <TailleTable tailles={taille} stock={stock}/>

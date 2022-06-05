@@ -6,3 +6,14 @@
     grid-template-columns: repeat(auto-fit, minmax(max(300px,30vw), 1fr));
     grid-gap: 24px 40px;
 }
+
+.prixInitial {
+    text-decoration: line-through;
+    font-size: 17px;
+    font-weight: 500;
+}
+
+.prixUnique {
+    font-size: 20px;
+    font-weight: 500;
+}
