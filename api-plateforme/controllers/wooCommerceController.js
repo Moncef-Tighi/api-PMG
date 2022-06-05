@@ -171,6 +171,9 @@ export const getCommandes = catchAsync(async function(request, response, next) {
     })
     return response.status(200).json({
         status: "ok",
+        page : Number(request.query.page) || 1,
+        length : commandesOutput.length,
+        totalSize : Number(commandes.headers["x-wp-total"]),
         commandes : commandesOutput
     })
 })
