@@ -141,10 +141,11 @@ export const getCategorie = catchAsync(async function(request, response, next) {
 })
 
 export const getCommandes = catchAsync(async function(request, response, next) {
-    const commandes = await apiWooCommerce.get(`orders?page=${request.page || 1}`)
+    const commandes = await apiWooCommerce.get(`orders?per_page=50&page=${request.query.page || 1}`)
     const commandesOutput = commandes.data.map(commande=> {
         return {
             numero_commande : commande.number,
+            status : commande.status,
             prix_total : commande.total,
             informations_client : {
                 nom : commande.billing.first_name,
@@ -158,7 +159,14 @@ export const getCommandes = catchAsync(async function(request, response, next) {
             },
             date_commande : commande.date_created,
             date_modification : commande.date_modified,
-            contenu_commande : commande.line_items
+            contenu_commande : commande.line_items.map(item=> {return {
+                code_article : item.sku,
+                label : item.parent_name,
+                prix_unitaire : item.price,
+                quantite: item.quantity,
+                total : item.total,
+                taille : item?.meta_data[0]?.display_value,
+            }})
         }
     })
     return response.status(200).json({
