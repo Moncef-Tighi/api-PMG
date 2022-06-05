@@ -15,6 +15,7 @@ const EmployesListe = React.lazy(() => import('./pages/EmployesListe'));
 const Permissions = React.lazy(() => import('./pages/Permissions'));
 const Historique = React.lazy(() => import('./pages/Historique'));
 const FicheArticle = React.lazy(() => import('./pages/FicheArticle'));
+const Commande = React.lazy(() => import('./pages/Commandes'));
 
 function App() {
   const authContext = useContext(AuthContext);
@@ -41,7 +42,7 @@ function App() {
             <Route path='/article/corbeille' element={<Article />}/>
             <Route path='/article/:code_article' element={<FicheArticle/>}/>
           </Route>
-          <Route path='/commande' element={<Article />}/>
+          <Route path='/commande' element={<Commande />}/>
           <Route path='/prix' element={<Article />}/>
           <Route element={<Restrict permissions={permissions} allow={["admin"]}/>}>
             <Route path='admin/employes' element={<EmployesListe />} />
