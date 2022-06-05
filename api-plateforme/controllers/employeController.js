@@ -72,7 +72,7 @@ export const createEmploye = catchAsync( async function(request, response, next)
 
 export const modifyAnyEmploye = catchAsync( async function(request, response, next) {
 
-    const id_employe = request.user.id_employe;
+    const id_employe = request.body.id_employe;
     const email = request.body.email;
     const nom = request.body.nom;
     const prenom= request.body.prenom;
@@ -97,7 +97,7 @@ export const modifyAnyEmploye = catchAsync( async function(request, response, ne
 
 export const modifySelf = catchAsync( async function(request, response, next) {
 
-    const id_employe = request.body.id_employe;
+    const id_employe = request.user.id_employe;
     const email = request.body.email;
     const nom = request.body.nom;
     const prenom= request.body.prenom;

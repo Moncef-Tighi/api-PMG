@@ -47,7 +47,7 @@ const FicheEmploye = function(props) {
             email: email.value,
             poste: poste.value,
         }
-        
+
         try {
             if (props.id) {
                 await axios.put(`${API_PLATEFORME}/employes/editProfile`, data, {
@@ -57,7 +57,6 @@ const FicheEmploye = function(props) {
                 })    
             }else {
                 data.active = active.value==="oui" ? true : false 
-
                 await axios.put(`${API_PLATEFORME}/employes/modifier`, data, {
                     headers : {
                         "Authorization" : `Bearer ${authContext.token}`

@@ -14,7 +14,6 @@ router.use(protect)
     router.use(restrict('admin'))
         router.post("/creation", controllers.createEmploye);
         router.put("/modifier", controllers.modifyAnyEmploye);
-        
         //Route qui permet à un admin de changer n'importe quel mot de passe.
         router.patch('/password', controllers.changeAnyPassword);
         router.patch("/activer", controllers.enableEmploye);
