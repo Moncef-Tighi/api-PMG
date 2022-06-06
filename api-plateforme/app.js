@@ -14,6 +14,7 @@ const app = express();
 
 app.use(cors());
 app.use(helmet());
+app.disable('x-powered-by');
 app.use(express.json({
     limit : "100kb" //Limite la taille du body à 100kb
 }));

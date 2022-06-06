@@ -72,7 +72,7 @@ const Commande = function(props) {
             </TabPanel>
             </TabContext> */}
 
-            <ListeCommande/> 
+            <ListeCommande modification={authContext.permissions.some(permission => (permission in ["admin", "modification"]) ) } /> 
         </>  
         )
 }
