@@ -1,3 +1,5 @@
+const initialState= {plateforme : false, wooCommerce : false, variation : false, activation : false}
+
 const loadingReducer = function(state, {type}) {
     let newState= {...state}
     switch(type) {
@@ -16,8 +18,9 @@ const loadingReducer = function(state, {type}) {
         case 'reset':
             newState= {...initialState};
             return newState
+        default :
+            return newState
     }
-    return newState
 }
 
 export default loadingReducer
