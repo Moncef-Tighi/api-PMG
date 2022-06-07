@@ -1,20 +1,15 @@
+import {TableBody, TableCell, TableRow,Checkbox} from '@mui/material'
+import moment from 'moment';
 import {useState} from "react";
-import classes from '../Articles/ListeArticle.module.css';
-import { Link } from 'react-router-dom';
-import { API_PLATEFORME } from "../../index";
-
-import {TableBody, TableCell, TableRow,Checkbox, rgbToHex} from '@mui/material'
-
-import TableCustom from "../Table/TableCustom";
-import TableHeadCustom from "../Table/TableHeadCustom";
-
-import Notification from "../util/Util";
 import useGet from "../../hooks/useGet";
 import useTable from "../../hooks/useTable";
 import useSelection from '../../hooks/useSelection.js';
-
-import { capitalize, dateToYMD, numberWithDots } from '../util/stringFunctions.js';
-import moment from 'moment';
+import { Link } from 'react-router-dom';
+import { API_PLATEFORME } from "../../index";
+import TableCustom from "../Table/TableCustom";
+import TableHeadCustom from "../Table/TableHeadCustom";
+import Notification from "../util/Util";
+import classes from '../Articles/ListeArticle.module.css';
 
 const emptyTable= {
     commandes : [],

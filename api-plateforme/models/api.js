@@ -15,10 +15,8 @@ try {
     if (result) console.log(`Connexion à l'API de WooCommerce réussie`);
 } catch(error) {
     console.log(`Impossible de se connecter à l'API wooCommerce.
-    Erreur : ${error}`);
+    Erreur : ${error.data.message}`);
 }
 
-
-// apiWooCommerce.get('products').then(res => console.log(res));
 
 export default apiWooCommerce

@@ -2,21 +2,18 @@ import {useContext, useState} from "react";
 import classes from './ListeArticle.module.css';
 import { Link } from 'react-router-dom';
 import { API_PLATEFORME } from "../../index";
-
 import {TableBody, TableCell, TableRow,Checkbox} from '@mui/material'
-
 import TableCustom from "../Table/TableCustom";
 import TableHeadCustom from "../Table/TableHeadCustom";
-import ModalAddArticles from "./ModalAddArticles";
 import InsertionArticle from "./InsertionArticle.js"
-
 import Notification from "../util/Util";
 import useGet from "../../hooks/useGet";
 import useTable from "../../hooks/useTable";
 import useSelection from '../../hooks/useSelection.js';
-
-import { capitalize, dateToYMD, numberWithDots } from '../util/stringFunctions.js';
+import { capitalize, numberWithDots } from '../util/stringFunctions.js';
 import AuthContext from "../../state/AuthContext";
+import moment from "moment";
+import ModalUpdateArticle from "./ModalUpdateArticle";
 
 const emptyTable= {
     body: [],
@@ -50,7 +47,7 @@ const ListeArticlePlateforme = function(props) {
         { name: "Division", sort: true, trueName : "division"},
         { name: "Silhouette", sort: true, trueName : "silhouette"},
         { name: "Stock", sort: true, trueName : "stock"},
-        { name: "Date Modification", sort: true , trueName : "date_modification"},
+        { name: "Date d'ajout", sort: true , trueName : "date_ajout"},
         { name: "Prix vente", sort: true , trueName : "prix_vente"} ,
     ]
     if (!props.modification) header.shift();
@@ -109,7 +106,7 @@ const ListeArticlePlateforme = function(props) {
                 <TableCell align="left" >{row.division || ""}</TableCell>
                 <TableCell align="left" >{row.silhouette || ""}</TableCell>
                 <TableCell align="center" >{row.stock}</TableCell>
-                <TableCell align="center" >{dateToYMD(row.date_modification)}</TableCell>
+                <TableCell align="center" >{moment(Date.parse(row.date_ajout)).fromNow()}</TableCell>
                 <TableCell align="center" >{numberWithDots(row.prix_vente)}</TableCell>
 
             </TableRow>)})}
@@ -117,7 +114,7 @@ const ListeArticlePlateforme = function(props) {
         </TableCustom>
 
 
-        <ModalAddArticles open={open} onClose={closeModal} selection={selection} removeSelection={removeSelection}/>
+        <ModalUpdateArticle open={open} onClose={closeModal} selection={selection} removeSelection={removeSelection}/>
         <Notification closeNotif={closeNotif} message={openWarn} status="warning"  />
 
         </>

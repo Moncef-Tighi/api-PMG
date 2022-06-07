@@ -131,7 +131,7 @@ export const insertTailleWooCommerce = catchAsync( async function(request, respo
 
 })
 
-export const getCategorie = catchAsync(async function(request, response, next) {
+const fetchCategories = async function() {
     let categories= [];
     let categorie= []
     let i=0
@@ -140,6 +140,10 @@ export const getCategorie = catchAsync(async function(request, response, next) {
         categorie = await apiWooCommerce.get(`products/categories?page=${i}&per_page=100&_fields=id,name,slug`);
         categories.push(...categorie.data);
     }
+}
+
+export const getCategorie = catchAsync(async function(request, response, next) {
+    const categories= fetchCategories();
 
     return response.status(200).json({
         status: "ok",
@@ -147,6 +151,29 @@ export const getCategorie = catchAsync(async function(request, response, next) {
     })
 
 })
+
+export const getCategorieForArticle = catchAsync(async function(request,response,next) {
+    const articles = request.body.articles;
+    if (!articles) return next(createError(400, "Aucun article n'a été trouvé"));
+    const categories= fetchCategories();
+    const articlesWooCommerce= await apiWooCommerce.get(`products?sku=${articles.map(art => art.code_article).join(',')}`)
+
+    const articlesCategories= articlesWooCommerce.data.map(article=> {
+        return {
+            code_article : article.sku,
+            categories : article.categories
+        }
+    })
+    return response.status(200).json({
+        status: "ok",
+        body : {
+            categories,
+            articlesCategories
+        }
+    })
+
+})
+
 
 export const getCommandes = catchAsync(async function(request, response, next) {
     const commandes = await apiWooCommerce.get(`orders?per_page=50&page=${request.query.page || 1}`)
