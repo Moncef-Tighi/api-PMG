@@ -42,8 +42,13 @@ export const insertArticlesWooCommerce = catchAsync( async function(request, res
     })}
     const creationWooCommerce = await apiWooCommerce.post('products/batch', data)
 
-    //TODO : Actuellement si il y a une erreur dans l'insertion ou l'update d'un article, l'opération continue comme si de rien n'était
-    //l'API de WooCommerce s'en fout et insert ce qui peut être insérer en signalant une erreur mais sans annuler quoi que ce soit.
+    //Ces deux lignes sont bizarre mais elles sont nécessaire pour l'error handeling
+    //Si la création d'un article parmis la liste d'articles crées échoue ce n'est pas toute l'opération qui échoue
+    //C'est juste la création de cet article là qui est return sous forme d'erreur.
+    //DONC de mon côté il faut trouver cette erreur et la signaler pour arrêter l'opération 
+
+    if (creationWooCommerce.data?.create?.some(art => art.error)) return next(createError(400, `Une erreur a eu lieu à la création`));
+    if (creationWooCommerce.data?.update?.some(art => art.error)) return next(createError(400, `Une erreur a eu lieu lors de l'update`));
 
     return response.status(201).json({
         status: "ok",
@@ -86,7 +91,7 @@ export const insertTailleWooCommerce = catchAsync( async function(request, respo
     const updateRequests = await  update?.map( async info=> {
 
         const allVariations = await apiWooCommerce.get(`products/${info.id}/variations`);
-        const variationUpdate= variations.find(art=> art.code_article===info.code_article)
+        const variationUpdate= variations?.find(art=> art.code_article===info.code_article)
         return await apiWooCommerce.post(`products/${info.id}/variations/batch`,{
         update :  variationUpdate.tailles.map(taille=>{
                 return {
@@ -99,19 +104,22 @@ export const insertTailleWooCommerce = catchAsync( async function(request, respo
             }
         )})
     })
-
-    //TODO : Actuellement si il y a une erreur dans l'insertion ou l'update d'un article, l'opération continue comme si de rien n'était
-    //l'API de WooCommerce s'en fout et insert ce qui peut être insérer en signalant une erreur mais sans annuler quoi que ce soit.
-    //On doit faire la vérification qu'il n'y a pas eu d'erreurs après l'insert ET après l'update.
-
+    
     const insertResult= await Promise.all(insertionRequests || []);
     const wooCommerceInsertVariation = insertResult?.map(promesse => promesse.data.create)
-
+    
     const updateResult= await Promise.all(updateRequests || []);
     const wooCommerceUpdateVariation = updateResult?.map(promesse => promesse.data.update)
+    
+    //Ces deux lignes sont bizarre mais elles sont nécessaire pour l'error handeling
+    //Si la création d'une variation parmis toute les variations échoue ce n'est pas toute l'opération qui échoue
+    //C'est juste la création de cet article là qui est return sous forme d'erreur. 
+    //Sauf que moi j'ai besoin d'annuler l'opération à la moindre erreur pour éviter toute incohérence
+    //DONC de mon côté il faut trouver cette erreur et la signaler pour arrêter l'opération 
 
+    if (wooCommerceInsertVariation[0]?.some(art => art.error)) return next(createError(400, `Une erreur a eu lieu lors de la création d'une variation`));
+    if (wooCommerceUpdateVariation[0]?.some(art => art.error)) return next(createError(400, `Une erreur a eu lieu lors de l'update d'une variation`));
 
-    // console.log(wooCommerceUpdateVariation.data)
     return response.status(201).json({
         status: "ok",
         message : "Les articles ont bien étés ajoutés sur la plateforme",
@@ -148,8 +156,8 @@ export const getCommandes = catchAsync(async function(request, response, next) {
             status : commande.status,
             prix_total : commande.total,
             informations_client : {
-                nom : commande.billing.first_name,
-                prenom : commande.billing.last_name,
+                nom : commande.billing.last_name,
+                prenom : commande.billing.first_name,
                 email : commande.billing.email,
                 numero_telephone : commande.billing.phone,
                 ville : commande.billing.city,

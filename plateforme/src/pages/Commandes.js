@@ -72,7 +72,8 @@ const Commande = function(props) {
             </TabPanel>
             </TabContext> */}
 
-            <ListeCommande modification={authContext.permissions.some(permission => (permission in ["admin", "modification"]) ) } /> 
+            <ListeCommande query={query}
+            modification={authContext.permissions.some(permission => (permission in ["admin", "modification"]) ) } /> 
         </>  
         )
 }
