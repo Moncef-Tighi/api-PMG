@@ -100,18 +100,20 @@ function TableChangeArticles({ loading, setLoading, setSelectedCategories
               {Object.keys(articles).map(code_article => {
                 return <TableRow key={code_article}>
                     <TableCell component="th" scope="row" sx={{maxWidth: "25px"}}>
-                          {articles[code_article].GA_CODEARTICLE}
+                          {articles[code_article].GA_CODEARTICLE || articles[code_article].code_article } 
                           </TableCell>
                           <TableCell align="left" sx={{width: "300px"}}>
-                              <Input fullWidth={true} color="primary" id={`${code_article}-libelle`} defaultValue={articles[code_article].GA_LIBELLE?.toLowerCase()} />
+                              <Input fullWidth={true} color="primary" id={`${code_article}-libelle`} 
+                              defaultValue={articles[code_article].GA_LIBELLE?.toLowerCase() || articles[code_article].libelle?.toLowerCase() } />
                           </TableCell>
                           <TableCell align="left" sx={{maxWidth: "50px"}}>{articles[code_article].marque?.toLowerCase()}</TableCell>
                           <TableCell align="left">{articles[code_article].gender}</TableCell>
                           <TableCell align="left">{articles[code_article].division}</TableCell>
                           <TableCell align="left">{articles[code_article].silhouette}</TableCell>
-                          <TableCell align="center" sx={{maxWidth: "25px"}}>{numberWithDots(articles[code_article].GA_PVTTC)}</TableCell>
+                          <TableCell align="center" sx={{maxWidth: "25px"}}>{numberWithDots(articles[code_article].GA_PVTTC || articles[code_article].prix_initial)}</TableCell>
                           <TableCell align="center" sx={{maxWidth: "25px"}}>
-                              <Input color="primary" id={`${code_article}-prixVente`} defaultValue={articles[code_article].prixActuel || articles[code_article].GA_PVTTC} />                              
+                              <Input color="primary" id={`${code_article}-prixVente`} 
+                              defaultValue={articles[code_article].prixActuel || articles[code_article].GA_PVTTC || articles[code_article].prix_vente} />                              
                           </TableCell>
                           <TableCell>
                               <Select id="categorie" multiple input={<OutlinedInput label="Tag" />} renderValue={() => 'Categorie'} MenuProps={MenuProps} onChange={event => handleChangeCategorie(event, code_article)} value={selectedCategories[code_article] || []} autoWidth label="Categorie">

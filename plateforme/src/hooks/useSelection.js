@@ -11,6 +11,7 @@ const useSelection= function(setWarn=null) {
         if (!event.target.checked) {
             const newSelection = {...selection};
             delete newSelection[code_article]
+            console.log(newSelection)
             return setSelection(newSelection);
         }
         let newArticle= {}
@@ -25,7 +26,7 @@ const useSelection= function(setWarn=null) {
     }
 
     const deselectionHadeler= function() {
-        setSelection( ()=> {})
+        setSelection({})
     }
 
     const removeSelection= function(code_article) {
