@@ -16,6 +16,11 @@ import ModalUpdateArticle from "./ModalUpdateArticle";
 import { Edit } from "@mui/icons-material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import UpdateArticleButton from "./UpdateArticleButton";
+import { useLocation } from "react-router-dom";
+import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
+import CloseIcon from '@mui/icons-material/Close';
+
+
 
 const emptyTable= {
     body: [],
@@ -30,6 +35,7 @@ const ListeArticlePlateforme = function(props) {
     const active= props.activé ? "&activé=false" : ""
     const {data: tableData, loading, error} = useGet(`${API_PLATEFORME}/articles/liste?${url}${active}`, emptyTable, authContext.token);
     const article = tableData.body
+    const location = useLocation().pathname
     const [open, setModal] = useState(false);
     const closeModal= ()=> setModal(()=>false);
     const openModal= ()=> setModal(()=> true);
@@ -63,6 +69,9 @@ const ListeArticlePlateforme = function(props) {
         {error ? <aside className={classes.error}>{error}</aside>: "" }
         {taille>0 && props.modification ? 
             <UpdateArticleButton taille={taille} deselectionHadeler={deselectionHadeler} openModal={openModal}>
+                {console.log(location)}
+                {location==='/article/plateforme' ?
+                <>
                 <MenuItem disableRipple>
                     <Edit/>
                     Modifier
@@ -71,6 +80,19 @@ const ListeArticlePlateforme = function(props) {
                     <DeleteIcon/>
                     Corbeille
                 </MenuItem>        
+                </>
+                :
+                <>                
+                <MenuItem disableRipple>
+                    <SettingsBackupRestoreIcon/>
+                    Rétablir
+                </MenuItem>
+                <MenuItem disableRipple>
+                    <CloseIcon/>
+                    Supprimer
+                </MenuItem>        
+                </>
+                }
             </UpdateArticleButton>
             : ""}
         {article.length===0 && !loading ? <div>Aucun article n'a été trouvé</div> : ""}
