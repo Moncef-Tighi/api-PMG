@@ -8,6 +8,7 @@ import { TableCell, TableRow, TableBody } from "@mui/material";
 import {API_CEGID, API_PLATEFORME} from "../..";
 import axios from "axios";
 
+
 const header = [
     { name: "Code Article", sort: false},
     { name: "Libelle", sort: false},
@@ -44,9 +45,10 @@ const getCategories = async function() {
     return categories.data.body
 }
 
-function TableChangeArticles({articles, loading, setLoading, setSelectedCategories, setArticles
+function TableChangeArticles({ loading, setLoading, setSelectedCategories
     ,onClose, selection, selectedCategories, setError, open}) {
     const [categories, setCategories] = useState([]);
+    const [articles, setArticles] = useState(selection);
 
     const {handleChangePage,sortHandeler} = useTable();
 
@@ -96,7 +98,7 @@ function TableChangeArticles({articles, loading, setLoading, setSelectedCategori
               <TableBody>
 
               {Object.keys(articles).map(code_article => {
-                  return <TableRow key={code_article}>
+                return <TableRow key={code_article}>
                     <TableCell component="th" scope="row" sx={{maxWidth: "25px"}}>
                           {articles[code_article].GA_CODEARTICLE}
                           </TableCell>

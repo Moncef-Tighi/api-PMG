@@ -8,12 +8,8 @@ import AuthContext from "../../state/AuthContext";
 import TableChangeArticles from "./TableChangeArticle";
 
 
-
-
-
 const ModalAddArticles = function({open, onClose, selection}) {
 
-    const [articles, setArticles] = useState(selection);
     const [selectedCategories, setSelectedCategories] = useState({});
     
     const authContext = useContext(AuthContext);
@@ -36,22 +32,22 @@ const ModalAddArticles = function({open, onClose, selection}) {
         setSending(true);
         try {
             let article= [];
-            for (const code_article of Object.keys(articles)) {
+            for (const code_article of Object.keys(selection)) {
                 article.push({
                     "code_article" : code_article,
-                    "marque" : articles[code_article].marque,
-                    "gender" : articles[code_article].gender,
-                    "division" : articles[code_article].division,
-                    "silhouette" : articles[code_article].silhouette,
+                    "marque" : selection[code_article].marque,
+                    "gender" : selection[code_article].gender,
+                    "division" : selection[code_article].division,
+                    "silhouette" : selection[code_article].silhouette,
                     "libelle" : inputs[`${code_article}-libelle`].value,
-                    "date_modification" : articles[code_article].GA_DATEMODIF,
-                    "prix_initial" : articles[code_article].GA_PVTTC,
+                    "date_modification" : selection[code_article].GA_DATEMODIF,
+                    "prix_initial" : selection[code_article].GA_PVTTC,
                     "prix_vente" : inputs[`${code_article}-prixVente`].value,
                     "description" : "",
                     tailles : [],
                     categorie : selectedCategories[code_article],
                 })
-                articles[code_article].taille.forEach(taille=> {
+                selection[code_article].taille.forEach(taille=> {
                     article[article.length-1].tailles.push({
                         stock: taille.stockNet,
                         code_barre: taille.GA_CODEBARRE,
@@ -115,16 +111,15 @@ const ModalAddArticles = function({open, onClose, selection}) {
                 {sending===true? 
                 <>
                 <h2>Sauvgarde des articles en cours...</h2>
-                <div>{received} articles sauvgardés / {Object.keys(articles).length} articles total</div>
+                <div>{received} articles sauvgardés / {Object.keys(selection).length} articles total</div>
                 </>
                 : ""}
-                {(open === true && articles && sending===false) ? <>
+                {(open === true && selection && sending===false) ? <>
                 <form onSubmit={insertion}>
                 <h1>Insertion</h1>
                 <p>Les articles sélectionnés seront ajoutés à la plateforme E-Commerce et au site pmg.dz</p>
                 <h3>Attention ! Si un article a déjà été mis en vente, il sera automatiquement modifié.</h3>
-                <TableChangeArticles   articles={articles} loading={loading} setLoading={setLoading}
-                setArticles={setArticles} selectedCategories={selectedCategories} setSelectedCategories={setSelectedCategories} 
+                <TableChangeArticles   loading={loading} setLoading={setLoading} selectedCategories={selectedCategories} setSelectedCategories={setSelectedCategories} 
                 onClose={onClose} selection={selection} setError={setError} open={open}/>
                 <div className={classes.flex}>
                     <Button color='primary' type="submit" variant="contained" sx={{width : "250px"}}>Confirmer</Button>
