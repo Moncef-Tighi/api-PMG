@@ -1,23 +1,51 @@
 import { Modal, Box, Button } from "@mui/material"
-import { useContext, useState } from "react";
+import { useContext, useReducer, useState } from "react";
 import classes from './ModalAddArticles.module.css';
 import axios from "axios";
 import {  API_PLATEFORME } from "../..";
 import Notification from "../util/Util";
 import AuthContext from "../../state/AuthContext";
 import TableChangeArticles from "./TableChangeArticle";
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { CircularProgress } from "@mui/material"
 
+const getCategories = async function() {
+    const categories = await axios.get(`${API_PLATEFORME}/woocommerce/categorie`);
+    return categories.data.body
+}
+
+const initialState= {plateforme : false, wooCommerce : false, variation : false, activation : false}
+
+const reducer = function(state, {type, payload}) {
+    let newState= {...state}
+    switch(type) {
+        case 'plateforme' :
+            newState.plateforme= true
+            return newState
+        case 'wooCommerce' : 
+            newState.wooCommerce= true;
+            return newState
+        case 'variation' :
+            newState.variation=true;
+            return newState
+        case 'activation' :
+            newState.activation=true;
+            return newState
+        case 'reset':
+            newState= {...initialState};
+            return newState
+    }
+    return newState
+}
 
 const ModalAddArticles = function({open, onClose, selection}) {
 
     const [selectedCategories, setSelectedCategories] = useState({});
-    
     const authContext = useContext(AuthContext);
-    const [loading, setLoading] = useState(false);
     const [sending, setSending] = useState(false);
-    const [received, setReceived] = useState(0);
     const [openNotif, setNotif] = useState("");
     const [openError, setError] = useState("");
+    const [loadingStatus, dispatch] = useReducer(reducer, initialState);
 
     const closeNotif = (event, reason) => {
         setNotif("");
@@ -61,12 +89,14 @@ const ModalAddArticles = function({open, onClose, selection}) {
                     "Authorization" : `Bearer ${authContext.token}`
                 }
             })
+            dispatch({type: 'plateforme', payload: plateforme})
             console.log(plateforme);
             const wooCommerce = await axios.post(`${API_PLATEFORME}/woocommerce/ajout`, {articles : article}, {
                 headers : {
                     "Authorization" : `Bearer ${authContext.token}`
                 }
             })
+            dispatch({type: 'wooCommerce', payload: wooCommerce})
             console.log(wooCommerce);
             const wooCommerceVariation = await axios.post(`${API_PLATEFORME}/woocommerce/ajout/taille`, {
                 variations : article,
@@ -77,6 +107,7 @@ const ModalAddArticles = function({open, onClose, selection}) {
                     "Authorization" : `Bearer ${authContext.token}`
                 }
             })
+            dispatch({type: 'variation', payload: wooCommerceVariation})
             console.log(wooCommerceVariation);
             const activation = await axios.patch(`${API_PLATEFORME}/articles/batch/activation`, {
                 code_article : plateforme.data.body?.articles?.map(article=> article.code_article),
@@ -85,7 +116,7 @@ const ModalAddArticles = function({open, onClose, selection}) {
                 "Authorization" : `Bearer ${authContext.token}`
             }})
             console.log(activation);
-            setReceived(()=> received+1);
+            dispatch({type: 'activation', payload: true})
             setNotif(`Tout les articles ont étés insérés avec succès`);
         } catch(error) {
             console.log(error);
@@ -97,7 +128,6 @@ const ModalAddArticles = function({open, onClose, selection}) {
         }
         onClose();
         setSending(false);
-        setReceived(0);
     }
 
 
@@ -111,7 +141,21 @@ const ModalAddArticles = function({open, onClose, selection}) {
                 {sending===true? 
                 <>
                 <h2>Sauvgarde des articles en cours...</h2>
-                <div>{received} articles sauvgardés / {Object.keys(selection).length} articles total</div>
+                <br/>
+                <ul>
+                    <li>{loadingStatus.plateforme ? <CheckCircleIcon  style={{ color: 'green' }}/> 
+                    : <CircularProgress size="1.4rem"/>} Ajout des articles sur la plateforme
+                    </li>
+                    <li>{loadingStatus.wooCommerce ? <CheckCircleIcon style={{ color: 'green' }}/> 
+                    : <CircularProgress size="1.4rem"/>} Ajout des articles sur WooCommerce
+                    </li>
+                    <li>{loadingStatus.variation ? <CheckCircleIcon style={{ color: 'green' }}/> 
+                    : <CircularProgress size="1.4rem"/>} Ajout des variations sur WooCommerce
+                    </li>
+                    <li>{loadingStatus.activation ? <CheckCircleIcon style={{ color: 'green' }}/> 
+                    : <CircularProgress size="1.4rem"/>} Vérification finale
+                    </li>
+                </ul>
                 </>
                 : ""}
                 {(open === true && selection && sending===false) ? <>
@@ -119,8 +163,8 @@ const ModalAddArticles = function({open, onClose, selection}) {
                 <h1>Insertion</h1>
                 <p>Les articles sélectionnés seront ajoutés à la plateforme E-Commerce et au site pmg.dz</p>
                 <h3>Attention ! Si un article a déjà été mis en vente, il sera automatiquement modifié.</h3>
-                <TableChangeArticles   loading={loading} setLoading={setLoading} selectedCategories={selectedCategories} setSelectedCategories={setSelectedCategories} 
-                onClose={onClose} selection={selection} setError={setError} open={open}/>
+                <TableChangeArticles  selectedCategories={selectedCategories} setSelectedCategories={setSelectedCategories} 
+                selection={selection} setError={setError} open={open} getCategories={getCategories}/>
                 <div className={classes.flex}>
                     <Button color='primary' type="submit" variant="contained" sx={{width : "250px"}}>Confirmer</Button>
                     <Button variant="contained" color='primaryLighter'

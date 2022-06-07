@@ -40,15 +40,11 @@ const findTailles = async function(articles) {
 
 }
 
-const getCategories = async function() {
-    const categories = await axios.get(`${API_PLATEFORME}/woocommerce/categorie`);
-    return categories.data.body
-}
-
-function TableChangeArticles({ loading, setLoading, setSelectedCategories
-    ,onClose, selection, selectedCategories, setError, open}) {
+function TableChangeArticles({setSelectedCategories, selection, selectedCategories, setError, open, getCategories}) {
     const [categories, setCategories] = useState([]);
     const [articles, setArticles] = useState(selection);
+    const [loading, setLoading] = useState(false);
+
 
     const {handleChangePage,sortHandeler} = useTable();
 
@@ -60,7 +56,8 @@ function TableChangeArticles({ loading, setLoading, setSelectedCategories
         setSelectedCategories((prevState)=> {
             return {
                 ...prevState,
-                [code_article] : [...value]}
+                [code_article] : [...value]
+            }
         })
       };
       useEffect(()=> {
@@ -70,7 +67,6 @@ function TableChangeArticles({ loading, setLoading, setSelectedCategories
                 setSelectedCategories({});
                 try {
                     const data = await findTailles(selection);
-                    console.log(data);
                     const categorie = await getCategories();
                     setCategories(categorie);
                     setArticles(()=> data);
@@ -78,7 +74,6 @@ function TableChangeArticles({ loading, setLoading, setSelectedCategories
                 } catch(error) {
                     console.log(error);
                     setError('Impossible de contacter le serveur');
-                    onClose();
                     setLoading(false);
                 }
             }
@@ -87,49 +82,58 @@ function TableChangeArticles({ loading, setLoading, setSelectedCategories
     }, [open])
 
 
-    return (<TableCustom tableData={articles} totalSize={Object.keys(articles).length} 
+    return (
+    <TableCustom 
+    tableData={articles} 
+    totalSize={Object.keys(articles).length} 
     page={1} 
     handleChangePage={handleChangePage}
     loading={loading} 
     heightSkeleton={"30vh"} 
-    sx={{maxHeight: "70vh"}}>
+    sx={{maxHeight: "70vh"}}
+    >
 
-              <TableHeadCustom header={header} sortHandeler={sortHandeler} />
-              <TableBody>
+        <TableHeadCustom header={header} sortHandeler={sortHandeler} />
+        <TableBody>
 
-              {Object.keys(articles).map(code_article => {
-                return <TableRow key={code_article}>
-                    <TableCell component="th" scope="row" sx={{maxWidth: "25px"}}>
-                          {articles[code_article].GA_CODEARTICLE || articles[code_article].code_article } 
-                          </TableCell>
-                          <TableCell align="left" sx={{width: "300px"}}>
-                              <Input fullWidth={true} color="primary" id={`${code_article}-libelle`} 
-                              defaultValue={articles[code_article].GA_LIBELLE?.toLowerCase() || articles[code_article].libelle?.toLowerCase() } />
-                          </TableCell>
-                          <TableCell align="left" sx={{maxWidth: "50px"}}>{articles[code_article].marque?.toLowerCase()}</TableCell>
-                          <TableCell align="left">{articles[code_article].gender}</TableCell>
-                          <TableCell align="left">{articles[code_article].division}</TableCell>
-                          <TableCell align="left">{articles[code_article].silhouette}</TableCell>
-                          <TableCell align="center" sx={{maxWidth: "25px"}}>{numberWithDots(articles[code_article].GA_PVTTC || articles[code_article].prix_initial)}</TableCell>
-                          <TableCell align="center" sx={{maxWidth: "25px"}}>
-                              <Input color="primary" id={`${code_article}-prixVente`} 
-                              defaultValue={articles[code_article].prixActuel || articles[code_article].GA_PVTTC || articles[code_article].prix_vente} />                              
-                          </TableCell>
-                          <TableCell>
-                              <Select id="categorie" multiple input={<OutlinedInput label="Tag" />} renderValue={() => 'Categorie'} MenuProps={MenuProps} onChange={event => handleChangeCategorie(event, code_article)} value={selectedCategories[code_article] || []} autoWidth label="Categorie">
-                              {categories.map(categorie => <MenuItem key={categorie?.id} value={categorie?.id}>
-                                  <Checkbox checked={selectedCategories[code_article]?.some(cat => cat === categorie.id) || false} />
-                                  <ListItemText primary={categorie?.slug} />
-                                  </MenuItem>)}
-                              </Select>
+        {Object.keys(articles).map(code_article => {
+        return <TableRow key={code_article}>
+            <TableCell component="th" scope="row" sx={{maxWidth: "25px"}}>
+                    {articles[code_article].GA_CODEARTICLE || articles[code_article].code_article } 
+                    </TableCell>
+                    <TableCell align="left" sx={{width: "300px"}}>
+                        <Input fullWidth={true} color="primary" id={`${code_article}-libelle`} 
+                        defaultValue={articles[code_article].GA_LIBELLE?.toLowerCase() || articles[code_article].libelle?.toLowerCase() } />
+                    </TableCell>
+                    <TableCell align="left" sx={{maxWidth: "50px"}}>{articles[code_article].marque?.toLowerCase()}</TableCell>
+                    <TableCell align="left">{articles[code_article].gender}</TableCell>
+                    <TableCell align="left">{articles[code_article].division}</TableCell>
+                    <TableCell align="left">{articles[code_article].silhouette}</TableCell>
+                    <TableCell align="center" sx={{maxWidth: "25px"}}>{numberWithDots(articles[code_article].GA_PVTTC || articles[code_article].prix_initial)}</TableCell>
+                    <TableCell align="center" sx={{maxWidth: "25px"}}>
+                        <Input color="primary" id={`${code_article}-prixVente`} 
+                        defaultValue={
+                        articles[code_article].prixActuel 
+                        || articles[code_article].GA_PVTTC 
+                        || articles[code_article].prix_vente} 
+                        />                              
+                    </TableCell>
+                    <TableCell>
+                        <Select id="categorie" multiple input={<OutlinedInput label="Tag" />} renderValue={() => 'Categorie'} MenuProps={MenuProps} onChange={event => handleChangeCategorie(event, code_article)} value={selectedCategories[code_article] || []} autoWidth label="Categorie">
+                        {categories.map(categorie => <MenuItem key={categorie?.id} value={categorie?.id}>
+                            <Checkbox checked={selectedCategories[code_article]?.some(cat => cat === categorie.id) || false} />
+                            <ListItemText primary={categorie?.slug} />
+                            </MenuItem>)}
+                        </Select>
 
-                          </TableCell>
-                          {/* <TableCell align="center" sx={{maxWidth: "25px"}}><button onClick={()=>{removeSelection(code_article)}}>X</button></TableCell> */}
-                      </TableRow>;
-  })}        
-              </TableBody>
-              </TableCustom>
-              );
-  }
+                    </TableCell>
+                    {/* <TableCell align="center" sx={{maxWidth: "25px"}}><button onClick={()=>{removeSelection(code_article)}}>X</button></TableCell> */}
+                </TableRow>;
+        })
+    }        
+    </TableBody>
+    </TableCustom>
+    );
+}
 
-  export default TableChangeArticles
+export default TableChangeArticles
