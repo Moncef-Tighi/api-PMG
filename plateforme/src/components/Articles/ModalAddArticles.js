@@ -8,6 +8,7 @@ import AuthContext from "../../state/AuthContext";
 import TableChangeArticles from "./TableChangeArticle";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { CircularProgress } from "@mui/material"
+import loadingReducer from "../../reducers/loadingReducer.js"
 
 const getCategories = async function() {
     const categories = await axios.get(`${API_PLATEFORME}/woocommerce/categorie`);
@@ -16,28 +17,6 @@ const getCategories = async function() {
 
 const initialState= {plateforme : false, wooCommerce : false, variation : false, activation : false}
 
-const reducer = function(state, {type, payload}) {
-    let newState= {...state}
-    switch(type) {
-        case 'plateforme' :
-            newState.plateforme= true
-            return newState
-        case 'wooCommerce' : 
-            newState.wooCommerce= true;
-            return newState
-        case 'variation' :
-            newState.variation=true;
-            return newState
-        case 'activation' :
-            newState.activation=true;
-            return newState
-        case 'reset':
-            newState= {...initialState};
-            return newState
-    }
-    return newState
-}
-
 const ModalAddArticles = function({open, onClose, selection}) {
 
     const [selectedCategories, setSelectedCategories] = useState({});
@@ -45,7 +24,7 @@ const ModalAddArticles = function({open, onClose, selection}) {
     const [sending, setSending] = useState(false);
     const [openNotif, setNotif] = useState("");
     const [openError, setError] = useState("");
-    const [loadingStatus, dispatch] = useReducer(reducer, initialState);
+    const [loadingStatus, dispatch] = useReducer(loadingReducer, initialState);
 
     const closeNotif = (event, reason) => {
         setNotif("");
@@ -89,14 +68,14 @@ const ModalAddArticles = function({open, onClose, selection}) {
                     "Authorization" : `Bearer ${authContext.token}`
                 }
             })
-            dispatch({type: 'plateforme', payload: plateforme})
+            dispatch({type: 'plateforme'})
             console.log(plateforme);
             const wooCommerce = await axios.post(`${API_PLATEFORME}/woocommerce/ajout`, {articles : article}, {
                 headers : {
                     "Authorization" : `Bearer ${authContext.token}`
                 }
             })
-            dispatch({type: 'wooCommerce', payload: wooCommerce})
+            dispatch({type: 'wooCommerce'})
             console.log(wooCommerce);
             const wooCommerceVariation = await axios.post(`${API_PLATEFORME}/woocommerce/ajout/taille`, {
                 variations : article,
@@ -107,7 +86,7 @@ const ModalAddArticles = function({open, onClose, selection}) {
                     "Authorization" : `Bearer ${authContext.token}`
                 }
             })
-            dispatch({type: 'variation', payload: wooCommerceVariation})
+            dispatch({type: 'variation'})
             console.log(wooCommerceVariation);
             const activation = await axios.patch(`${API_PLATEFORME}/articles/batch/activation`, {
                 code_article : plateforme.data.body?.articles?.map(article=> article.code_article),
@@ -116,7 +95,7 @@ const ModalAddArticles = function({open, onClose, selection}) {
                 "Authorization" : `Bearer ${authContext.token}`
             }})
             console.log(activation);
-            dispatch({type: 'activation', payload: true})
+            dispatch({type: 'activation'})
             setNotif(`Tout les articles ont étés insérés avec succès`);
         } catch(error) {
             console.log(error);
