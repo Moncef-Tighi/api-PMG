@@ -7,7 +7,7 @@ const TableHeadCustom = function(props) {
 
     const sort = searchParams.get('sort');
     return (
-        <TableHead>
+        <TableHead color='secondary'>
         <TableRow>
             {props.header.map(head => {
                 if (!head.sort) {

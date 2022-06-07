@@ -2,7 +2,7 @@ import {useContext, useState} from "react";
 import classes from './ListeArticle.module.css';
 import { Link } from 'react-router-dom';
 import { API_PLATEFORME } from "../../index";
-import {TableBody, TableCell, TableRow,Checkbox, MenuItem, Button} from '@mui/material'
+import {TableBody, TableCell, TableRow,Checkbox, MenuItem} from '@mui/material'
 import TableCustom from "../Table/TableCustom";
 import TableHeadCustom from "../Table/TableHeadCustom";
 import Notification from "../util/Util";
@@ -69,10 +69,8 @@ const ListeArticlePlateforme = function(props) {
         {error ? <aside className={classes.error}>{error}</aside>: "" }
         {taille>0 && props.modification ? 
             <UpdateArticleButton taille={taille} deselectionHadeler={deselectionHadeler} openModal={openModal}>
-                {console.log(location)}
                 {location==='/article/plateforme' ?
-                <>
-                <MenuItem disableRipple>
+                <><MenuItem disableRipple>
                     <Edit/>
                     Modifier
                 </MenuItem>
@@ -80,10 +78,8 @@ const ListeArticlePlateforme = function(props) {
                     <DeleteIcon/>
                     Corbeille
                 </MenuItem>        
-                </>
-                :
-                <>                
-                <MenuItem disableRipple>
+                </> 
+                :<><MenuItem disableRipple>
                     <SettingsBackupRestoreIcon/>
                     Rétablir
                 </MenuItem>
@@ -91,8 +87,7 @@ const ListeArticlePlateforme = function(props) {
                     <CloseIcon/>
                     Supprimer
                 </MenuItem>        
-                </>
-                }
+                </>}
             </UpdateArticleButton>
             : ""}
         {article.length===0 && !loading ? <div>Aucun article n'a été trouvé</div> : ""}
