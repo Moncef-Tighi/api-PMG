@@ -10,15 +10,17 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { CircularProgress } from "@mui/material"
 import loadingReducer from "../../reducers/loadingReducer.js"
 
-const getCategories = async function() {
-    const categories = await axios.get(`${API_PLATEFORME}/woocommerce/categorie`);
-    return categories.data.body
-}
 
 const initialState= {plateforme : false, wooCommerce : false, variation : false, activation : false}
 
 const ModalUpdateArticle = function({open, onClose, selection}) {
+    
+    const getSelectedCategories = async function() {
+        const categories = await axios.post(`${API_PLATEFORME}/woocommerce/categorie/articles`, Object.keys(selection));
+        console.log(categories);
+        return categories.data.body
 
+    }
     const [selectedCategories, setSelectedCategories] = useState({});
     const authContext = useContext(AuthContext);
     const [sending, setSending] = useState(false);
@@ -101,7 +103,7 @@ const ModalUpdateArticle = function({open, onClose, selection}) {
                 <p>Les articles modifiés verront leurs informations modifiés sur la plateforme E-Commerce et sur le site pmg.dz</p>
 
                 <TableChangeArticles  selectedCategories={selectedCategories} setSelectedCategories={setSelectedCategories} 
-                selection={selection} setError={setError} open={open} getCategories={getCategories}/>
+                selection={selection} setError={setError} open={open} initialCategories={getSelectedCategories}/>
                 <div className={classes.flex}>
                     <Button color='primary' type="submit" variant="contained" sx={{width : "250px"}}>Confirmer</Button>
                     <Button variant="contained" color='primaryLighter'

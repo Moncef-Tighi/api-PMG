@@ -10,11 +10,6 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { CircularProgress } from "@mui/material"
 import loadingReducer from "../../reducers/loadingReducer.js"
 
-const getCategories = async function() {
-    const categories = await axios.get(`${API_PLATEFORME}/woocommerce/categorie`);
-    return categories.data.body
-}
-
 const initialState= {plateforme : false, wooCommerce : false, variation : false, activation : false}
 
 const ModalAddArticles = function({open, onClose, selection}) {
@@ -144,7 +139,7 @@ const ModalAddArticles = function({open, onClose, selection}) {
                 <p>Les articles sélectionnés seront ajoutés à la plateforme E-Commerce et au site pmg.dz</p>
                 <h3>Attention ! Si un article a déjà été mis en vente, il sera automatiquement modifié.</h3>
                 <TableChangeArticles  selectedCategories={selectedCategories} setSelectedCategories={setSelectedCategories} 
-                selection={selection} setError={setError} open={open} getCategories={getCategories}/>
+                selection={selection} setError={setError} open={open}/>
                 <div className={classes.flex}>
                     <Button color='primary' type="submit" variant="contained" sx={{width : "250px"}}>Confirmer</Button>
                     <Button variant="contained" color='primaryLighter'

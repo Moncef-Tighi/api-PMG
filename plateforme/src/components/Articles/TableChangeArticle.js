@@ -37,17 +37,22 @@ const findTailles = async function(articles) {
         articles[code_article].prixActuel=article.data.body.info.prixActuel;
     }
     return articles
-
 }
 
-function TableChangeArticles({setSelectedCategories, selection, selectedCategories, setError, open, getCategories}) {
+const getCategories = async function() {
+    const categories = await axios.get(`${API_PLATEFORME}/woocommerce/categorie`);
+    return categories.data.body
+}
+
+function TableChangeArticles({setSelectedCategories, selection, selectedCategories, setError, open, initialCategories}) {
     const [categories, setCategories] = useState([]);
+    const [initCategories, setInitialCategories] = useState([]);
     const [articles, setArticles] = useState(selection);
     const [loading, setLoading] = useState(false);
-
+    
 
     const {handleChangePage,sortHandeler} = useTable();
-
+    
     const handleChangeCategorie = (event, code_article) => {
         const {
           target: { value },
@@ -59,8 +64,8 @@ function TableChangeArticles({setSelectedCategories, selection, selectedCategori
                 [code_article] : [...value]
             }
         })
-      };
-      useEffect(()=> {
+    };
+    useEffect(()=> {
         const neededData= async () => {
             if(open===true) {
                 setLoading(true);
@@ -70,6 +75,11 @@ function TableChangeArticles({setSelectedCategories, selection, selectedCategori
                     const categorie = await getCategories();
                     setCategories(categorie);
                     setArticles(()=> data);
+                    
+                    if (initialCategories) {
+                        const cat = await initialCategories()
+                        setInitialCategories(cat);
+                    }
                     setLoading(false);
                 } catch(error) {
                     console.log(error);
@@ -120,8 +130,12 @@ function TableChangeArticles({setSelectedCategories, selection, selectedCategori
                     </TableCell>
                     <TableCell>
                         <Select id="categorie" multiple input={<OutlinedInput label="Tag" />} renderValue={() => 'Categorie'} MenuProps={MenuProps} onChange={event => handleChangeCategorie(event, code_article)} value={selectedCategories[code_article] || []} autoWidth label="Categorie">
+
                         {categories.map(categorie => <MenuItem key={categorie?.id} value={categorie?.id}>
-                            <Checkbox checked={selectedCategories[code_article]?.some(cat => cat === categorie.id) || false} />
+                            <Checkbox checked={selectedCategories[code_article]?.some(cat => cat === categorie.id) 
+                            ||  initCategories?.some(art=> art.code_article===code_article
+                                && art.categories.some(cat=> cat.id===categorie.id))     
+                            || false} />
                             <ListItemText primary={categorie?.slug} />
                             </MenuItem>)}
                         </Select>

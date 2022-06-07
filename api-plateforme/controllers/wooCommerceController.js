@@ -140,10 +140,11 @@ const fetchCategories = async function() {
         categorie = await apiWooCommerce.get(`products/categories?page=${i}&per_page=100&_fields=id,name,slug`);
         categories.push(...categorie.data);
     }
+    return categories
 }
 
 export const getCategorie = catchAsync(async function(request, response, next) {
-    const categories= fetchCategories();
+    const categories= await fetchCategories();
 
     return response.status(200).json({
         status: "ok",
@@ -153,10 +154,9 @@ export const getCategorie = catchAsync(async function(request, response, next) {
 })
 
 export const getCategorieForArticle = catchAsync(async function(request,response,next) {
-    const articles = request.body.articles;
+    const articles = request.body;
     if (!articles) return next(createError(400, "Aucun article n'a été trouvé"));
-    const categories= fetchCategories();
-    const articlesWooCommerce= await apiWooCommerce.get(`products?sku=${articles.map(art => art.code_article).join(',')}`)
+    const articlesWooCommerce= await apiWooCommerce.get(`products?sku=${articles.join(',')}`)
 
     const articlesCategories= articlesWooCommerce.data.map(article=> {
         return {
@@ -166,10 +166,7 @@ export const getCategorieForArticle = catchAsync(async function(request,response
     })
     return response.status(200).json({
         status: "ok",
-        body : {
-            categories,
-            articlesCategories
-        }
+        body : articlesCategories
     })
 
 })
