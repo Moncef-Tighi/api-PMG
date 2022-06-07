@@ -88,7 +88,7 @@ export const insertTailleWooCommerce = catchAsync( async function(request, respo
         })
     })
 
-    const updateRequests = await  update?.map( async info=> {
+    const updateRequests = await update?.map( async info=> {
 
         const allVariations = await apiWooCommerce.get(`products/${info.id}/variations`);
         const variationUpdate= variations?.find(art=> art.code_article===info.code_article)
@@ -107,10 +107,10 @@ export const insertTailleWooCommerce = catchAsync( async function(request, respo
     
     const insertResult= await Promise.all(insertionRequests || []);
     const wooCommerceInsertVariation = insertResult?.map(promesse => promesse.data.create)
-    
+
     const updateResult= await Promise.all(updateRequests || []);
     const wooCommerceUpdateVariation = updateResult?.map(promesse => promesse.data.update)
-    
+
     //Ces deux lignes sont bizarre mais elles sont nécessaire pour l'error handeling
     //Si la création d'une variation parmis toute les variations échoue ce n'est pas toute l'opération qui échoue
     //C'est juste la création de cet article là qui est return sous forme d'erreur. 
