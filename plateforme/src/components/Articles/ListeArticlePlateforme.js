@@ -2,10 +2,9 @@ import {useContext, useState} from "react";
 import classes from './ListeArticle.module.css';
 import { Link } from 'react-router-dom';
 import { API_PLATEFORME } from "../../index";
-import {TableBody, TableCell, TableRow,Checkbox} from '@mui/material'
+import {TableBody, TableCell, TableRow,Checkbox, MenuItem, Button} from '@mui/material'
 import TableCustom from "../Table/TableCustom";
 import TableHeadCustom from "../Table/TableHeadCustom";
-import InsertionArticle from "./InsertionArticle.js"
 import Notification from "../util/Util";
 import useGet from "../../hooks/useGet";
 import useTable from "../../hooks/useTable";
@@ -14,6 +13,9 @@ import { capitalize, numberWithDots } from '../util/stringFunctions.js';
 import AuthContext from "../../state/AuthContext";
 import moment from "moment";
 import ModalUpdateArticle from "./ModalUpdateArticle";
+import { Edit } from "@mui/icons-material";
+import DeleteIcon from '@mui/icons-material/Delete';
+import UpdateArticleButton from "./UpdateArticleButton";
 
 const emptyTable= {
     body: [],
@@ -60,8 +62,17 @@ const ListeArticlePlateforme = function(props) {
         <>
         {error ? <aside className={classes.error}>{error}</aside>: "" }
         {taille>0 && props.modification ? 
-        <InsertionArticle   taille={taille} deselectionHadeler={deselectionHadeler} openModal={openModal}  />        
-        : ""}
+            <UpdateArticleButton taille={taille} deselectionHadeler={deselectionHadeler} openModal={openModal}>
+                <MenuItem disableRipple>
+                    <Edit/>
+                    Modifier
+                </MenuItem>
+                <MenuItem disableRipple>
+                    <DeleteIcon/>
+                    Corbeille
+                </MenuItem>        
+            </UpdateArticleButton>
+            : ""}
         {article.length===0 && !loading ? <div>Aucun article n'a été trouvé</div> : ""}
 
         <TableCustom
@@ -112,7 +123,6 @@ const ListeArticlePlateforme = function(props) {
             </TableRow>)})}
         </TableBody>
         </TableCustom>
-
 
         <ModalUpdateArticle open={open} onClose={closeModal} selection={selection} removeSelection={removeSelection}/>
         <Notification closeNotif={closeNotif} message={openWarn} status="warning"  />
