@@ -47,8 +47,9 @@ const Header = function() {
                     anchor={"left"}
                     open={menu}
                     onClose={toggleDrawer(false)}
+                    transitionDuration={{appear: 200, enter: 400, exit: 200} }
                 >
-                    <Navigation toggleDrawer={toggleDrawer}/>
+                    <Navigation toggleDrawer={toggleDrawer} menu={menu}/>
                 </Drawer>
                 </React.Fragment>
                 <div className={classes.dividerHead}></div>

@@ -12,7 +12,7 @@ import { useContext } from 'react';
 import AuthContext from "../../state/AuthContext";
 import { Divider } from '@mui/material';
 
-const Navigation = function({toggleDrawer}) {
+const Navigation = function({menu,toggleDrawer}) {
     const authContext= useContext(AuthContext);
     return (
         <Box
