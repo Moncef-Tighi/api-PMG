@@ -70,7 +70,7 @@ const ListeArticlePlateforme = function(props) {
         {taille>0 && props.modification ? 
             <UpdateArticleButton taille={taille} deselectionHadeler={deselectionHadeler} openModal={openModal}>
                 {location==='/article/plateforme' ?
-                <><MenuItem disableRipple>
+                <><MenuItem disableRipple onClick={openModal}>
                     <Edit/>
                     Modifier
                 </MenuItem>

@@ -40,20 +40,57 @@ const ModalUpdateArticle = function({open, onClose, selection}) {
         const inputs=event.currentTarget.elements;
         setSending(true);
         try {
-            let article= []
+            let article= [];
+            for (const code_article of Object.keys(selection)) {
+                console.log(selection[code_article])
+                article.push({
+                    "code_article" : code_article,
+                    "marque" : selection[code_article].marque,
+                    "gender" : selection[code_article].gender,
+                    "division" : selection[code_article].division,
+                    "silhouette" : selection[code_article].silhouette,
+                    "libelle" : inputs[`${code_article}-libelle`].value,
+                    "date_modification" : selection[code_article].date_modification,
+                    "prix_initial" : selection[code_article].prix_initial,
+                    "prix_vente" : inputs[`${code_article}-prixVente`].value,
+                    "description" : "",
+                    tailles : [],
+                    categorie : selectedCategories[code_article],
+                })
+                selection[code_article].taille.forEach(taille=> {
+                    article[article.length-1].tailles.push({
+                        stock: taille.stock_dimension,
+                        code_barre: taille.code_barre,
+                        dimension: taille.dimension 
+                    })
+                })
+            }
 
-            const plateforme = await axios.post(`${API_PLATEFORME}/articles/batch/insert`, {articles : article}, {
+            const plateforme = await axios.patch(`${API_PLATEFORME}/articles/batch/update`, {articles : article}, {
                 headers : {
                     "Authorization" : `Bearer ${authContext.token}`
                 }
             })
+            console.log(plateforme);
             dispatch({type: 'plateforme'})
 
+            const wooCommerce = await axios.patch(`${API_PLATEFORME}/woocommerce/update`, {articles : article}, {
+                headers : {
+                    "Authorization" : `Bearer ${authContext.token}`
+                }
+            })
+            console.log(wooCommerce);
             dispatch({type: 'wooCommerce'})
-
+            const variation = await axios.patch(`${API_PLATEFORME}/woocommerce/update/taille`,{
+                variations : article,
+                update: wooCommerce.data.body.update
+            }, {
+                headers : {
+                    "Authorization" : `Bearer ${authContext.token}`
+                }
+            })
+            console.log(variation);
             dispatch({type: 'variation'})
-
-            dispatch({type: 'activation'})
 
             setNotif(`Tout les articles ont étés modifiés avec succès`);
         } catch(error) {
@@ -90,9 +127,6 @@ const ModalUpdateArticle = function({open, onClose, selection}) {
                     </li>
                     <li>{loadingStatus.variation ? <CheckCircleIcon style={{ color: 'green' }}/> 
                     : <CircularProgress size="1.4rem"/>} Modification des variations sur WooCommerce
-                    </li>
-                    <li>{loadingStatus.activation ? <CheckCircleIcon style={{ color: 'green' }}/> 
-                    : <CircularProgress size="1.4rem"/>} Vérification finale
                     </li>
                 </ul>
                 </>

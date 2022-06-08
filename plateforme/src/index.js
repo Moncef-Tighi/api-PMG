@@ -10,8 +10,8 @@ import { AuthContextProvider } from './state/AuthContext';
 // export const API_PLATEFORME = 'http://192.168.0.81/plateforme/api/v1';
 // export const API_CEGID = 'http://192.168.0.81/cegid/api/v1';
 
-export const API_PLATEFORME = 'http://192.168.0.45:4001/plateforme/api/v1';
-export const API_CEGID = 'http://192.168.0.45:5000/cegid/api/v1';
+export const API_PLATEFORME = 'http://localhost:4001/plateforme/api/v1';
+export const API_CEGID = 'http://localhost:5000/cegid/api/v1';
 
 ReactDOM.render(
   <AuthContextProvider>

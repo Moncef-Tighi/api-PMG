@@ -85,7 +85,6 @@ export const insertArticles = catchAsync(async function(request, response, next)
 
 export const updateArticles = catchAsync(async function(request,response,next) {
     const articles= request.body.articles
-    
     if (!articles) return next(createError(400, `Impossible de trouver la liste d'articles`))
     try {
         db.query('BEGIN');

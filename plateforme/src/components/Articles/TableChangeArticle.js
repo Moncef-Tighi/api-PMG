@@ -84,7 +84,7 @@ function TableChangeArticles({setSelectedCategories, selection, selectedCategori
                 } catch(error) {
                     console.log(error);
                     setError('Impossible de contacter le serveur');
-                    setLoading(false);
+                    setLoading(true);
                 }
             }
         }

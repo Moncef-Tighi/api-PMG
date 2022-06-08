@@ -197,7 +197,6 @@ export const updateTailleWooCommerce = catchAsync( async function(request, respo
     
     const updateResult= await Promise.all(updateRequests || []);
     const wooCommerceUpdateVariation = updateResult?.map(promesse => promesse.data.update)
-
     if (wooCommerceUpdateVariation[0]?.some(art => art.error)) return next(createError(400, `Une erreur a eu lieu lors de l'update d'une variation`));
 
     return response.status(201).json({
