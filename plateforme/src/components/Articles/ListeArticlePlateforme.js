@@ -19,7 +19,7 @@ import UpdateArticleButton from "./UpdateArticleButton";
 import { useLocation } from "react-router-dom";
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 import CloseIcon from '@mui/icons-material/Close';
-
+import axios from "axios";
 
 
 const emptyTable= {
@@ -28,8 +28,9 @@ const emptyTable= {
     page : 1
 }
 
-const ListeArticlePlateforme = function(props) {
 
+const ListeArticlePlateforme = function(props) {
+    
     const {url, handleChangePage,sortHandeler} = useTable(props.query);
     const authContext = useContext(AuthContext);
     const active= props.activé ? "&activé=false" : ""
@@ -40,12 +41,33 @@ const ListeArticlePlateforme = function(props) {
     const closeModal= ()=> setModal(()=>false);
     const openModal= ()=> setModal(()=> true);
     const [openWarn, setWarn] = useState("");
+    const [openNotif, setNotif] = useState("");
     const {selection, selectionHandeler, deselectionHadeler, removeSelection}=useSelection(setWarn);
 
     const closeNotif = (event, reason) => {
         setWarn("");
+        setNotif("");
     };
 
+    const corbeille = async function(selection, status) {
+        try {   
+            console.log(authContext.permissions);
+            await axios.patch(`${API_PLATEFORME}/articles/corbeille`, {
+                code_article : Object.keys(selection),
+                status,
+            }, {
+                headers : {
+                    "Authorization" : `Bearer ${authContext.token}`
+                }
+            })
+            setNotif(status ? "L'article a été rétablis" : "L'article a bien été mis à la corbeille" )
+            deselectionHadeler();
+            handleChangePage(null, 0);
+        } catch(error) {
+            console.log(error);
+            setWarn("L'opération a échouée")
+        }
+    }
     const header = [
         { name: "", sort: false},
         { name: "Code Article", sort: false},
@@ -74,12 +96,12 @@ const ListeArticlePlateforme = function(props) {
                     <Edit/>
                     Modifier
                 </MenuItem>
-                <MenuItem disableRipple>
+                <MenuItem disableRipple onClick={()=>corbeille(selection, false) }>
                     <DeleteIcon/>
                     Corbeille
                 </MenuItem>        
                 </> 
-                :<><MenuItem disableRipple>
+                :<><MenuItem disableRipple onClick={()=>corbeille(selection, true) }>
                     <SettingsBackupRestoreIcon/>
                     Rétablir
                 </MenuItem>
@@ -143,6 +165,7 @@ const ListeArticlePlateforme = function(props) {
 
         <ModalUpdateArticle open={open} onClose={closeModal} selection={selection} removeSelection={removeSelection}/>
         <Notification closeNotif={closeNotif} message={openWarn} status="warning"  />
+        <Notification closeNotif={closeNotif} message={openNotif} status="success"  />
 
         </>
     )

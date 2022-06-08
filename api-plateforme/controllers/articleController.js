@@ -109,6 +109,7 @@ export const updateArticles = catchAsync(async function(request,response,next) {
 export const activateArticles = catchAsync(async function(request,response, next) {
     // ATTENTION ! Le jour ou WooCommerce sera retiré, il faudra retirer l'activation des articles côté WooCommerce
     // Actuellement on actualise côté plateforme ET côté WooCommerce.
+    // Cette route est utilisé pour activer les articles après la fin de l'insertion
     const articlePlateforme= request.body.code_article;
     const articleWooCommerce= request.body.id;
     if (!articlePlateforme && !articleWooCommerce) return next(createError(400, "aucun article à activé n'a été trouvé."))
@@ -132,6 +133,32 @@ export const activateArticles = catchAsync(async function(request,response, next
  
 })
 
+
+export const corbeille = catchAsync(async function(request,response,next) {
+    //Cette fonction est utilisée pour faire passer des articles dans la corbeille ou les rétablir
+
+    const code_articles= request.body.code_article;
+    const status = request.body.status;
+    if (!code_articles) return next(createError(400, "aucun article à activé n'a été trouvé."))
+    
+    const plateforme = await model.activationArticle(code_articles, status);
+    const articlesWooCommerce = await apiWooCommerce.get(`products?sku=${code_articles.join(',')}`) 
+    if (articlesWooCommerce.data) {
+        var wooCommerce = await apiWooCommerce.post("products/batch", 
+        {
+            update: articlesWooCommerce.data.map(art=> {return {id : art.id, status : status ? "publish" : "draft"}})
+        })
+        console.log(wooCommerce.data.update[0].error);
+    }
+    return response.status(200).json({
+        status : "ok",
+        body : {
+            plateforme,
+            wooCommerce: wooCommerce?.data?.body, 
+        }    
+    })
+
+})
 
 export const ventesArticle = catchAsync( async function(request, response) {
     // const ventes = await wooCommerce.totalVentes();
