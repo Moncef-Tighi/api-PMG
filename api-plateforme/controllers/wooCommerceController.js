@@ -62,6 +62,46 @@ export const insertArticlesWooCommerce = catchAsync( async function(request, res
     })
 })
 
+export const updateArticleWooCommerce = catchAsync(async function(request,response,next) {
+    const articles = request.body.articles
+    if (!articles) return next(createError(400,'Impossible de trouver les articles dans le body de la requête'))
+
+    const wooCommerceExistance= await apiWooCommerce.get(`products?sku=${articles.map(article => article.code_article).join(',')}`);
+
+    if (!wooCommerceExistance) return next(createError(400, `Aucun article a modifié n'a été trouvé sur wooCommerce`))
+    let warn = ""
+    if (wooCommerceExistance.data.length!=articles.length) warn= `Certains articles ont étés retirés sur WooCommerce sans être retirés sur la plateforme`
+
+    const updateArticles = articles.filter(article => wooCommerceExistance.data?.find(art => art?.sku === article?.code_article))
+
+    const data = {
+        update : updateArticles?.map(article=> {
+            return {
+                id: wooCommerceExistance.data.find(art=> art.sku===article.code_article).id,
+                default_attributes: {
+                sale_price: String(article.prix_vente),
+                date_modified: Date.now(),
+                name : article.libelle,
+                categories : article.categorie ? article.categorie.map(cat=> {return {"id" : cat}}) : []
+        }}
+    })}
+    const updateWooCommerce = await apiWooCommerce.post('products/batch', data)
+
+    //Voir l'insertion plus haut pour une idée du rôle que joue cette ligne
+
+    if (updateWooCommerce.data?.update?.some(art => art.error)) return next(createError(400, `Une erreur a eu lieu lors de l'update`));
+
+    return response.status(201).json({
+        status: "ok",
+        message : "Les articles ont bien étés modifiés",
+        warn,
+        body : {
+            update : updateWooCommerce.data?.update?.filter(article=> !article.error)
+            ?.map(article=> {return{id : article.id, code_article : article.sku}})
+        }
+    })
+})
+
 export const insertTailleWooCommerce = catchAsync( async function(request, response, next) {
 
     const update= request.body.update;
@@ -131,7 +171,7 @@ export const insertTailleWooCommerce = catchAsync( async function(request, respo
 
 })
 
-const fetchCategories = async function() {
+export const getCategorie = catchAsync(async function(request, response, next) {
     let categories= [];
     let categorie= []
     let i=0
@@ -140,12 +180,6 @@ const fetchCategories = async function() {
         categorie = await apiWooCommerce.get(`products/categories?page=${i}&per_page=100&_fields=id,name,slug`);
         categories.push(...categorie.data);
     }
-    return categories
-}
-
-export const getCategorie = catchAsync(async function(request, response, next) {
-    const categories= await fetchCategories();
-
     return response.status(200).json({
         status: "ok",
         body : categories
