@@ -163,7 +163,7 @@ const ListeArticlePlateforme = function(props) {
         </TableBody>
         </TableCustom>
 
-        <ModalUpdateArticle open={open} onClose={closeModal} selection={selection} removeSelection={removeSelection}/>
+        <ModalUpdateArticle open={open} onClose={closeModal} selection={selection} deselectionHadeler={deselectionHadeler} handleChangePage={handleChangePage}/>
         <Notification closeNotif={closeNotif} message={openWarn} status="warning"  />
         <Notification closeNotif={closeNotif} message={openNotif} status="success"  />
 

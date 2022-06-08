@@ -148,7 +148,6 @@ export const corbeille = catchAsync(async function(request,response,next) {
         {
             update: articlesWooCommerce.data.map(art=> {return {id : art.id, status : status ? "publish" : "draft"}})
         })
-        console.log(wooCommerce.data.update[0].error);
     }
     return response.status(200).json({
         status : "ok",

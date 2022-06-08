@@ -10,10 +10,9 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { CircularProgress } from "@mui/material"
 import loadingReducer from "../../reducers/loadingReducer.js"
 
-
 const initialState= {plateforme : false, wooCommerce : false, variation : false, activation : false}
 
-const ModalUpdateArticle = function({open, onClose, selection}) {
+const ModalUpdateArticle = function({open, onClose, selection,deselectionHadeler, handleChangePage}) {
     
     const getSelectedCategories = async function() {
         const categories = await axios.post(`${API_PLATEFORME}/woocommerce/categorie/articles`, Object.keys(selection));
@@ -91,7 +90,6 @@ const ModalUpdateArticle = function({open, onClose, selection}) {
             })
             console.log(variation);
             dispatch({type: 'variation'})
-
             setNotif(`Tout les articles ont étés modifiés avec succès`);
         } catch(error) {
             console.log(error);
@@ -103,6 +101,8 @@ const ModalUpdateArticle = function({open, onClose, selection}) {
         }
         onClose();
         setSending(false);
+        deselectionHadeler()
+        handleChangePage(null, 0);
         dispatch({type : 'reset'})
     }
 
