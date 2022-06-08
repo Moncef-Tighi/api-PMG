@@ -206,10 +206,10 @@ h1,h2,h3 {
 }
 
 .main_page {
-  width: 80%;
+  width: 90%;
   padding: 3px;
   margin: auto;
-  margin-left: 17.5%;
+  /* margin-left: 17.5%; */
   margin-bottom: 25px;
   /* background-color: white; */
   overflow-y: auto;

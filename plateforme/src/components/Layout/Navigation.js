@@ -4,17 +4,26 @@ import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import { Box } from '@mui/system';
 
-import {Article, ContactPhone, LocalOffer, Person, ManageAccounts, History} from '@mui/icons-material';
+import {Article, ContactPhone, Person, ManageAccounts, History} from '@mui/icons-material';
 import { NavLink } from 'react-router-dom';
 import { useContext } from 'react';
 import AuthContext from "../../state/AuthContext";
+import { Divider } from '@mui/material';
 
-const Navigation = function() {
+const Navigation = function({toggleDrawer}) {
     const authContext= useContext(AuthContext);
     return (
+        <Box
+            sx={{ width: 'auto'}}
+            role="presentation"
+            onClick={toggleDrawer(false)}
+            onKeyDown={toggleDrawer(false)}
+        >
         <nav>
             <h1>Menu</h1>
+            <Divider />
             <List
             sx={{ width: '100%'}}
             component="ul">
@@ -68,8 +77,8 @@ const Navigation = function() {
                 </NavLink></>
                  : ""}
             </List>
-
         </nav>
+        </Box>
     )
 }
 
