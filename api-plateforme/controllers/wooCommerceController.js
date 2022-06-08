@@ -171,6 +171,47 @@ export const insertTailleWooCommerce = catchAsync( async function(request, respo
 
 })
 
+export const updateTailleWooCommerce = catchAsync( async function(request, response, next) {
+
+    const update= request.body.update;
+    const variations = request.body.variations;
+
+    if (!update) return next(createError(400, "Aucune taille à modifier sur WooCommerce"))
+
+    const updateRequests = await update?.map( async info=> {
+
+        const allVariations = await apiWooCommerce.get(`products/${info.id}/variations`);
+        const variationUpdate= variations?.find(art=> art.code_article===info.code_article)
+        return await apiWooCommerce.post(`products/${info.id}/variations/batch`,{
+        update :  variationUpdate.tailles.map(taille=>{
+                return {
+                    id : allVariations.data.find(article => {
+                        return article.attributes[0].option===taille.dimension
+                    })?.id,
+                    stock_status: taille.stock > process.env.MINSTOCK ? "instock" : "outofstock", 
+                    regular_price: String(variationUpdate.prix_vente),
+                }
+            }
+        )})
+    })
+    
+    const updateResult= await Promise.all(updateRequests || []);
+    const wooCommerceUpdateVariation = updateResult?.map(promesse => promesse.data.update)
+
+    if (wooCommerceUpdateVariation[0]?.some(art => art.error)) return next(createError(400, `Une erreur a eu lieu lors de l'update d'une variation`));
+
+    return response.status(201).json({
+        status: "ok",
+        message : "Les articles ont bien étés modifiés sur la plateforme",
+        body : {
+            update : wooCommerceUpdateVariation
+        }
+    })
+
+})
+
+
+
 export const getCategorie = catchAsync(async function(request, response, next) {
     let categories= [];
     let categorie= []
