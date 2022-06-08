@@ -9,5 +9,6 @@ router.get("/commandes", controllers.getCommandes);
 router.post("/ajout/taille", controllers.insertTailleWooCommerce);
 router.post("/ajout", controllers.insertArticlesWooCommerce);
 router.patch("/update", controllers.updateArticleWooCommerce);
+router.patch("/update/taille", controllers.updateTailleWooCommerce);
 
 export default router;

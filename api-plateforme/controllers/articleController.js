@@ -83,6 +83,30 @@ export const insertArticles = catchAsync(async function(request, response, next)
     })
 })
 
+export const updateArticles = catchAsync(async function(request,response,next) {
+    const articles= request.body.articles
+    
+    if (!articles) return next(createError(400, `Impossible de trouver la liste d'articles`))
+    try {
+        db.query('BEGIN');
+        const articlesResponse = await model.batchUpdateArticles(articles);
+        var articlesUpdated = await Promise.all(articlesResponse);
+        db.query("COMMIT");
+    } catch(error) {
+        db.query("ROLLBACK");
+        throw error
+    }
+
+    return response.status(201).json({
+        status : "ok",
+        message : "L'article a bien été mis en vente sur la plateforme",
+        body : {
+            articles : articlesUpdated,
+        }    
+    })
+
+})
+
 export const activateArticles = catchAsync(async function(request,response, next) {
     // ATTENTION ! Le jour ou WooCommerce sera retiré, il faudra retirer l'activation des articles côté WooCommerce
     // Actuellement on actualise côté plateforme ET côté WooCommerce.

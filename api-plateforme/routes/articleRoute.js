@@ -9,8 +9,9 @@ router.use(protect);
     router.get('/liste', controllers.listeArticle);
     router.get('/vente', controllers.ventesArticle);
     router.get('/status', controllers.articleEtat);
-    // router.post('/insertion', restrict("admin", "modification"), controllers.ajoutArticle);
+
     router.post('/batch/insert', restrict("admin", "modification"), controllers.insertArticles);
+    router.patch('/batch/update', restrict("admin", "modification"), controllers.updateArticles);
     router.patch('/batch/activation', restrict("admin", "modification"), controllers.activateArticles);
     router.patch('/prix', restrict("admin", "modification"), controllers.updatePrixArticle);
     router.patch('/activer/:id', restrict("admin", "modification"), controllers.enableArticle);

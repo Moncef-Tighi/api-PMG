@@ -78,7 +78,7 @@ export const insertArticle = async function(code_article, libelle=null, marque=n
     ($1, $2, $3, $4,$5, $6 , $7, CURRENT_TIMESTAMP,$8,$9,$10,$11 )
     ON CONFLICT (code_article) DO UPDATE
     SET libelle=$2,gender=$4, division=$5, silhouette=$6,
-    date_modification=$7, prix_vente=$9, description=$10
+    date_modification=CURRENT_TIMESTAMP, prix_vente=$9, description=$10
     RETURNING *
     `
 
@@ -135,18 +135,26 @@ export const updatePrix = async function(code_article, prix) {
 
 };
 
-export const updateArticle = async function(article, tailles) {
+export const batchUpdateArticles = async function(articles) {
+    const data = await articles.map(async article=> {
+        const data = await updateArticle(article.code_article, article.libelle,
+            article.gender, article.division, article.silhouette, article.prix_vente,
+            article.description);
+        return data
+    })
+    return data;
+}
+
+export const updateArticle = async function(code_article, libelle, gender="", division="", silhouette="", prix_vente, description="") {
     //Aucune idée de pourquoi cette fonction existe ou de quand je l'ai écris. En tout cas elle ne fonctionne pas actuellement
-    try {
-        await db.query("BEGIN");
-        const sqlArticle = `UPDATE article
-        SET prix_vente=$1, libelle=$2, description=$3`
-        const values = [prix, code_article];
-        var responseArticle = await db.query(sqlArticle, values)
-    } catch(error) {
-        await client.query('ROLLBACK')
-        throw error
-    }
+    const sqlArticle = `UPDATE article
+    SET libelle=$2,gender=$3, division=$4, silhouette=$5,
+    date_modification= CURRENT_TIMESTAMP , prix_vente=$6, description=$7
+    WHERE code_article=$1
+    RETURNING *`
+    const values = [code_article, libelle, gender, division, silhouette, prix_vente, description];
+    var responseArticle = await db.query(sqlArticle, values)
+    return responseArticle.rows[0];
 };
 
 export const updateStockTaille = async function(tailles) {
