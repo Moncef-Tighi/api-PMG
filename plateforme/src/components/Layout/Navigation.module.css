@@ -1,6 +1,6 @@
 nav {
     position: fixed;
-    width: 15vw;
+    width: 250px;
     background-color: white;
     overflow: hidden;
     border-radius: 0px 5px 5px 0px;
@@ -8,9 +8,8 @@ nav {
     flex-direction: column;
     align-items: flex-start;
     height: 100vh;
-    padding: 10px;
+    padding: 15px;
     box-shadow: rgb(60 64 67 / 10%) 1px 1px 1px 1px, rgb(60 64 67 / 15%) 1px 1px 2px 1px;
-
 }
 .navLink {
     text-decoration: none;
@@ -33,4 +32,16 @@ nav {
 
 .activeLink svg {
     color: white;
+}
+
+.divider {
+    width: 100%;
+    margin-top: 4px;
+    margin-bottom: 8px;
+    height: 2px;
+    background-color: red;
+}
+
+.menu {
+    font-size: 44px;
 }

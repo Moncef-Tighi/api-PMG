@@ -22,19 +22,20 @@ const Navigation = function({toggleDrawer}) {
             onKeyDown={toggleDrawer(false)}
         >
         <nav>
-            <h1>Menu</h1>
+            <h1 className={classes.menu}>Menu</h1>
             <Divider />
+            <div className={classes.divider}></div>
             <List
             sx={{ width: '100%'}}
             component="ul">
                 <NavLink to="/article" className={({ isActive }) =>isActive ? classes.activeLink : classes.navLink}>
-                <ListItemButton sx={{ width: '100%', height: "60px"}} color="primary" >
+                <ListItemButton sx={{ width: '100%', height: "65px"}} color="primary" >
                     <ListItemIcon><Article  sx={{width:'1.3em', height: '1.3em', color: '#262626'}}/> </ListItemIcon>
                     <ListItemText primary="Articles" className={classes.textLink}/>
                 </ListItemButton>
               </NavLink> 
                 <NavLink  to="/commande" className={({ isActive }) =>isActive ? classes.activeLink : classes.navLink}>
-                    <ListItemButton sx={{ width: '100%', height: "60px"}}>
+                    <ListItemButton sx={{ width: '100%', height: "65px"}}>
                         <ListItemIcon>
                         <ContactPhone  sx={{width:'1.3em', height: '1.3em', color: '#262626'}}/>
                         </ListItemIcon>
@@ -42,7 +43,7 @@ const Navigation = function({toggleDrawer}) {
                     </ListItemButton>
                 </NavLink>
                 {/* <NavLink to="/prix" className={({ isActive }) =>isActive ? classes.activeLink : classes.navLink}> 
-                    <ListItemButton sx={{ width: '100%', height: "60px"}}>
+                    <ListItemButton sx={{ width: '100%', height: "65px"}}>
                         <ListItemIcon>
                         <LocalOffer  sx={{width:'1.3em', height: '1.3em', color: '#262626'}}/>
                         </ListItemIcon>
@@ -52,7 +53,7 @@ const Navigation = function({toggleDrawer}) {
                 {authContext.permissions.find(permission => permission==="admin" ) ?
                 <>
                 <NavLink to="/admin/employes" className={({ isActive }) =>isActive ? classes.activeLink : classes.navLink}>
-                    <ListItemButton sx={{ width: '100%', height: "60px"}}>
+                    <ListItemButton sx={{ width: '100%', height: "65px"}}>
                         <ListItemIcon>
                         <Person  sx={{width:'1.3em', height: '1.3em', color: '#262626'}}/>
                         </ListItemIcon>
@@ -60,7 +61,7 @@ const Navigation = function({toggleDrawer}) {
                     </ListItemButton>
                 </NavLink>
                 <NavLink to="/admin/permissions" className={({ isActive }) =>isActive ? classes.activeLink : classes.navLink}>
-                    <ListItemButton sx={{ width: '100%', height: "60px"}}>
+                    <ListItemButton sx={{ width: '100%', height: "65px"}}>
                         <ListItemIcon>
                         <ManageAccounts  sx={{width:'1.3em', height: '1.3em', color: '#262626'}}/>
                         </ListItemIcon>
@@ -68,7 +69,7 @@ const Navigation = function({toggleDrawer}) {
                     </ListItemButton>
                 </NavLink>
                 <NavLink  to="/admin/historique" className={({ isActive }) =>isActive ? classes.activeLink : classes.navLink}>
-                    <ListItemButton sx={{ width: '100%', height: "60px"}}>
+                    <ListItemButton sx={{ width: '100%', height: "65px"}}>
                         <ListItemIcon>
                         <History  sx={{width:'1.3em', height: '1.3em', color: '#262626'}}/>
                         </ListItemIcon>

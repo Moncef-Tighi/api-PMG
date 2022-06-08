@@ -51,7 +51,7 @@ const Header = function() {
                     <Navigation toggleDrawer={toggleDrawer}/>
                 </Drawer>
                 </React.Fragment>
-
+                <div className={classes.dividerHead}></div>
                 <img className={classes.icon} src="logo-pmg.png" alt="small-logo"></img>
             </div>
 
@@ -60,8 +60,8 @@ const Header = function() {
             <Link to='/me'><h2>{nom} {prenom}</h2></Link>
                 <h4>{poste}</h4>
             </div>
-            <NotificationsIcon sx={{color: "grey"}}/>
-            <IconButton onClick={logoutHandeler}><LogoutIcon/></IconButton>
+            <NotificationsIcon sx={{color: "grey", fontSize: '1.6em', marginRight: '8px'}}/>
+            <IconButton onClick={logoutHandeler}><LogoutIcon sx={{fontSize: '1.3em'}}/></IconButton>
             </div>
         </header>
     )
