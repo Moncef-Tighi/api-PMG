@@ -42,17 +42,17 @@ const Header = function() {
             <div>
                 
                 <React.Fragment key={"left"}>
-                <Tooltip title="Menu de navigation" arrow>
-                    <Button onClick={toggleDrawer(true)}><MenuIcon sx={{fontSize : "2.5em", marginRight: "10px"}}/></Button>
+                    <Tooltip title="Menu de navigation" arrow>
+                        <Button onClick={toggleDrawer(true)}><MenuIcon sx={{fontSize : "2.5em", marginRight: "10px"}}/></Button>
                     </Tooltip>
-                <Drawer
+                    <Drawer
                     anchor={"left"}
                     open={menu}
                     onClose={toggleDrawer(false)}
                     transitionDuration={{appear: 200, enter: 400, exit: 200} }
-                >
-                    <Navigation toggleDrawer={toggleDrawer} menu={menu}/>
-                </Drawer>
+                    >
+                            <Navigation toggleDrawer={toggleDrawer} menu={menu}/>
+                    </Drawer>
                 </React.Fragment>
                 <div className={classes.dividerHead}></div>
                 <img className={classes.icon} src="logo-pmg.png" alt="small-logo"></img>

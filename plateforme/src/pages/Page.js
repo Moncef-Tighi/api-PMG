@@ -1,4 +1,3 @@
-import Navigation from "../components/Layout/Navigation"
 import Header from "../components/Layout/Header"
 import { ThemeProvider } from "@emotion/react"
 import theme  from "../theme"
@@ -6,8 +5,6 @@ import { Outlet } from "react-router-dom"
 import { Suspense } from "react"
 import { CircularProgress } from "@mui/material"
 import classes from './Page.module.css'
-
-import * as React from 'react';
 
 const Page = function() {
     return (

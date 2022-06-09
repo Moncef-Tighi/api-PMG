@@ -8,6 +8,7 @@ import {Search} from '@mui/icons-material';
 import { InputAdornment } from "@mui/material";
 import AuthContext from "../state/AuthContext";
 import ListeArticlePlateforme from "../components/Articles/ListeArticlePlateforme";
+import { Tooltip } from '@mui/material';
 
 const Article = function(props) {
     const [query, setQuery] = useState("");
@@ -61,10 +62,18 @@ const Article = function(props) {
             <TabContext value={tab}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider', marginLeft: 6, marginRight: 6}}>
                 <TabList onChange={handleChange} aria-label="lab API tabs example">
-                <Tab label="Cegid" value="/article" sx={{fontSize: 20 }} /> 
-                <Tab label="Plateforme" value="/article/plateforme" sx={{fontSize: 20 }}/>    
-                <Tab label="PMG.dz" value="/article/pmg" sx={{fontSize: 20 }}/>   
-                <Tab label="Corbeille" value="/article/corbeille" sx={{fontSize: 20 }} /> 
+                <Tooltip title='Liste des articles extraite de CEGID' value="/article" arrow> 
+                    <Tab label="Cegid" value="/article" sx={{fontSize: 20 }} /> 
+                </Tooltip>
+                <Tooltip title='Liste des articles stockés sur la plateforme E-Commerce' value="/article/plateforme" arrow> 
+                    <Tab label="Plateforme" value="/article/plateforme" sx={{fontSize: 20 }}/>  
+                </Tooltip>  
+                <Tooltip title='Article en vente sur le size PMG.DZ' value="/article/pmg" arrow> 
+                    <Tab label="PMG.dz" value="/article/pmg" sx={{fontSize: 20 }}/>   
+                </Tooltip>
+                <Tooltip title='Corbeille de la plateforme E-Commerce' value="/article/corbeille" arrow> 
+                    <Tab label="Corbeille" value="/article/corbeille" sx={{fontSize: 20 }} /> 
+                </Tooltip>
                 </TabList>
             </Box>
             <TabPanel value="/article">
