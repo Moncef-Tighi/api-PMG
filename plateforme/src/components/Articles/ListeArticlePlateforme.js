@@ -91,24 +91,23 @@ const ListeArticlePlateforme = function(props) {
         {taille>0 && props.modification ? 
             <UpdateArticleButton taille={taille} deselectionHadeler={deselectionHadeler} openModal={openModal}>
                 {location==='/article/plateforme' ?
-                <><MenuItem disableRipple onClick={openModal}>
+                [<MenuItem disableRipple onClick={openModal} key='modif'>
                     <Edit/>
                     Modifier
-                </MenuItem>
-                <MenuItem disableRipple onClick={()=>corbeille(selection, false) }>
+                </MenuItem>,
+                <MenuItem disableRipple onClick={()=>corbeille(selection, false) }  key='corbeille'>
                     <DeleteIcon/>
                     Corbeille
-                </MenuItem>        
-                </> 
-                :<><MenuItem disableRipple onClick={()=>corbeille(selection, true) }>
+                </MenuItem>] 
+                :[<MenuItem disableRipple onClick={()=>corbeille(selection, true) } key='restore'>
                     <SettingsBackupRestoreIcon/>
                     Rétablir
-                </MenuItem>
-                <MenuItem disableRipple>
+                </MenuItem>,
+                <MenuItem disableRipple key='suppr'>
                     <CloseIcon/>
                     Supprimer
                 </MenuItem>        
-                </>}
+                ]}
             </UpdateArticleButton>
             : ""}
         {article.length===0 && !loading ? <div>Aucun article n'a été trouvé</div> : ""}
