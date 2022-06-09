@@ -73,7 +73,7 @@ const Article = function(props) {
                 <Tooltip title='Liste des articles stockés sur la plateforme E-Commerce' value="/article/plateforme" arrow> 
                     <Tab label="Plateforme" value="/article/plateforme" sx={{fontSize: 20 }}/>  
                 </Tooltip>  
-                <Tooltip title='Article en vente sur le size PMG.DZ' value="/article/pmg" arrow> 
+                <Tooltip title='Article en vente sur le site PMG.DZ' value="/article/pmg" arrow> 
                     <Tab label="PMG.dz" value="/article/pmg" sx={{fontSize: 20 }}/>   
                 </Tooltip>
                 </TabList>
