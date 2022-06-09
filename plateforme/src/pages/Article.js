@@ -27,6 +27,11 @@ const Article = function(props) {
 
     const [tab, setTab] = useState(useLocation().pathname || '/article');
 
+    //C'est un petit hack qui place la tab au bon endroit si on refresh dans la corbeille
+    //Ce hack est nécessaire parce qu'une tab ne peut pas avoir deux value
+    if (tab==='/article/plateforme/corbeille')  setTab('/article/plateforme')
+    
+    
     const handleChange = (event, newValue) => {
         setTab(newValue);
         navigate(newValue);
@@ -71,9 +76,6 @@ const Article = function(props) {
                 <Tooltip title='Article en vente sur le size PMG.DZ' value="/article/pmg" arrow> 
                     <Tab label="PMG.dz" value="/article/pmg" sx={{fontSize: 20 }}/>   
                 </Tooltip>
-                <Tooltip title='Corbeille de la plateforme E-Commerce' value="/article/corbeille" arrow> 
-                    <Tab label="Corbeille" value="/article/corbeille" sx={{fontSize: 20 }} /> 
-                </Tooltip>
                 </TabList>
             </Box>
             <TabPanel value="/article">
@@ -85,10 +87,6 @@ const Article = function(props) {
                 modification={authContext.permissions.some(permission => (permission === "admin" || permission=== "modification") ) } />
             </TabPanel>
             <TabPanel value="/article/pmg">Soon...</TabPanel>
-            <TabPanel value="/article/corbeille">
-                <ListeArticlePlateforme query={query} activé={true} sortBy={sortBy} 
-                modification={authContext.permissions.some(permission => (permission === "admin" || permission=== "modification") ) } />
-            </TabPanel>
             </TabContext>
 
 

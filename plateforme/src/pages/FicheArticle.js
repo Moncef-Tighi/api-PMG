@@ -68,6 +68,7 @@ const FicheArticle = function() {
                 {article.prixActuel ? <h2>Prix Actuel : {article.prixActuel } DA</h2> : ""}
                 <img style={{width:"300px", height:"300px", backgroundColor: "lightgrey"}} alt="illustration de l'article"></img>
             </div>
+            <TailleTable tailles={taille} stock={stock}/>
             <div>
                 <h3>Informations Article : </h3>
                 <ul>
@@ -91,8 +92,6 @@ const FicheArticle = function() {
                 </> : <h3>Aucun Tarif trouvé</h3>
                  }
             </div>
-
-                <TailleTable tailles={taille} stock={stock}/>
 
             </section>
         </>

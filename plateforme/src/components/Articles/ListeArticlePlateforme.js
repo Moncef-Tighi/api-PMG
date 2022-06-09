@@ -20,6 +20,9 @@ import { useLocation } from "react-router-dom";
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 import CloseIcon from '@mui/icons-material/Close';
 import axios from "axios";
+import { Button } from "@mui/material";
+import {Delete} from '@mui/icons-material';
+
 
 
 const emptyTable= {
@@ -33,10 +36,11 @@ const ListeArticlePlateforme = function(props) {
     
     const {url, handleChangePage,sortHandeler} = useTable(props.query);
     const authContext = useContext(AuthContext);
-    const active= props.activé ? "&activé=false" : ""
+    const location = useLocation().pathname
+    let activation = location==='/article/plateforme' ? false : true 
+    const active= activation ? "&activé=false" : ""
     const {data: tableData, loading, error} = useGet(`${API_PLATEFORME}/articles/liste?${url}${active}`, emptyTable, authContext.token);
     const article = tableData.body
-    const location = useLocation().pathname
     const [open, setModal] = useState(false);
     const closeModal= ()=> setModal(()=>false);
     const openModal= ()=> setModal(()=> true);
@@ -85,8 +89,15 @@ const ListeArticlePlateforme = function(props) {
     if (selection) var taille = Object.keys(selection).length
     else var taille = 0
     return (
-
         <>
+    {location==='/article/plateforme' ? 
+    <Button variant="outlined"startIcon={<Delete/>} sx={{marginBottom: 2}}>
+        <Link to={`corbeille`}>Corbeille Plateforme</Link>
+    </Button>
+    : 
+    <h1 style={{marginBottom: 4}}> <Link to={"/article/plateforme"}>Plateforme</Link> > Corbeille Plateforme</h1>
+    }  
+        
         {error ? <aside className={classes.error}>{error}</aside>: "" }
         {taille>0 && props.modification ? 
             <UpdateArticleButton taille={taille} deselectionHadeler={deselectionHadeler} openModal={openModal}>

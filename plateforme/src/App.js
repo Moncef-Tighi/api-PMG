@@ -38,8 +38,8 @@ function App() {
           <Route element={<Restrict permissions={permissions} allow={["modification", "admin", "community"]}/>}>
             <Route path='/article' element={<Article />}/>
             <Route path='/article/plateforme' element={<Article />}/>
+            <Route path='/article/plateforme/corbeille' element={<Article />}/>
             <Route path='/article/pmg' element={<Article />}/>
-            <Route path='/article/corbeille' element={<Article />}/>
             <Route path='/article/:code_article' element={<FicheArticle/>}/>
           </Route>
           <Route path='/commande' element={<Commande />}/>

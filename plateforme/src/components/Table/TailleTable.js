@@ -11,7 +11,9 @@ import { DepotTable } from '../Articles/DepotTable';
 
 const TailleTable = function({tailles, stock}) {
     //Tableau utilisé dans la fiche Article
-    return ( <>
+    return ( <div style={{gridRow: "span 2"}}>
+
+        <h1>Taille et Dépot</h1>
         <TableContainer component={Paper} sx={{width: "100%",marginTop: "30px", fontSize: "2em"}}>
         <Table>
         <TableHead>
@@ -29,7 +31,7 @@ const TailleTable = function({tailles, stock}) {
         </TableBody>
         </Table>
         </TableContainer>
-        </>
+        </div>
     )
 }
 
