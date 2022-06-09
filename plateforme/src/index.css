@@ -220,3 +220,34 @@ a {
   text-decoration: underline;
   color: var(--main-accent);
 }
+
+
+
+
+/* MODIFICATION SCROLLBAR  */
+
+
+::-webkit-scrollbar {
+  width: 15px;
+  height: 2px;
+  background-color: white;
+}
+
+::-webkit-scrollbar-thumb {
+  height: 1px;
+  border: 4px solid rgba(0, 0, 0, 0);
+  background-clip: padding-box;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 7px;
+  -webkit-border-radius: 7px;
+}
+
+::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+::-webkit-scrollbar-corner {
+  background-color: white;
+}
