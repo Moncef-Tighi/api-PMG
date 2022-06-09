@@ -51,7 +51,6 @@ const ListeArticlePlateforme = function(props) {
 
     const corbeille = async function(selection, status) {
         try {   
-            console.log(authContext.permissions);
             await axios.patch(`${API_PLATEFORME}/articles/corbeille`, {
                 code_article : Object.keys(selection),
                 status,

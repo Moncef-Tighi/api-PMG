@@ -1,7 +1,6 @@
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useContext, useEffect, useState } from 'react';
 import classes from './Header.module.css';
-import icon from './pmg-icon.svg'
 import AuthContext from '../../state/AuthContext';
 import { IconButton } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
@@ -10,6 +9,7 @@ import React from 'react';
 import { Button, Drawer } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import { Tooltip } from '@mui/material';
 
 const Header = function() {
     const [nom, setNom] = useState(null)
@@ -42,7 +42,9 @@ const Header = function() {
             <div>
                 
                 <React.Fragment key={"left"}>
-                <Button onClick={toggleDrawer(true)}><MenuIcon sx={{fontSize : "2.5em", marginRight: "10px"}}/></Button>
+                <Tooltip title="Menu de navigation" arrow>
+                    <Button onClick={toggleDrawer(true)}><MenuIcon sx={{fontSize : "2.5em", marginRight: "10px"}}/></Button>
+                    </Tooltip>
                 <Drawer
                     anchor={"left"}
                     open={menu}
@@ -58,11 +60,18 @@ const Header = function() {
 
             <div>
             <div className={classes.name}>
-            <Link to='/me'><h2>{nom} {prenom}</h2></Link>
+            <Link to='/me'>
+            <h2>{nom} {prenom}</h2>
+            </Link>
                 <h4>{poste}</h4>
             </div>
+            <Tooltip title="Afficher les notifications" arrow>
             <NotificationsIcon sx={{color: "grey", fontSize: '1.6em', marginRight: '8px'}}/>
-            <IconButton onClick={logoutHandeler}><LogoutIcon sx={{fontSize: '1.3em'}}/></IconButton>
+            </Tooltip>
+
+            <Tooltip title="Déconnexion" arrow>
+                <IconButton onClick={logoutHandeler}><LogoutIcon sx={{fontSize: '1.3em'}}/></IconButton>
+            </Tooltip>
             </div>
         </header>
     )
