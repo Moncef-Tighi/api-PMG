@@ -91,9 +91,9 @@ const ListeArticlePlateforme = function(props) {
     return (
         <>
     {location==='/article/plateforme' ? 
-    <Button variant="outlined"startIcon={<Delete/>} sx={{marginBottom: 2}}>
-        <Link to={`corbeille`}>Corbeille Plateforme</Link>
-    </Button>
+    <Link to={`corbeille`}><Button variant="outlined"startIcon={<Delete/>} sx={{marginBottom: 2}}>
+        Corbeille Plateforme
+    </Button></Link>
     : 
     <h1 style={{marginBottom: 4}}> <Link to={"/article/plateforme"}>Plateforme</Link> > Corbeille Plateforme</h1>
     }  
