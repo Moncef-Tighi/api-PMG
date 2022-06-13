@@ -480,7 +480,7 @@
 							"left": 1056,
 							"top": 88,
 							"width": 488,
-							"height": 753,
+							"height": 1241,
 							"nameCompartment": {
 								"$ref": "AAAAAAGBV4ZdbFrNHPo="
 							}
@@ -581,7 +581,7 @@
 							"left": 272,
 							"top": 80,
 							"width": 448,
-							"height": 776,
+							"height": 1297,
 							"nameCompartment": {
 								"$ref": "AAAAAAGBV4awflrpja8="
 							}
@@ -1993,7 +1993,7 @@
 							"top": 200,
 							"width": 209,
 							"height": 33,
-							"text": "Contenu Bordereaux : "
+							"text": "Contenu Bordereaux"
 						},
 						{
 							"_type": "UMLNoteLinkView",
@@ -3508,7 +3508,7 @@
 							},
 							"font": "Arial;13;0",
 							"lineStyle": 1,
-							"points": "24:664;1643:669"
+							"points": "272:664;1544:669"
 						},
 						{
 							"_type": "UMLTextBoxView",
@@ -3517,7 +3517,7 @@
 								"$ref": "AAAAAAGBV4Xqi1pyHgE="
 							},
 							"font": "Arial;20;0",
-							"left": 776,
+							"left": 792,
 							"top": 648,
 							"width": 193,
 							"height": 38,

@@ -138,7 +138,7 @@
 													"top": 47,
 													"width": 87.27001953125,
 													"height": 13,
-													"text": "API PMG.DZ"
+													"text": "PMG.DZ"
 												},
 												{
 													"_type": "LabelView",
@@ -5835,7 +5835,7 @@
 							"_parent": {
 								"$ref": "AAAAAAF/k7YabyDQ9v0="
 							},
-							"name": "API PMG.DZ",
+							"name": "PMG.DZ",
 							"represent": {
 								"$ref": "AAAAAAF/k7Z03CEAHFk="
 							},
@@ -5968,8 +5968,7 @@
 					"_parent": {
 						"$ref": "AAAAAAF/k7YabyDPeTc="
 					},
-					"name": "Role2",
-					"type": ""
+					"name": "Role2"
 				},
 				{
 					"_type": "UMLAttribute",
