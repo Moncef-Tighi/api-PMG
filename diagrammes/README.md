@@ -1,8 +1,11 @@
 ## UML
 
-Les diagrammes suivent le standard UML, il vaut mieux avoir une idée sur comment UML fonctionne pour pouvoir les lire.
+Les diagrammes suivent le standard UML, il vaut mieux avoir une idée sur comment UML fonctionne pour mieux les comprendre.
 
 ## Ouvrir les diagrammes ci-dessus
 
-Certains diagramme sont de simples images normales, mais pour le modifier j'ai également inclut des fichiers .mdj qui peuvent
-être ouvert et édité avec le programme "StarUML"
+Les diagammes sont sous deux formats : des images normales (jpg) et pour les modifier j'ai également inclut des fichiers .mdj qui peuvent
+être ouvert et modifié avec le programme "StarUML"
+
+Attention ! Si vous ouvrez les fichiers .mdj avec StarUML vous aurez initialement une page vide. Pour voir le diagramme il faut le chercher
+Dans le menu à droite (Model Explorer)
