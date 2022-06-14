@@ -2710,8 +2710,8 @@
 										"$ref": "AAAAAAGBXCLPW6EkwHI="
 									},
 									"font": "Arial;15;0",
-									"left": 2064,
-									"top": 704,
+									"left": 2072,
+									"top": 680,
 									"width": 225,
 									"height": 129,
 									"text": "L'Agent E-Commerce va appeler le client une ou deux fois par jour pendant 3 ou 4 jours avant d'annuler.\n\n\n\nSi la commande est importante l'Agent essayera plus longtemps"
@@ -11004,7 +11004,8 @@
 					"_parent": {
 						"$ref": "AAAAAAGBXCLPWqEizB4="
 					},
-					"name": "Role1"
+					"name": "Role1",
+					"type": ""
 				},
 				{
 					"_type": "UMLAttribute",
@@ -11043,7 +11044,8 @@
 					"_parent": {
 						"$ref": "AAAAAAGBXCLPWqEizB4="
 					},
-					"name": "Role5"
+					"name": "Role5",
+					"type": ""
 				},
 				{
 					"_type": "UMLAttribute",
@@ -11051,7 +11053,8 @@
 					"_parent": {
 						"$ref": "AAAAAAGBXCLPWqEizB4="
 					},
-					"name": "Role6"
+					"name": "Role6",
+					"type": ""
 				},
 				{
 					"_type": "UMLAttribute",
@@ -11059,7 +11062,8 @@
 					"_parent": {
 						"$ref": "AAAAAAGBXCLPWqEizB4="
 					},
-					"name": "Role7"
+					"name": "Role7",
+					"type": ""
 				}
 			]
 		},

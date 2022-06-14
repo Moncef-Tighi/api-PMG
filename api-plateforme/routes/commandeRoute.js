@@ -6,11 +6,11 @@ const router = express.Router();
 
 
 router.use(protect);
-    router.get('/', controllers.listeArticle);
-    router.post('/create', controllers.ventesArticle);
-    router.put('/update', controllers.articleEtat);
-    router.patch('/disable', controllers.ventesArticle);
-    router.patch('/status', controllers.ventesArticle);
-    router.get('/:id', controllers.unArticle);
+    router.get('/', controllers.listeCommandes);
+    router.post('/create', controllers.createCommande);
+    router.p0ut('/update', controllers.updateCommande);
+    router.patch('/status', controllers.updateCommandeStatus);
+    router.patch('/disable', controllers.disableCommande);
+    router.get('/:id', controllers.oneCommande);
     
 export default router;
