@@ -1983,8 +1983,7 @@
 							"tail": {
 								"$ref": "AAAAAAGBXKEPTjYMuLM="
 							},
-							"lineStyle": 1,
-							"points": "1231:636;1232:671"
+							"points": "1231:636;1231:672"
 						},
 						{
 							"_type": "UMLFinalStateView",
