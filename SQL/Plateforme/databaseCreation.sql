@@ -6,7 +6,7 @@ CREATE TABLE employee (
     prenom VARCHAR(25),
     poste VARCHAR(25),
     active BOOLEAN DEFAULT true,
-	date_creation TIMESTAMP NOT NULL
+	date_creation TIMESTAMP DEFAULT now()
 );
 
 CREATE TABLE roles (
@@ -33,14 +33,14 @@ CREATE TABLE historique_actions (
     categorie text,
     --Type : Création, supression, modification...
     type text,
-    date_creation TIMESTAMP NOT NULL,
+    date_creation TIMESTAMP DEFAULT now(),
     description text,
     CONSTRAINT fk_employe FOREIGN KEY (id_employe) REFERENCES employee(id_employe)
 );
 
 CREATE TABLE article (
     code_article VARCHAR(50) PRIMARY KEY,
-    date_ajout TIMESTAMP NOT NULL,
+    date_ajout TIMESTAMP DEFAULT now(),
     date_modification TIMESTAMP,
     prix_initial REAl NOT NULL,
     prix_vente REAL NOT NULL,
@@ -50,7 +50,6 @@ CREATE TABLE article (
     division VARCHAR(25),
     silhouette VARCHAR(25),
     description TEXT,
-    id_article_WooCommerce INT,
     activé BOOLEAN DEFAULT true
 );
 
@@ -87,12 +86,12 @@ CREATE TABLE wilaya (
 
 CREATE TABLE daira (
     numero_daira INT PRIMARY KEY,
-    nom_daira VARCHAR(50),
+    nom_daira VARCHAR(50)
 )
 
 CREATE TABLE baladia (
     numero_baladia INT PRIMARY KEY,
-    nom_baladia VARCHAR(50),
+    nom_baladia VARCHAR(50)
 )
 
 CREATE TABLE commande_attribution (
@@ -122,13 +121,13 @@ CREATE TABLE status_commande (
     id_status INT NOT NULL,
     commentaire TEXT,
     status_date TIMESTAMP DEFAULT now(),
-    CONSTRAINT fk_commande FOREIGN KEY (commande_id) REFERENCES commande(commande_id)
+    CONSTRAINT fk_commande FOREIGN KEY (commande_id) REFERENCES commande(commande_id),
     CONSTRAINT fk_status FOREIGN KEY (id_status) REFERENCES liste_status_commande(id_status)
 )
 
 CREATE TABLE liste_status_commande(
     id_status SERIAL PRIMARY KEY,
-    status VARCHAR(50) NOT NULL,
+    status VARCHAR(50) NOT NULL
 )
 
 CREATE TABLE livraison(
@@ -138,14 +137,14 @@ CREATE TABLE livraison(
     date_debut TIMESTAMP DEFAULT now(),
     date_fin TIMESTAMP,
     frais_livraison REAl,
-    CONSTRAINT fk_commande FOREIGN KEY (commande_id) REFERENCES commande(commande_id)
+    CONSTRAINT fk_commande FOREIGN KEY (commande_id) REFERENCES commande(commande_id),
     CONSTRAINT fk_prestataire FOREIGN KEY (id_prestataire) REFERENCES prestataires(id_prestataire)
 )
 
 CREATE TABLE prestataire (
     id_prestataire SERIAL PRIMARY KEY,
     nom_prestataire VARCHAR(50) NOT NULL,
-    url_api TEXT NOT NULL,
+    url_api TEXT NOT NULL
 )
 
 CREATE TABLE ramassage(
@@ -155,18 +154,25 @@ CREATE TABLE ramassage(
     confirmation_magasin BOOLEAN DEFAULT false,
     date_demande_ramassage TIMESTAMP DEFAULT now(),
     date_confirmation_magasin TIMESTAMP,
-    date_confirmation_prestataire TIMESTAMP,
+    date_confirmation_prestataire TIMESTAMP
 )
 
 CREATE TABLE article_commande (
-    commande_id INT NOT NULL
+    commande_id INT NOT NULL,
     code_barre VARCHAR(255),
     quantite INT NOT NULL,
     prix_vente REAL NOT NULL,
     id_lieu_ramassage INT,
-    CONSTRAINT fk_commande FOREIGN KEY (commande_id) REFERENCES commande(commande_id)
-    CONSTRAINT fk_code_barre FOREIGN KEY (code_barre) REFERENCES article(code_barre)
+    CONSTRAINT fk_commande FOREIGN KEY (commande_id) REFERENCES commande(commande_id),
+    CONSTRAINT fk_code_barre FOREIGN KEY (code_barre) REFERENCES article(code_barre),
     CONSTRAINT fk_lieu_ramassage FOREIGN KEY (id_lieu_ramassage) REFERENCES ramassage(id_lieu_ramassage)
 )
 
 CREATE INDEX index_date_ajout ON article(date_ajout) WHERE activé IS TRUE;
+CREATE INDEX index_categorie ON article(marque,gender,division,silhouette);
+CREATE INDEX index_taille_code_barre ON article_taille(code_barre, dimension);
+CREATE INDEX index_taille_stock ON article_taille(stock_dimension);
+CREATE INDEX index_commande_date_debut ON commande(date_debut);
+CREATE INDEX index_commande_code_barre ON article_commande(code_barre);
+
+
