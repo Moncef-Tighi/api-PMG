@@ -16,6 +16,7 @@ import authenticationRouter from './authenticationRoute.js';
 import roleRouter from "./roleRoute.js";
 import articleRouter from './articleRoute.js';
 import wooCommerceRouter from './wooCommerceRoute.js'
+import commandeRouter from './commandeRoute.js';
 
 const router = express.Router();
 
@@ -46,5 +47,6 @@ router.use('/roles', roleRouter);
 router.use('/articles', articleRouter);
 router.use('/connexion', authenticationRouter);
 router.use('/woocommerce', wooCommerceRouter);
+router.use('/commande', commandeRouter);
 
 export default router

@@ -4,8 +4,5 @@ import QueryPostGre from "../util/query.js";
 
 
 const createCommande = function() {
-    const sql= `
-        INSERT INTO commande
-    `
 
 }
