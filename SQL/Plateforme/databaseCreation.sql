@@ -24,14 +24,9 @@ CREATE TABLE permissions (
 
 CREATE TABLE historique_actions (
 	id_action SERIAL PRIMARY KEY,
-    --id_employe : l'employé ayant effectué l'action.
     id_employe INT NOT NULL,
-    --Action_sur : ID de l'objet affecté par l'action.
-    --On peut join en utilisant la catégorie pour savoir à quel table l'objet affecté appartient
     action_sur text NOT NULL,
-    --Catégorie : Employé, Commande, Permissions...
     categorie text,
-    --Type : Création, supression, modification...
     type text,
     date_creation TIMESTAMP DEFAULT now(),
     description text,
@@ -65,6 +60,7 @@ CREATE TABLE article_taille (
 
 CREATE TABLE commande (
     commande_id SERIAL PRIMARY KEY,
+    id_prestataire INT NOT NULL,
     nom_client VARCHAR(100) NOT NULL,
     prenom_client VARCHAR(100) NOT NULL,
     numero_client VARCHAR(100) NOT NULL,
@@ -76,7 +72,8 @@ CREATE TABLE commande (
     numero_baladia INT NOT NULL,
     adresse TEXT,
     provenance VARCHAR(50),
-    active BOOLEAN DEFAULT true
+    active BOOLEAN DEFAULT true,
+    CONSTRAINT fk_prestataire FOREIGN KEY (id_prestataire) REFERENCES prestataires(id_prestataire)
 )
 
 CREATE TABLE wilaya (
@@ -133,12 +130,10 @@ CREATE TABLE liste_status_commande(
 CREATE TABLE livraison(
     id_livraison SERIAL PRIMARY KEY,
     id_commande INT NOT NULL,
-    id_prestataire INT NOT NULL,
     date_debut TIMESTAMP DEFAULT now(),
     date_fin TIMESTAMP,
     frais_livraison REAl,
-    CONSTRAINT fk_commande FOREIGN KEY (commande_id) REFERENCES commande(commande_id),
-    CONSTRAINT fk_prestataire FOREIGN KEY (id_prestataire) REFERENCES prestataires(id_prestataire)
+    CONSTRAINT fk_commande FOREIGN KEY (commande_id) REFERENCES commande(commande_id)
 )
 
 CREATE TABLE prestataire (
@@ -167,6 +162,9 @@ CREATE TABLE article_commande (
     CONSTRAINT fk_code_barre FOREIGN KEY (code_barre) REFERENCES article(code_barre),
     CONSTRAINT fk_lieu_ramassage FOREIGN KEY (id_lieu_ramassage) REFERENCES ramassage(id_lieu_ramassage)
 )
+
+
+
 
 CREATE INDEX index_date_ajout ON article(date_ajout) WHERE activé IS TRUE;
 CREATE INDEX index_categorie ON article(marque,gender,division,silhouette);
