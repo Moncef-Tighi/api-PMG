@@ -160,7 +160,7 @@
 											"top": 279,
 											"width": 126.42626953125,
 											"height": 13,
-											"text": "Nouvelle commande"
+											"text": "Commande reçu"
 										},
 										{
 											"_type": "LabelView",
@@ -640,11 +640,11 @@
 								"$ref": "AAAAAAGBXJs8lTQIlpA="
 							},
 							"font": "Arial;13;0",
-							"left": 800,
-							"top": 248,
-							"width": 100,
-							"height": 90,
-							"text": "On signale au client que sa commande n'est pas valide"
+							"left": 704,
+							"top": 232,
+							"width": 129,
+							"height": 105,
+							"text": "On signale au client que sa commande n'est pas valide\nOn ne la stock pas tant qu'elle n'est pas valide"
 						},
 						{
 							"_type": "UMLNoteLinkView",
@@ -660,7 +660,7 @@
 								"$ref": "AAAAAAGBXJzX2DS7YGo="
 							},
 							"lineStyle": 1,
-							"points": "968:284;900:289"
+							"points": "968:284;833:284"
 						},
 						{
 							"_type": "UMLStateView",
@@ -705,7 +705,7 @@
 											"top": 439,
 											"width": 161.05908203125,
 											"height": 13,
-											"text": "Commande Non-Attribuée"
+											"text": "Nouvelle commande"
 										},
 										{
 											"_type": "LabelView",
@@ -2793,7 +2793,7 @@
 								"$ref": "AAAAAAGBXKTxYjb6gCM="
 							},
 							"lineStyle": 1,
-							"points": "816:952;885:813"
+							"points": "816:952;846:896;885:813"
 						},
 						{
 							"_type": "UMLStateView",
@@ -4247,7 +4247,7 @@
 									"visible": null,
 									"font": "Arial;13;0",
 									"left": 1138,
-									"top": 931,
+									"top": 932,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 30,
@@ -4285,8 +4285,7 @@
 							"tail": {
 								"$ref": "AAAAAAGBXKL20zZDbh0="
 							},
-							"lineStyle": 1,
-							"points": "1109:912;1110:967",
+							"points": "1109:911;1109:968",
 							"showVisibility": true,
 							"nameLabel": {
 								"$ref": "AAAAAAGBXK+2mDjgl9o="
@@ -6570,8 +6569,8 @@
 								"$ref": "AAAAAAGBXJs8lTQIlpA="
 							},
 							"font": "Arial;13;0",
-							"left": 1296,
-							"top": 1744,
+							"left": 1248,
+							"top": 1752,
 							"width": 185,
 							"height": 64,
 							"text": "Se produit généralement si le prestataire de livraison n'a pas réussi à contacter le client"
@@ -6590,7 +6589,7 @@
 								"$ref": "AAAAAAGBXLkE0Tt/y0E="
 							},
 							"lineStyle": 1,
-							"points": "1181:1857;1305:1808"
+							"points": "1181:1857;1269:1816"
 						},
 						{
 							"_type": "UMLFinalStateView",
@@ -7138,6 +7137,19 @@
 							"propertyLabel": {
 								"$ref": "AAAAAAGBXL1+ojxciG4="
 							}
+						},
+						{
+							"_type": "UMLNoteView",
+							"_id": "AAAAAAGBYUfqireCxew=",
+							"_parent": {
+								"$ref": "AAAAAAGBXJs8lTQIlpA="
+							},
+							"font": "Arial;15;0",
+							"left": 440,
+							"top": 1008,
+							"width": 209,
+							"height": 136,
+							"text": "Chez le prestataire il y a trois types de commande : \nLivraison, Ramassage et échange\nça veut dire qu'il faut envoyer l'adresse de ramassage avant le bordereaux"
 						}
 					]
 				}
@@ -7164,7 +7176,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGBXJs8lDQHsKs="
 							},
-							"name": "Nouvelle commande"
+							"name": "Commande reçu"
 						},
 						{
 							"_type": "UMLPseudostate",
@@ -7181,7 +7193,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGBXJs8lDQHsKs="
 							},
-							"name": "Commande Non-Attribuée"
+							"name": "Nouvelle commande"
 						},
 						{
 							"_type": "UMLState",
