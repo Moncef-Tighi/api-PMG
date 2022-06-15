@@ -1,6 +1,6 @@
 import express from "express";
 import {protect, restrict} from '../controllers/authenticationController.js';
-import * as controllers from '../controllers/commandeController';
+import * as controllers from '../controllers/commandeController.js';
 
 const router = express.Router();
 
