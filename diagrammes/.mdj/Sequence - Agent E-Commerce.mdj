@@ -12,15 +12,6 @@
 			"name": "Model",
 			"ownedElements": [
 				{
-					"_type": "UMLClassDiagram",
-					"_id": "AAAAAAFF+qBtyKM79qY=",
-					"_parent": {
-						"$ref": "AAAAAAFF+qBWK6M3Z8Y="
-					},
-					"name": "Main",
-					"defaultDiagram": true
-				},
-				{
 					"_type": "UMLCollaboration",
 					"_id": "AAAAAAF/2emxUL78/Fo=",
 					"_parent": {
