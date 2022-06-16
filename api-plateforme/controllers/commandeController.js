@@ -35,6 +35,8 @@ export const createCommande = catchAsync( async function(request, response, next
 
     const createdCommande = await model.createCommande(commande);
     
+    if (!createdCommande) return next(createError(409, "Duplication : Cette commande existe déjà"))
+
     return response.status(201).json({
         status: "ok",
         commande : createdCommande
