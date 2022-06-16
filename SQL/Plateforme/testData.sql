@@ -56,18 +56,22 @@ VALUES
 
 -- Les status d'une commande sont statiques
 
-INSERT INTO liste_status_commande(status)
+INSERT INTO liste_status_commande(id_status, status)
 VALUES
 
-('Annulée'),
-('Reçu'),
-('Nouvelle Commande'),
-('Attribuée à employé'),
-('Confimée'),
-('En Attente des magasins'),
-('En cours de packaging'),
-('En cours de ramassage'),
-('En cours de livraison'),
-('Echange'),
-('Réussie'),
-('Echouée');
+(1,'Annulée'),
+(2,'Reçu'),
+(3,'Nouvelle Commande'),
+(4,'Attribuée à employé'),
+(5,'Confimée'),
+(6,'En Attente des magasins'),
+(7,'En cours de packaging'),
+(8,'En cours de ramassage'),
+(9,'En cours de livraison'),
+(10,'Echange'),
+(11,'Réussie'),
+(12,'Echouée');
+
+INSERT INTO prestataire(id_prestataire, nom_prestataire, url_api)
+VALUES
+(1, 'yalidine', 'https://www.yalidine.com/api/v1');

@@ -5,7 +5,7 @@ import * as controllers from '../controllers/commandeController.js';
 const router = express.Router();
 
 
-router.use(protect);
+// router.use(protect);
     router.get('/', controllers.listeCommandes);
     router.post('/create', controllers.createCommande);
     router.put('/update', controllers.updateCommande);

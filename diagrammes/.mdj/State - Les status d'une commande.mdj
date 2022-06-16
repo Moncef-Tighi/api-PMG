@@ -2118,7 +2118,7 @@
 											"top": 879,
 											"width": 225.39892578125,
 											"height": 13,
-											"text": "Commande attribuée aux magasins"
+											"text": "Commande en attente des magasins"
 										},
 										{
 											"_type": "LabelView",
@@ -7461,7 +7461,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGBXJs8lDQHsKs="
 							},
-							"name": "Commande attribuée aux magasins"
+							"name": "Commande en attente des magasins"
 						},
 						{
 							"_type": "UMLState",
