@@ -1,5 +1,6 @@
 import { catchAsync } from './errorController.js';
 import * as model from '../models/commande.js';
+import * as contenu from '../models/contenu_commande.js';
 import createError from 'http-errors';
 import apiWooCommerce from "../models/api.js";
 
@@ -24,9 +25,10 @@ export const oneCommande = catchAsync( async function(request, response, next) {
 
 export const createCommande = catchAsync( async function(request, response, next) {
     const commande = request.body.commande
-    const contenu = request.body.contenu_commande;
+    const contenu_commande = request.body.contenu_commande;
+
     if (!commande) return next(createError(400, 'Impossible de trouver la commande'))
-    if (!contenu || contenu.construction!== Array) return next(createError(400, "Le contenu de la commande est invalide"))
+    if (!contenu_commande || contenu_commande.constructor!== Array) return next(createError(400, "Le contenu de la commande est invalide"))
     if (!commande.adresse || !commande.numero_client ||
         !commande.email_client || !commande.numero_commune ||
         !commande.nom_client || !commande.prenom_client)
@@ -37,13 +39,27 @@ export const createCommande = catchAsync( async function(request, response, next
 
     const createdCommande = await model.createCommande(commande);
     
-    
     if (!createdCommande) return next(createError(409, "La création de la commande a échouée"))
 
-    return response.status(201).json({
-        status: "ok",
-        commande : createdCommande
-    });
+    try {
+        const createdContenu = contenu_commande.map(async (article)=> {
+            console.log(article);
+            if (!article.code_barre || !article.quantité || article.quantité<1 || !article.prix_vente || article.prix_vente<1) throw Error("Un article dans la commande est invalide")
+            const result = await contenu.addArticleToCommand(createdCommande.id_commande,article.code_barre, article.quantité, article.prix_vente)
+            console.log(result);
+            return result;
+        })
+
+        return response.status(201).json({
+            status: "ok",
+            commande : createdCommande,
+            contenu_commande : createdContenu
+        });
+    } catch(error) {
+        return next(createError(400, "Le c"))
+    }
+
+
 });
 
 

@@ -1,13 +1,13 @@
-import { catchAsync } from './errorController.js';
-import * as model from '../models/commande.js';
-import createError from 'http-errors';
-import apiWooCommerce from "../models/api.js";
+import db from "./postGreSql.js";
 
+export const addArticleToCommand = async function({id_commande, code_barre, quantité, prix_vente}) {
+    const sql= `
+    INSERT INTO article_commande(id_commande, code_barre, quantité, prix_vente)
+    VALUES ($1,$2,$3,$4)
+    RETURNING *
+    `
 
-export const oneCommande = catchAsync( async function(request, response, next) {
-
-
-    return response.status(200).json({
-        status: "ok",
-    });
-});
+    const values = [id_commande, code_barre, quantité, prix_vente];
+    const response = await db.query(sql, values)
+    return response.rows[0];
+}
