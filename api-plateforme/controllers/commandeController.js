@@ -24,7 +24,9 @@ export const oneCommande = catchAsync( async function(request, response, next) {
 
 export const createCommande = catchAsync( async function(request, response, next) {
     const commande = request.body.commande
+    const contenu = request.body.contenu_commande;
     if (!commande) return next(createError(400, 'Impossible de trouver la commande'))
+    if (!contenu || contenu.construction!== Array) return next(createError(400, "Le contenu de la commande est invalide"))
     if (!commande.adresse || !commande.numero_client ||
         !commande.email_client || !commande.numero_commune ||
         !commande.nom_client || !commande.prenom_client)
@@ -35,7 +37,8 @@ export const createCommande = catchAsync( async function(request, response, next
 
     const createdCommande = await model.createCommande(commande);
     
-    if (!createdCommande) return next(createError(409, "Duplication : Cette commande existe déjà"))
+    
+    if (!createdCommande) return next(createError(409, "La création de la commande a échouée"))
 
     return response.status(201).json({
         status: "ok",
