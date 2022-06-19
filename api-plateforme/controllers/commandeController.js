@@ -1,10 +1,10 @@
 import { catchAsync } from './errorController.js';
 import * as model from '../models/commande.js';
 import * as contenu from '../models/contenu_commande.js';
+import * as articles from '../models/article.js';
 import createError from 'http-errors';
 import apiWooCommerce from "../models/api.js";
 import axios from 'axios';
-
 
 export const listeCommandes = catchAsync( async function(request, response, next) {
 
@@ -45,8 +45,9 @@ export const createCommande = catchAsync( async function(request, response, next
     if (stock.data.body.articles.length != code_barres.length) return next(createError(400, "Un des articles demandé n'existe pas"));
     try {
         stock.data.body.articles.forEach(art=> {
-            if(art.stockNet<process.env.MINSTOCK) throw `La taille demandé pour ${art.GA_CODEARTICLE} n'est plus disponible`
+            if(art.stockNet<=process.env.MINSTOCK) throw `La taille demandé pour ${art.GA_CODEARTICLE} n'est plus disponible`
             const quantite = contenu_commande.find(content => content.code_barre === art.GA_CODEBARRE).quantité
+            if (!quantite || quantite<1) throw `La quantité demandé pour l'article ${art.GA_CODEARTICLE}  n'a pas été trouvé`
             if(art.stockNet - quantite<0) throw `Il y a moins de ${quantite} pièces disponible pour l'article ${art.GA_CODEARTICLE}`
         })
     } catch(error) {
@@ -56,23 +57,26 @@ export const createCommande = catchAsync( async function(request, response, next
     
     if (!createdCommande) return next(createError(409, "La création de la commande a échouée"))
 
+    //Avant de vraiment valider l'article, il faut obtenir le prix. On ne peut pas demander le prix en paramètre
+    //Parce que sinon n'importe qui pourrait demander un prix incorrect en modification la requête.
+    //Vu que tout les articles ne sont pas sur la plateforme, on commence par chercher l'article sur la plateforme
+    //Si il n'existe pas sur la plateforme on cherche le prix sur CEGID
+    let prices = [];
+    const codes_articles= stock.data.body.articles.map(art=> art.GA_CODEARTICLE);
+    console.log(codes_articles);
+    const articlesPlateforme = await articles.readArticles(codes_articles)
+    console.log(articlesPlateforme)
 
-    try {
-        const createdContenu = contenu_commande.map(async (article)=> {
-            if (!article.code_barre || !article.quantité || article.quantité<1) throw Error("Un article dans la commande est invalide")
-            const result = await contenu.addArticleToCommand(createdCommande.id_commande,article.code_barre, article.quantité, article.prix_vente)
-            return result;
-        })
+    const createdContenu = contenu_commande.map(async (article)=> {
+        const result = await contenu.addArticleToCommand(createdCommande.id_commande,article.code_barre, article.quantité, article.prix_vente)
+        return result;
+    })
 
-        return response.status(201).json({
-            status: "ok",
-            commande : createdCommande,
-            contenu_commande : createdContenu
-        });
-    } catch(error) {
-        return next(createError(400, "La sauvgarde du contenu de la commande a échouée"))
-    }
-
+    return response.status(201).json({
+        status: "ok",
+        commande : createdCommande,
+        contenu_commande : createdContenu
+    });
 
 });
 
