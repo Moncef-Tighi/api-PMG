@@ -161,13 +161,11 @@ CREATE TABLE ramassage(
 
 CREATE TABLE article_commande (
     id_commande INT NOT NULL,
-    code_barre VARCHAR(255),
+    code_barre VARCHAR(255) REFERENCES article_taille(code_barre),
     quantite INT NOT NULL,
     prix_vente REAL NOT NULL,
-    id_lieu_ramassage INT,
-    CONSTRAINT fk_commande FOREIGN KEY (id_commande) REFERENCES commande(id_commande),
-    CONSTRAINT fk_code_barre FOREIGN KEY (code_barre) REFERENCES article_taille(code_barre),
-    CONSTRAINT fk_lieu_ramassage FOREIGN KEY (id_lieu_ramassage) REFERENCES ramassage(id_lieu_ramassage)
+    id_lieu_ramassage INT REFERENCES ramassage(id_lieu_ramassage),
+    CONSTRAINT fk_commande FOREIGN KEY (id_commande) REFERENCES commande(id_commande)
 );
 
 

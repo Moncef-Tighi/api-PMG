@@ -54,21 +54,34 @@ export const createCommande = catchAsync( async function(request, response, next
         return next(createError(400, error))
     }
     const createdCommande = await model.createCommande(commande);
-    
     if (!createdCommande) return next(createError(409, "La création de la commande a échouée"))
 
     //Avant de vraiment valider l'article, il faut obtenir le prix. On ne peut pas demander le prix en paramètre
     //Parce que sinon n'importe qui pourrait demander un prix incorrect en modification la requête.
     //Vu que tout les articles ne sont pas sur la plateforme, on commence par chercher l'article sur la plateforme
     //Si il n'existe pas sur la plateforme on cherche le prix sur CEGID
-    let prices = [];
+
     const codes_articles= stock.data.body.articles.map(art=> art.GA_CODEARTICLE);
-    console.log(codes_articles);
     const articlesPlateforme = await articles.readArticles(codes_articles)
-    console.log(articlesPlateforme)
+    const articlesHorsPlateforme = codes_articles.filter(art=> !articlesPlateforme.some(article=> article.code_article===art))
+    //Attention ! l'API Cegid ne gère pas les prix par code_barre, juste les prix par code article. Donc l'output ne rends pas le code barre
+    let articlesCegid = await axios.post(`${process.env.API_CEGID}/tarifs`, {articles : articlesHorsPlateforme});
+    articlesCegid = articlesCegid.data.body.articles
+    let prices = [];
+    console.log(articlesPlateforme);
+    articlesPlateforme.forEach(article=> prices.push({code_article : article.code_article, prix : article.prix_vente}))
+    Object.keys(articlesCegid).forEach(code_article=> prices.push({code_article, prix : articlesCegid[code_article].prixActuel}))
+
+    //À partir de maintenant on a les prix dans "prices"
+
 
     const createdContenu = contenu_commande.map(async (article)=> {
-        const result = await contenu.addArticleToCommand(createdCommande.id_commande,article.code_barre, article.quantité, article.prix_vente)
+        //La logique pour récupérer le prix est bizarre. Mais c'est obligé parce que le prix est lié à l'article
+        //Là où le client commande un code barre
+        const result = await contenu.addArticleToCommand(createdCommande.id_commande,article.code_barre, article.quantité,
+            prices.find(price => 
+                price.code_article === stock.data.body.articles.find(art=> art.GA_CODEBARRE===article.code_barre).GA_CODEARTICLE
+                ).prix)
         return result;
     })
 
