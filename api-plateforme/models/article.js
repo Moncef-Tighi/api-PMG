@@ -186,3 +186,30 @@ export const activationArticle = async function(code_article, activation) {
 
     return response.rows[0];
 }
+
+
+export const update_id_wooCommerce = async function(code_article, id) {
+    const sql = `
+    UPDATE article SET id_article_WooCommerce=$2 
+    WHERE code_article = $1
+    RETURNING *
+    `
+    const values = [code_article, id];
+    const response = await db.query(sql, values)
+
+    return response.rows[0];
+
+}
+
+export const update_id_taille_wooCommerce = async function(code_article,dimension, id) {
+    const sql = `
+    UPDATE article_taille SET id_taille_WooCommerce=$3 
+    WHERE code_article = $1 AND dimension = $2
+    RETURNING *
+`
+    const values = [code_article, dimension, id];
+    const response = await db.query(sql, values)
+
+    return response.rows[0];
+
+}

@@ -41,6 +41,7 @@ export const createCommande = catchAsync( async function(request, response, next
     
     if (!createdCommande) return next(createError(409, "La création de la commande a échouée"))
 
+    
     try {
         const createdContenu = contenu_commande.map(async (article)=> {
             console.log(article);

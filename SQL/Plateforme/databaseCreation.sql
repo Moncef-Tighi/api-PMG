@@ -45,6 +45,7 @@ CREATE TABLE article (
     division VARCHAR(25),
     silhouette VARCHAR(25),
     description TEXT,
+    id_article_WooCommerce INT,
     activé BOOLEAN DEFAULT true
 );
 

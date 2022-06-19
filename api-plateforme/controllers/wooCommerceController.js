@@ -1,7 +1,7 @@
 import { catchAsync } from "./errorController.js";
 import createError from 'http-errors';
 import apiWooCommerce from "../models/api.js";
-
+import * as model from '../models/article.js'
 
 export const insertArticlesWooCommerce = catchAsync( async function(request, response, next) {
     const articles = request.body.articles
@@ -50,6 +50,11 @@ export const insertArticlesWooCommerce = catchAsync( async function(request, res
     if (creationWooCommerce.data?.create?.some(art => art.error)) return next(createError(400, `Une erreur a eu lieu à la création`));
     if (creationWooCommerce.data?.update?.some(art => art.error)) return next(createError(400, `Une erreur a eu lieu lors de l'update`));
 
+    //On update l'id des articles sur la plateforme pour pouvoir les update au besoin
+    creationWooCommerce.data?.create?.forEach(async (art)=> await model.update_id_wooCommerce(art.sku, art.id ))
+    creationWooCommerce.data?.update?.forEach(async (art)=> await model.update_id_wooCommerce(art.sku, art.id ))
+    
+    
     return response.status(201).json({
         status: "ok",
         message : "Les articles ont bien étés ajoutés sur la plateforme",
@@ -151,6 +156,11 @@ export const insertTailleWooCommerce = catchAsync( async function(request, respo
     const updateResult= await Promise.all(updateRequests || []);
     const wooCommerceUpdateVariation = updateResult?.map(promesse => promesse.data.update)
 
+
+    //On ajoute les ID des articles sur la plateforme pour pouvoir update leur stock
+    wooCommerceInsertVariation[0]?.forEach(async art=> await model.update_id_taille_wooCommerce(art.sku,  art.attributes[0].option, art.id ))
+    wooCommerceUpdateVariation[0]?.forEach(async art=> await model.update_id_taille_wooCommerce(art.sku,  art.attributes[0].option, art.id ))
+    
     //Ces deux lignes sont bizarre mais elles sont nécessaire pour l'error handeling
     //Si la création d'une variation parmis toute les variations échoue ce n'est pas toute l'opération qui échoue
     //C'est juste la création de cet article là qui est return sous forme d'erreur. 

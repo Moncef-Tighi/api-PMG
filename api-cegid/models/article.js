@@ -90,9 +90,8 @@ export const infoArticle = async function(parametre) {
 }
 
 
-export const dispoArticleTaille = async function(article, field) {
+export const dispoArticleTaille = async function(article, field='GA_CODEARTICLE') {
     const request = new db.Request();
-
     let sql = `
     SELECT
     GA_CODEARTICLE,
