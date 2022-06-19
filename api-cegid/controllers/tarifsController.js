@@ -17,14 +17,14 @@ export const derniersTarifs = catchAsync( async function(request, response, next
         if (dataRecord instanceof Array) {
             dataRecord.forEach(prix => {
                 if (article===prix.GA_CODEARTICLE) {
-                    resultat[prix.GA_CODEARTICLE] =  {...prix};
+                    resultat[prix.GA_CODEARTICLE] =  prix.prixActuel;
                     return delete resultat[prix.GA_CODEARTICLE].GA_CODEARTICLE;
                 }
             })
         }
         else {
             if (article===dataRecord?.GA_CODEARTICLE) {
-                resultat[prix.GA_CODEARTICLE] =  {...dataRecord[0]};
+                resultat[prix.GA_CODEARTICLE] =  dataRecord[0].prixActuel;
                 return delete resultat[prix.GA_CODEARTICLE].GA_CODEARTICLE;
             }
         }
