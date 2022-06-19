@@ -3,7 +3,7 @@ import * as model from '../models/commande.js';
 import * as contenu from '../models/contenu_commande.js';
 import createError from 'http-errors';
 import apiWooCommerce from "../models/api.js";
-
+import axios from 'axios';
 
 
 export const listeCommandes = catchAsync( async function(request, response, next) {
@@ -37,17 +37,30 @@ export const createCommande = catchAsync( async function(request, response, next
     if (commande.commune<0 || commande.commune>1550) return next(createError(400, "Le numéro de la commune n'est pas valide"))
     //Adding type validation for the commande
 
+    
+    //Section de vérification essentielle pour vérifier qu'il n'y a pas de problème de stock ET que la requête est valide
+
+    const code_barres = contenu_commande.map(taille=> taille.code_barre);
+    const stock = await axios.post(`${process.env.API_CEGID}/articles/taille?code_barre=true`, {articles : code_barres});
+    if (stock.data.body.articles.length != code_barres.length) return next(createError(400, "Un des articles demandé n'existe pas"));
+    try {
+        stock.data.body.articles.forEach(art=> {
+            if(art.stockNet<process.env.MINSTOCK) throw `La taille demandé pour ${art.GA_CODEARTICLE} n'est plus disponible`
+            const quantite = contenu_commande.find(content => content.code_barre === art.GA_CODEBARRE).quantité
+            if(art.stockNet - quantite<0) throw `Il y a moins de ${quantite} pièces disponible pour l'article ${art.GA_CODEARTICLE}`
+        })
+    } catch(error) {
+        return next(createError(400, error))
+    }
     const createdCommande = await model.createCommande(commande);
     
     if (!createdCommande) return next(createError(409, "La création de la commande a échouée"))
 
-    
+
     try {
         const createdContenu = contenu_commande.map(async (article)=> {
-            console.log(article);
-            if (!article.code_barre || !article.quantité || article.quantité<1 || !article.prix_vente || article.prix_vente<1) throw Error("Un article dans la commande est invalide")
+            if (!article.code_barre || !article.quantité || article.quantité<1) throw Error("Un article dans la commande est invalide")
             const result = await contenu.addArticleToCommand(createdCommande.id_commande,article.code_barre, article.quantité, article.prix_vente)
-            console.log(result);
             return result;
         })
 
