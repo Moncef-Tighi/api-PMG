@@ -142,7 +142,9 @@ export const tailleDisponible = catchAsync(async function(request, response, nex
     if (!articles || ! articles instanceof Array) {
         return next(createError(400, "Erreur : Une liste d'article n'a pas été fournit dans le body de la requête") )
     }
-    const dataRecord = await model.dispoArticleTaille(articles);
+    let field='GA_CODEARTICLE';
+    if (request.query.code_barre) field = 'GA_CODEBARRE'
+    const dataRecord = await model.dispoArticleTaille(articles, field);
 
     return response.status(200).json({
         status : "ok",

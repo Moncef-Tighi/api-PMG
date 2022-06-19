@@ -56,7 +56,7 @@ export const createCommande = catchAsync( async function(request, response, next
             contenu_commande : createdContenu
         });
     } catch(error) {
-        return next(createError(400, "Le c"))
+        return next(createError(400, "La sauvgarde du contenu de la commande a échouée"))
     }
 
 

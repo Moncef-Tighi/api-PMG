@@ -18,7 +18,7 @@ export const createCommande = async function({id_prestataire,nom_client, prenom_
             throw Error("La création de la commande a échouée")
         }
         sql = `INSERT INTO status_commande(id_status,id_commande, commentaire)
-        VALUES (3,${id_commande}, 'Création de la nouvelle commande')    
+        VALUES (3,${id_commande}, 'Création de la commande commande')    
         `
         const status= await db.query(sql)
         db.query("COMMIT");

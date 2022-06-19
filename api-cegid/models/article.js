@@ -90,7 +90,7 @@ export const infoArticle = async function(parametre) {
 }
 
 
-export const dispoArticleTaille = async function(article) {
+export const dispoArticleTaille = async function(article, field) {
     const request = new db.Request();
 
     let sql = `
@@ -111,7 +111,7 @@ export const dispoArticleTaille = async function(article) {
         AND GDI2.GDI_TYPEDIM = 'DI2' `
 
     if (Array.isArray(article)) {
-        sql+= `${query.where(qs.parse('GA_CODEARTICLE='+ article.join('&GA_CODEARTICLE=')))}
+        sql+= `${query.where(qs.parse(`${field}=`+ article.join(`&${field}=`)))}
             AND GQ_CLOTURE <> 'X' AND GA_TYPEARTICLE = 'MAR'
             GROUP BY
             GA_CODEARTICLE,
@@ -120,7 +120,7 @@ export const dispoArticleTaille = async function(article) {
         `
         query.sanitize(request);
     } else {
-        sql+= `WHERE GA_CODEARTICLE='${article}' AND GQ_CLOTURE <> 'X' AND GA_TYPEARTICLE = 'MAR'
+        sql+= `WHERE ${field}='${article}' AND GQ_CLOTURE <> 'X' AND GA_TYPEARTICLE = 'MAR'
         GROUP BY
         GA_CODEARTICLE,
         GA_CODEBARRE,
