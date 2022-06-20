@@ -1,5 +1,9 @@
 import db from "./postGreSql.js";
 
+export const commandeAvecContenu = async function(id_commande) {
+    
+}
+
 export const addArticleToCommand = async function(id_commande, code_barre, quantité, prix_vente) {
  
     const sql= `

@@ -7,11 +7,17 @@ import apiWooCommerce from "../models/api.js";
 import axios from 'axios';
 
 export const listeCommandes = catchAsync( async function(request, response, next) {
+    if (!request.query.active) request.query.active='true';
 
-
+    const commandes = await model.listeCommandes(request.query);
+    const totalSize = commandes.length
     return response.status(200).json({
         status: "ok",
+        page : Number(request.query.page) || 1,
+        totalSize,
+        body : commandes
     });
+
 });
 
 export const oneCommande = catchAsync( async function(request, response, next) {
@@ -49,6 +55,7 @@ export const createCommande = catchAsync( async function(request, response, next
             const quantite = contenu_commande.find(content => content.code_barre === art.GA_CODEBARRE).quantité
             if (!quantite || quantite<1) throw `La quantité demandé pour l'article ${art.GA_CODEARTICLE}  n'est pas valide`
             if(art.stockNet - quantite<0) throw `Il y a moins de ${quantite} pièces disponible pour l'article ${art.GA_CODEARTICLE}`
+            "Il y a moins de " + quantite + " pièces disponible pour l'article " + art.GA_CODEARTICLE
         })
     } catch(error) {
         return next(createError(400, error))
