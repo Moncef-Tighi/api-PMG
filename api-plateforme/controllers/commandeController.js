@@ -26,8 +26,18 @@ export const oneCommande = catchAsync( async function(request, response, next) {
     if (!id || isNaN(id) || id<0) return next(createError(400, "L'id présenté n'est pas valide"))
     const commande = await model.listeCommandes({id_commande : id})
     if (commande.length===0) return next(createError(400, "Aucune commande avec cet ID n'a été trouvée"))
-    const contenu_commande = await contenu.contenuUneCommande(id);
+    const commande_plateforme = await contenu.contenuUneCommande(id);
 
+    //Récupération du stock actuel pour chaque article sur CEGID
+    
+    const code_barres = commande_plateforme.map(commande => commande.code_barre);
+    const stock = await axios.post(`${process.env.API_CEGID}/articles/taille?code_barre=true`, {articles : code_barres});
+    const contenu_commande = commande_plateforme.map(commande => {
+        return {
+            ...commande,
+            stock : stock.data.body.articles.find(article=> article.GA_CODEBARRE=commande.code_barre).stockNet
+        }
+    })
     return response.status(200).json({
         status: "ok",
         commande,
