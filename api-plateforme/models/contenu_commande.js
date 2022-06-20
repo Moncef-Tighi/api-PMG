@@ -1,7 +1,17 @@
 import db from "./postGreSql.js";
 
-export const commandeAvecContenu = async function(id_commande) {
+export const contenuUneCommande = async function(id_commande) {
+    const sql = `
+    SELECT code_barre, quantite, prix_vente
+    ,COALESCE(nom_lieu_ramassage, 'Aucun Magasin choisi')
+    ,confirmation_prestataire, confirmation_magasin, date_demande_ramassage
     
+    FROM article_commande
+    LEFT OUTER JOIN ramassage ON ramassage.id_lieu_ramassage = article_commande.id_lieu_ramassage
+    WHERE id_commande= ${id_commande}
+    `
+    const response = await db.query(sql)
+    return response.rows;
 }
 
 export const addArticleToCommand = async function(id_commande, code_barre, quantité, prix_vente) {

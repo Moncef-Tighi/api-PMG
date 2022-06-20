@@ -22,9 +22,16 @@ export const listeCommandes = catchAsync( async function(request, response, next
 
 export const oneCommande = catchAsync( async function(request, response, next) {
 
+    const id = request.params.id;
+    if (!id || isNaN(id) || id<0) return next(createError(400, "L'id présenté n'est pas valide"))
+    const commande = await model.listeCommandes({id_commande : id})
+    if (commande.length===0) return next(createError(400, "Aucune commande avec cet ID n'a été trouvée"))
+    const contenu_commande = await contenu.contenuUneCommande(id);
 
     return response.status(200).json({
         status: "ok",
+        commande,
+        contenu : contenu_commande
     });
 });
 
