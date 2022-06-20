@@ -5,6 +5,7 @@ import * as articles from '../models/article.js';
 import createError from 'http-errors';
 import apiWooCommerce from "../models/api.js";
 import axios from 'axios';
+import objectDeepEqual from '../util/objectDeepEqual.js';
 
 export const listeCommandes = catchAsync( async function(request, response, next) {
     if (!request.query.active) request.query.active='true';
@@ -61,6 +62,14 @@ export const createCommande = catchAsync( async function(request, response, next
     //TODO : Adding type validation for the commande
 
     
+    //Section pour éviter la duplication de commande
+
+    const commandesByClient = await contenu.arrayOfCommandeForOneClient(commande.email_client);
+    if (commandesByClient.length>0) {
+        if (commandesByClient.some(commande=> objectDeepEqual(commande.articles, contenu_commande))) 
+        return next(createError(400, "Duplication : Votre commande est déjà en cours de traitement")) 
+    }
+
     //Section de vérification essentielle pour vérifier qu'il n'y a pas de problème de stock ET que la requête est valide
 
     const code_barres = contenu_commande.map(taille=> taille.code_barre);

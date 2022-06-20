@@ -14,7 +14,8 @@ export const contenuUneCommande = async function(id_commande) {
     return response.rows;
 }
 
-export const arrayOfCommandeForOneClient = async function(email='',nom='',prenom='') {
+export const arrayOfCommandeForOneClient = async function(email) {
+    
     const sql=`
     SELECT article_commande.id_commande
     ,JSON_AGG(json_build_object('code_barre', code_barre,'quantité',quantite)) AS "articles"
@@ -24,11 +25,16 @@ export const arrayOfCommandeForOneClient = async function(email='',nom='',prenom
     --La liste de chiffres c'est la liste de status qui indique qu'une commande est terminée
     --Parce que c'est possible qu'un client renvoi une commande qui a été annulée ou pour un échange
     WHERE id_status NOT IN (2,10,11,12) AND (
-    email_client='moncef@gmail.com' OR (nom_client LIKE 'Tighiouart' AND prenom_client LIKE 'Moncef')
+    email_client=$1
     )
     
     GROUP BY article_commande.id_commande
     `
+
+    const values = [email];
+    const response = await db.query(sql, values)
+    return response.rows;
+
 }
 
 export const addArticleToCommand = async function(id_commande, code_barre, quantité, prix_vente) {
