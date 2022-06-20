@@ -62,7 +62,7 @@ VALUES
 (1,'Annulée'),
 (2,'Reçu'),
 (3,'Nouvelle Commande'),
-(4,'Attribuée à employé'),
+(4,'En attente de confirmation'),
 (5,'Confimée'),
 (6,'En Attente des magasins'),
 (7,'En cours de packaging'),

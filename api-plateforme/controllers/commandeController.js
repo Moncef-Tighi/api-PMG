@@ -35,7 +35,7 @@ export const oneCommande = catchAsync( async function(request, response, next) {
     const contenu_commande = commande_plateforme.map(commande => {
         return {
             ...commande,
-            stock : stock.data.body.articles.find(article=> article.GA_CODEBARRE=commande.code_barre).stockNet
+            stock : stock.data.body.articles.find(article=> article.GA_CODEBARRE===commande.code_barre).stockNet
         }
     })
     return response.status(200).json({
