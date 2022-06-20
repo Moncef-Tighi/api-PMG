@@ -161,7 +161,7 @@ CREATE TABLE ramassage(
 
 CREATE TABLE article_commande (
     id_commande INT NOT NULL,
-    code_barre VARCHAR(255) REFERENCES article_taille(code_barre),
+    code_barre VARCHAR(255),
     quantite INT NOT NULL,
     prix_vente REAL NOT NULL,
     id_lieu_ramassage INT REFERENCES ramassage(id_lieu_ramassage),
