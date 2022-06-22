@@ -15,19 +15,16 @@ export const contenuUneCommande = async function(id_commande) {
 }
 
 export const arrayOfCommandeForOneClient = async function(email) {
-    
+
     const sql=`
     SELECT article_commande.id_commande
     ,JSON_AGG(json_build_object('code_barre', code_barre,'quantité',quantite)) AS "articles"
     FROM article_commande
     INNER JOIN commande ON commande.id_commande = article_commande.id_commande
     INNER JOIN status_commande ON commande.id_commande = status_commande.id_commande
-    --La liste de chiffres c'est la liste de status qui indique qu'une commande est terminée
-    --Parce que c'est possible qu'un client renvoi une commande qui a été annulée ou pour un échange
     WHERE id_status NOT IN (2,10,11,12) AND (
-    email_client=$1
+        email_client=$1
     )
-    
     GROUP BY article_commande.id_commande
     `
 

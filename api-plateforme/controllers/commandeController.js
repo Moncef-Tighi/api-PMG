@@ -2,6 +2,7 @@ import { catchAsync } from './errorController.js';
 import * as model from '../models/commande.js';
 import * as contenu from '../models/contenu_commande.js';
 import * as articles from '../models/article.js';
+import * as attribution from '../models/commande_attribution';
 import createError from 'http-errors';
 import apiWooCommerce from "../models/api.js";
 import axios from 'axios';
@@ -154,6 +155,24 @@ export const updateCommandeStatus = catchAsync( async function(request, response
 
 export const changeCommandeAttribution = catchAsync( async function(request, response, next) {
 
+    const id = request.body.id;
+    const employe = request.user.id_employe;
+
+    if (!id) return next(createError(400, "Aucune commande n'a été sélectionnée"))
+
+    const commande = await attribution.getCommandeAttribution(id);
+
+    if (!commande.id_employe) {
+
+    }
+    else if (commande.id_employe===id_employe) {
+        return next(createError(400, "La commande est déjà attribuée à l'employé"))
+    }
+    else {
+
+    }
+
+    
 
     return response.status(200).json({
         status: "ok",

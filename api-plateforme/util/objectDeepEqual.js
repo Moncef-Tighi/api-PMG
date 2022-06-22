@@ -4,6 +4,4 @@ const objectDeepEqual = (o1, o2) =>
             && Object.keys(o1).every(p => objectDeepEqual(o1[p], o2[p]))
         : o1 === o2;
 
-
-
 export default objectDeepEqual;
