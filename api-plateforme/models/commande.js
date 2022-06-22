@@ -3,9 +3,9 @@ import QueryPostGre from "../util/query.js";
 
 export const listeCommandes = async function(param) {
     const query= new QueryPostGre("-commande_date_debut")
-    if (param.id_commande) {
-        param["commande.id_commande"]=param.id_commande;
-        delete param.id_commande;
+    if (param.id_status) {
+        param["status_commande.id_status"]=param.id_status;
+        delete param.id_status;
     }
     const sql = `
         SELECT commande.id_commande, prenom_client,nom_client,numero_client,email_client
@@ -24,12 +24,14 @@ export const listeCommandes = async function(param) {
         INNER JOIN status_commande ON status_commande.id_commande= commande.id_commande AND status_date= 
             (SELECT MAX(status_date) FROM status_commande
             WHERE id_commande = commande.id_commande) 
-            
+
         INNER JOIN liste_status_commande ON liste_status_commande.id_status = status_commande.id_status
         
         LEFT JOIN commande_attribution ON commande.id_commande = commande_attribution.id_commande
     
         ${query.where(param)}
+        ${query.sort(param)}
+        ${query.paginate(param)}
     `
 
     const response = await db.query(sql, query.sanitize())
@@ -38,7 +40,8 @@ export const listeCommandes = async function(param) {
 
 }
 
-export const createCommande = async function({id_prestataire,nom_client, prenom_client,numero_client,email_client,numero_commune,adresse,provenance}) {
+export const createCommande = async function({id_prestataire,nom_client, prenom_client,numero_client
+    ,email_client,numero_commune,adresse,provenance}) {
     db.query('BEGIN');
     try {
         let sql= `
@@ -48,7 +51,8 @@ export const createCommande = async function({id_prestataire,nom_client, prenom_
         RETURNING *
         `
     
-        let values = [id_prestataire,nom_client, prenom_client,numero_client,email_client,numero_commune,adresse,provenance];
+        let values = [id_prestataire,nom_client, prenom_client,numero_client,
+            email_client,numero_commune,adresse,provenance];
         const response = await db.query(sql, values)
 
         const id_commande= response.rows[0].id_commande;

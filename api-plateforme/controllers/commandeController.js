@@ -186,3 +186,20 @@ export const changeCommandeAttribution = catchAsync( async function(request, res
         }
     });
 })
+
+export const checkAttribution = catchAsync( async function(request, response, next) {
+
+    const id = request.body.id_commande;
+    const employe = request.user.id_employe;
+
+    if (!id) return next(createError(400, "Aucune commande n'a été sélectionnée"))
+
+    const commande = await attribution.getCommandeAttribution(id);
+
+    if (commande.id_employe!==employe) {
+        return next(createError(400, "Vous ne pouvez pas modifier une commande qui ne vous est pas attribuée"))
+    }
+
+    request.commande= commande;
+    next();
+})
