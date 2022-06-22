@@ -1,6 +1,6 @@
 import { catchAsync } from './errorController.js';
 import * as model from '../models/commande.js';
-import * as contenu from '../models/contenu_commande.js';
+import * as contenu from '../models/commande_contenu.js';
 import * as articles from '../models/article.js';
 import * as attribution from '../models/commande_attribution.js';
 import * as historique from '../models/commande_historique.js';
@@ -166,6 +166,7 @@ export const changeCommandeAttribution = catchAsync( async function(request, res
 
     if (!commande.id_employe) {
         description = "Première attribution de la commande"
+        await historique.createStatus(4, id, "Commende attribuée à un employé pour la première fois")
     }
     else if (commande.id_employe===employe) {
         return next(createError(400, "La commande est déjà attribuée à l'employé"))
