@@ -9,14 +9,16 @@ export const getCommandeAttribution = async function(id) {
         WHERE commande.id_commande = ${id}
     `
     const response = await db.query(sql)
-    return response.rows;
+    return response.rows[0];
 }
 
 export const attributeCommande = async function(id_commande, id_employe) {
-
     const sql = `
         INSERT INTO commande_attribution(id_commande,id_employe)
         VALUES (${id_commande}, ${id_employe})
         RETURNING *
     `
+    const response = await db.query(sql)
+    return response.rows[0];
+
 }

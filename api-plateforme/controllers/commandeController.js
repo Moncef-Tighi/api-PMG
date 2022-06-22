@@ -2,7 +2,8 @@ import { catchAsync } from './errorController.js';
 import * as model from '../models/commande.js';
 import * as contenu from '../models/contenu_commande.js';
 import * as articles from '../models/article.js';
-import * as attribution from '../models/commande_attribution';
+import * as attribution from '../models/commande_attribution.js';
+import * as historique from '../models/commande_historique.js';
 import createError from 'http-errors';
 import apiWooCommerce from "../models/api.js";
 import axios from 'axios';
@@ -155,26 +156,32 @@ export const updateCommandeStatus = catchAsync( async function(request, response
 
 export const changeCommandeAttribution = catchAsync( async function(request, response, next) {
 
-    const id = request.body.id;
+    const id = request.params.id;
     const employe = request.user.id_employe;
 
     if (!id) return next(createError(400, "Aucune commande n'a été sélectionnée"))
 
     const commande = await attribution.getCommandeAttribution(id);
+    let description= "";
 
     if (!commande.id_employe) {
-
+        description = "Première attribution de la commande"
     }
-    else if (commande.id_employe===id_employe) {
+    else if (commande.id_employe===employe) {
         return next(createError(400, "La commande est déjà attribuée à l'employé"))
     }
     else {
-
+        if (!request.body.raison) return next(createError(400, "Vous ne pouvez pas changer l'attribution d'une commande sans raison"))
+        description= "Changement de l'attribution de la commande"
     }
 
-    
-
+    const creationAttribute = await attribution.attributeCommande(id, employe);
+    const creationHistoriuqe = await historique.createHistorique(id, employe, "Attribution", description, request.body.raison )
     return response.status(200).json({
         status: "ok",
+        body : {
+            attribute : creationAttribute,
+            historique : creationHistoriuqe
+        }
     });
 })

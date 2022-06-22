@@ -11,7 +11,7 @@ const router = express.Router();
     router.put('/update', controllers.updateCommande);
     router.patch('/status', controllers.updateCommandeStatus);
     router.patch('/disable', controllers.disableCommande);
-    router.post('/attribution', controllers.changeCommandeAttribution);
+    router.post('/attribution/:id', protect, controllers.changeCommandeAttribution);
     router.get('/:id', controllers.oneCommande);
     
 export default router;
