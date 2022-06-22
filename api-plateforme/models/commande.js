@@ -21,7 +21,10 @@ export const listeCommandes = async function(param) {
         LEFT JOIN daira ON daira.numero_daira = commune.numero_commune
         LEFT JOIN wilaya ON wilaya.numero_wilaya = daira.numero_daira
         
-        INNER JOIN status_commande ON status_commande.id_commande= commande.id_commande
+        INNER JOIN status_commande ON status_commande.id_commande= commande.id_commande AND status_date= 
+            (SELECT MAX(status_date) FROM status_commande
+            WHERE id_commande = commande.id_commande) 
+            
         INNER JOIN liste_status_commande ON liste_status_commande.id_status = status_commande.id_status
         
         LEFT JOIN commande_attribution ON commande.id_commande = commande_attribution.id_commande
