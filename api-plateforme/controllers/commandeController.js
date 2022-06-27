@@ -12,6 +12,10 @@ import objectDeepEqual from '../util/objectDeepEqual.js';
 
 
 const verifyArticleStock = async function(contenu_commande) {
+
+    //Cette fonction vérifie que l'article existe ET qu'il est disponible dans une quantité suffisante pour effectuer la commande
+    //Cette fonction est utilisé lors de la création ET de la modification d'une commande
+
     const code_barres = contenu_commande.map(taille=> taille.code_barre);
     const stock = await axios.post(`${process.env.API_CEGID}/articles/taille?code_barre=true`, {articles : code_barres});
     if (stock.data.body.articles.length != code_barres.length) throw "Un des articles demandé n'existe pas" ;
@@ -22,8 +26,36 @@ const verifyArticleStock = async function(contenu_commande) {
         if(art.stockNet - quantite<0) throw `Il y a moins de ${quantite} pièces disponible pour l'article ${art.GA_CODEARTICLE}`
         "Il y a moins de " + quantite + " pièces disponible pour l'article " + art.GA_CODEARTICLE
     })
-    return stock
+    return stock.data.body.articles
 }
+
+const getPrices = async function(stock) {
+
+    //L'input de cette fonction est l'output de la fonction verifyArticleStock
+
+
+    //Avant de vraiment valider l'article, il faut obtenir le prix. On ne peut pas demander le prix en paramètre
+    //Parce que sinon n'importe qui pourrait demander un prix incorrect en modifiant la requête.
+    //Vu que tout les articles ne sont pas sur la plateforme, on commence par chercher l'article sur la plateforme
+    //Si il n'existe pas sur la plateforme on cherche le prix sur CEGID
+
+    const codes_articles= stock.map(art=> art.GA_CODEARTICLE);
+    const articlesPlateforme = await articles.readArticles(codes_articles)
+    const articlesHorsPlateforme = codes_articles.filter(art=> !articlesPlateforme.some(article=> article.code_article===art))
+    //Attention ! l'API Cegid ne gère pas les prix par code_barre, juste les prix par code article. Donc l'output ne rends pas le code barre
+    let prices = [];
+    articlesPlateforme?.forEach(article=> prices.push({code_article : article.code_article, prix : article.prix_vente}))
+    if (articlesHorsPlateforme) {
+        let articlesCegid = await axios.post(`${process.env.API_CEGID}/tarifs`, {articles : articlesHorsPlateforme});
+        articlesCegid = articlesCegid?.data?.body?.articles
+        Object.keys(articlesCegid)?.forEach(code_article=> prices.push({code_article, prix : articlesCegid[code_article]}))
+    }
+    return prices;
+
+}
+
+
+
 
 export const listeCommandes = catchAsync( async function(request, response, next) {
     if (!request.query.active) request.query.active='true';
@@ -91,28 +123,13 @@ export const createCommande = catchAsync( async function(request, response, next
     //Section de vérification essentielle pour vérifier qu'il n'y a pas de problème de stock ET que la requête est valide
 
     try {
-        verifyArticleStock(contenu_commande);
+        var stock = await verifyArticleStock(contenu_commande);
     } catch(error) {
         return next(createError(400, error))
     }
 
 
-    //Avant de vraiment valider l'article, il faut obtenir le prix. On ne peut pas demander le prix en paramètre
-    //Parce que sinon n'importe qui pourrait demander un prix incorrect en modifiant la requête.
-    //Vu que tout les articles ne sont pas sur la plateforme, on commence par chercher l'article sur la plateforme
-    //Si il n'existe pas sur la plateforme on cherche le prix sur CEGID
-
-    const codes_articles= stock.data.body.articles.map(art=> art.GA_CODEARTICLE);
-    const articlesPlateforme = await articles.readArticles(codes_articles)
-    const articlesHorsPlateforme = codes_articles.filter(art=> !articlesPlateforme.some(article=> article.code_article===art))
-    //Attention ! l'API Cegid ne gère pas les prix par code_barre, juste les prix par code article. Donc l'output ne rends pas le code barre
-    let prices = [];
-    articlesPlateforme?.forEach(article=> prices.push({code_article : article.code_article, prix : article.prix_vente}))
-    if (articlesHorsPlateforme) {
-        let articlesCegid = await axios.post(`${process.env.API_CEGID}/tarifs`, {articles : articlesHorsPlateforme});
-        articlesCegid = articlesCegid?.data?.body?.articles
-        Object.keys(articlesCegid)?.forEach(code_article=> prices.push({code_article, prix : articlesCegid[code_article]}))
-    }
+    const prices = await getPrices(stock);
 
     //À partir de maintenant on a les prix dans "prices"
 
@@ -124,7 +141,7 @@ export const createCommande = catchAsync( async function(request, response, next
         //Là où le client commande via un code barre
         const result = await contenu.addArticleToCommand(createdCommande.id_commande,article.code_barre, article.quantité,
             prices.find(price => 
-                price.code_article === stock.data.body.articles.find(art=> art.GA_CODEBARRE===article.code_barre).GA_CODEARTICLE
+                price.code_article === stock.find(art=> art.GA_CODEBARRE===article.code_barre).GA_CODEARTICLE
                 ).prix)
         return result;
     })
