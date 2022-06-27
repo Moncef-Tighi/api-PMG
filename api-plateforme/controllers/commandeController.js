@@ -4,10 +4,26 @@ import * as contenu from '../models/commande_contenu.js';
 import * as articles from '../models/article.js';
 import * as attribution from '../models/commande_attribution.js';
 import * as historique from '../models/commande_historique.js';
+import { addToHistory } from './commadeHistoriqueController.js';
 import createError from 'http-errors';
 import apiWooCommerce from "../models/api.js";
 import axios from 'axios';
 import objectDeepEqual from '../util/objectDeepEqual.js';
+
+
+const verifyArticleStock = async function(contenu_commande) {
+    const code_barres = contenu_commande.map(taille=> taille.code_barre);
+    const stock = await axios.post(`${process.env.API_CEGID}/articles/taille?code_barre=true`, {articles : code_barres});
+    if (stock.data.body.articles.length != code_barres.length) throw "Un des articles demandé n'existe pas" ;
+    stock.data.body.articles.forEach(art=> {
+        if(art.stockNet<=process.env.MINSTOCK) throw `La taille demandé pour ${art.GA_CODEARTICLE} n'est plus disponible`
+        const quantite = contenu_commande.find(content => content.code_barre === art.GA_CODEBARRE).quantité
+        if (!quantite || quantite<1) throw `La quantité demandé pour l'article ${art.GA_CODEARTICLE}  n'est pas valide`
+        if(art.stockNet - quantite<0) throw `Il y a moins de ${quantite} pièces disponible pour l'article ${art.GA_CODEARTICLE}`
+        "Il y a moins de " + quantite + " pièces disponible pour l'article " + art.GA_CODEARTICLE
+    })
+    return stock
+}
 
 export const listeCommandes = catchAsync( async function(request, response, next) {
     if (!request.query.active) request.query.active='true';
@@ -74,20 +90,12 @@ export const createCommande = catchAsync( async function(request, response, next
 
     //Section de vérification essentielle pour vérifier qu'il n'y a pas de problème de stock ET que la requête est valide
 
-    const code_barres = contenu_commande.map(taille=> taille.code_barre);
-    const stock = await axios.post(`${process.env.API_CEGID}/articles/taille?code_barre=true`, {articles : code_barres});
-    if (stock.data.body.articles.length != code_barres.length) return next(createError(400, "Un des articles demandé n'existe pas"));
     try {
-        stock.data.body.articles.forEach(art=> {
-            if(art.stockNet<=process.env.MINSTOCK) throw `La taille demandé pour ${art.GA_CODEARTICLE} n'est plus disponible`
-            const quantite = contenu_commande.find(content => content.code_barre === art.GA_CODEBARRE).quantité
-            if (!quantite || quantite<1) throw `La quantité demandé pour l'article ${art.GA_CODEARTICLE}  n'est pas valide`
-            if(art.stockNet - quantite<0) throw `Il y a moins de ${quantite} pièces disponible pour l'article ${art.GA_CODEARTICLE}`
-            "Il y a moins de " + quantite + " pièces disponible pour l'article " + art.GA_CODEARTICLE
-        })
+        verifyArticleStock(contenu_commande);
     } catch(error) {
         return next(createError(400, error))
     }
+
 
     //Avant de vraiment valider l'article, il faut obtenir le prix. On ne peut pas demander le prix en paramètre
     //Parce que sinon n'importe qui pourrait demander un prix incorrect en modifiant la requête.
@@ -162,10 +170,10 @@ export const changeCommandeAttribution = catchAsync( async function(request, res
     if (!id) return next(createError(400, "Aucune commande n'a été sélectionnée"))
 
     const commande = await attribution.getCommandeAttribution(id);
-    let description= "";
+    let type= "";
 
     if (!commande.id_employe) {
-        description = "Première attribution de la commande"
+        type = "Première Attribution"
         await historique.createStatus(4, id, "Commende attribuée à un employé pour la première fois")
     }
     else if (commande.id_employe===employe) {
@@ -173,11 +181,11 @@ export const changeCommandeAttribution = catchAsync( async function(request, res
     }
     else {
         if (!request.body.raison) return next(createError(400, "Vous ne pouvez pas changer l'attribution d'une commande sans raison"))
-        description= "Changement de l'attribution de la commande"
+        type= "Attribution"
     }
 
     const creationAttribute = await attribution.attributeCommande(id, employe);
-    const creationHistorique = await historique.createHistorique(id, employe, "Attribution", description, request.body.raison)
+    const creationHistorique = await addToHistory(id, type, request.body.raison || "", description);
 
     return response.status(200).json({
         status: "ok",

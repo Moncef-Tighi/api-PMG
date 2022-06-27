@@ -2,6 +2,11 @@ import { catchAsync, errorHandeler } from './errorController.js';
 import * as historique from '../models/commande_historique.js';
 import createError from 'http-errors';
 
+//NOTE : L'historique est crée par cette fonction parce que parfois on veut juste envoyer une requête pour ajouter quelque chose à l'historique 
+//(exemple : Quand un appel est effectuée on fait rien côté code à part enregistrer dans l'historique)
+
+//Et parfois on veut ajouter à l'historique après qu'une action soit effectuée 
+//(par exemple : Quand l'attribution de la commande change)
 
 export const addToHistory = async function(commande_id, type, raison, description="") {
 
