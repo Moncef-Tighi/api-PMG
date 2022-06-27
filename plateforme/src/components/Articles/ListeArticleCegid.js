@@ -123,4 +123,4 @@ const ListeArticleCegid = function(props) {
 }
 
 
-  export default ListeArticleCegid
+export default ListeArticleCegid

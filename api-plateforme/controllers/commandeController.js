@@ -61,7 +61,7 @@ export const createCommande = catchAsync( async function(request, response, next
         return next(createError(400, "Une information obligatoire n'a pas été fournit"))
     if (!commande.id_prestataire || Number(commande.id_prestataire)<0) return next(createError(400), "Impossible de trouver le prestataire de la commande")
     if (commande.commune<0 || commande.commune>1550) return next(createError(400, "Le numéro de la commune n'est pas valide"))
-    //TODO : Adding type validation for the commande
+    //TODO : Adding type validation
 
     
     //Section pour éviter la duplication de commande
@@ -177,12 +177,13 @@ export const changeCommandeAttribution = catchAsync( async function(request, res
     }
 
     const creationAttribute = await attribution.attributeCommande(id, employe);
-    const creationHistoriuqe = await historique.createHistorique(id, employe, "Attribution", description, request.body.raison )
+    const creationHistorique = await historique.createHistorique(id, employe, "Attribution", description, request.body.raison)
+
     return response.status(200).json({
         status: "ok",
         body : {
             attribute : creationAttribute,
-            historique : creationHistoriuqe
+            historique : creationHistorique
         }
     });
 })
@@ -196,6 +197,7 @@ export const checkAttribution = catchAsync( async function(request, response, ne
 
     const commande = await attribution.getCommandeAttribution(id);
 
+    if (!commande) return next(createError(400, "Impossible de trouver la commande demandée"))
     if (commande.id_employe!==employe) {
         return next(createError(400, "Vous ne pouvez pas modifier une commande qui ne vous est pas attribuée"))
     }

@@ -21,7 +21,6 @@ const ListeCommande = function(props) {
 
     const {url, handleChangePage,sortHandeler} = useTable(props.query);
     const {data: commandes, loading, error} = useGet(`${API_PLATEFORME}/woocommerce/commandes?${url}`, emptyTable);
-    console.log(commandes)
 
     const [open, setModal] = useState(false);
     const closeModal= ()=> setModal(()=>false);

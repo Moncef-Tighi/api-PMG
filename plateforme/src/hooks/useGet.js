@@ -16,7 +16,7 @@ export default function useGet(url, defaultData=null, token){
 
             try{
                 setLoading(true)
-                const response = await axios.get(url,header )
+                const response = await axios.get(url,header)
                 setData(response.data)
                 setError(false);
             }catch(error){
