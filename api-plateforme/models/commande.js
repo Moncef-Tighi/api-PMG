@@ -70,3 +70,20 @@ export const createCommande = async function({id_prestataire,nom_client, prenom_
         throw Error(error);
     }
 }
+
+export const updateCommande = async function({id_prestataire,nom_client, prenom_client,numero_client
+    ,email_client,numero_commune,adresse, id_commande}) {
+    const sql= `
+    UPDATE commande
+    SET id_prestataire=$1, nom_client=$2, prenom_client=$3, numero_client=$4,email_client=$5,numero_commune=$6,adresse=$7 )
+    WHERE id_commande = $8
+    
+    RETURNING *
+    `
+
+    const values = [id_prestataire,nom_client, prenom_client,numero_client,
+        email_client,numero_commune,adresse, id_commande];
+    const response = await db.query(sql, values)
+
+    return response.rows[0];
+}

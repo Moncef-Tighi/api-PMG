@@ -109,9 +109,10 @@ export const createCommande = catchAsync( async function(request, response, next
         return next(createError(400, "Une information obligatoire n'a pas été fournit"))
     if (!commande.id_prestataire || Number(commande.id_prestataire)<0) return next(createError(400), "Impossible de trouver le prestataire de la commande")
     if (commande.commune<0 || commande.commune>1550) return next(createError(400, "Le numéro de la commune n'est pas valide"))
-    //TODO : Adding type validation
-
     
+    //TODO : Adding type validation
+    
+
     //Section pour éviter la duplication de commande
 
     const commandesByClient = await contenu.arrayOfCommandeForOneClient(commande.email_client);
@@ -128,9 +129,7 @@ export const createCommande = catchAsync( async function(request, response, next
         return next(createError(400, error))
     }
 
-
     const prices = await getPrices(stock);
-
     //À partir de maintenant on a les prix dans "prices"
 
     const createdCommande = await model.createCommande(commande);
@@ -187,8 +186,8 @@ export const changeCommandeAttribution = catchAsync( async function(request, res
     if (!id) return next(createError(400, "Aucune commande n'a été sélectionnée"))
 
     const commande = await attribution.getCommandeAttribution(id);
-    let type= "";
 
+    let type= "";
     if (!commande.id_employe) {
         type = "Première Attribution"
         await historique.createStatus(4, id, "Commende attribuée à un employé pour la première fois")
