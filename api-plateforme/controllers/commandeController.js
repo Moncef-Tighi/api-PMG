@@ -156,6 +156,31 @@ export const createCommande = catchAsync( async function(request, response, next
 
 export const updateCommande = catchAsync( async function(request, response, next) {
     
+    // ATTENTION ! Cette route n'update que les informations global de la commande, pas le contenu.
+
+    const commande = request.body.commande;
+    
+    if (!commande) return next(createError(400, 'Impossible de trouver la commande'))
+    if (!commande.adresse || !commande.numero_client ||
+        !commande.email_client || !commande.numero_commune ||
+        !commande.nom_client || !commande.prenom_client)
+        return next(createError(400, "Une information obligatoire n'a pas été fournit"))
+
+    if (!commande.id_prestataire || Number(commande.id_prestataire)<0) return next(createError(400), "Impossible de trouver le prestataire de la commande")
+    if (commande.commune<0 || commande.commune>1550) return next(createError(400, "Le numéro de la commune n'est pas valide"))
+
+    const updatedCommande = await model.updateCommande(commande);
+
+    return response.status(200).json({
+        status: "ok",
+        body : updateCommande
+    });
+});
+
+
+export const updateCommandeContenu = catchAsync( async function(request, response, next) {
+    
+    
 
     return response.status(200).json({
         status: "ok",

@@ -47,16 +47,17 @@ export const addArticleToCommand = async function(id_commande, code_barre, quant
     return response.rows;
 }
 
-export const updateArticleCommand = async function(id_commande, code_barre, quantité, prix_vente) {
+export const updateQuantiteCommande = async function(id_commande, code_barre, quantité) {
  
     const sql= `
-    INSERT INTO article_commande(id_commande, code_barre, quantite, prix_vente)
-    VALUES ($1,$2,$3,$4)
+    UPDATE article_commande
+    SET quantite=$3
+    WHERE id_commande = $1 AND code_barre = $2
     RETURNING *
     `
     
-    const values = [id_commande, code_barre, quantité, prix_vente];
-    const response = await db.query(sql, values)
+    const values = [id_commande, code_barre, quantité];
+    const response = await db.query(sql, values);
     return response.rows;
 }
 
