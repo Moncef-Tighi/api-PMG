@@ -117,6 +117,7 @@ export const createCommande = catchAsync( async function(request, response, next
 
     const commandesByClient = await contenu.arrayOfCommandeForOneClient(commande.email_client);
     if (commandesByClient[0]?.articles?.length>0) {
+        console.log(commandesByClient[0]?.articles);
         console.log(contenu_commande);
         if (commandesByClient[0].articles.some(commande=> objectDeepEqual(commande.code_barre, contenu_commande))) 
         return next(createError(400, "Duplication : Votre commande est déjà en cours de traitement")) 
@@ -135,10 +136,11 @@ export const createCommande = catchAsync( async function(request, response, next
 
     const createdCommande = await model.createCommande(commande);
     if (!createdCommande) return next(createError(409, "La création de la commande a échouée"))
-    console.log("-------")
+
     const contenuPromises = await contenu_commande.map(async (article)=> {
         //La logique pour récupérer le prix dans "prices" est bizarre. Mais c'est obligé parce que le prix est lié au code article
         //Là où le client commande via un code barre
+
         const result = await contenu.addArticleToCommand(createdCommande.id_commande,article.code_barre, article.quantité,
             prices.find(price => 
                 price.code_article === stock.find(art=> art.GA_CODEBARRE===article.code_barre).GA_CODEARTICLE
@@ -148,7 +150,7 @@ export const createCommande = catchAsync( async function(request, response, next
 
 
     const createdContenu = await Promise.all(contenuPromises)
-    console.log(createdContenu);
+
     return response.status(201).json({
         status: "ok",
         commande : createdCommande,
