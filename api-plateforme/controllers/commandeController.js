@@ -116,10 +116,8 @@ export const createCommande = catchAsync( async function(request, response, next
     //Section pour éviter la duplication de commande
 
     const commandesByClient = await contenu.arrayOfCommandeForOneClient(commande.email_client);
-    if (commandesByClient[0]?.articles?.length>0) {
-        console.log(commandesByClient[0]?.articles);
-        console.log(contenu_commande);
-        if (commandesByClient[0].articles.some(commande=> objectDeepEqual(commande.code_barre, contenu_commande))) 
+    if (commandesByClient.length>0) {
+        if (commandesByClient.some(commande=> objectDeepEqual(commande.articles, contenu_commande))) 
         return next(createError(400, "Duplication : Votre commande est déjà en cours de traitement")) 
     }
 
