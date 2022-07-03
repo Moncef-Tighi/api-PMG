@@ -29,7 +29,6 @@ export const autoUpdateStock = new AsyncTask('simple task', async ()=> {
         const verifyArticles = new Set();
         updateWooCommerce.forEach(article=> verifyArticles.add(article.code_article));
         const existingArticleWooCommerce = await apiWooCommerce.get(`products?sku=${Array.from(verifyArticles).join(",")}`)
-        console.log(existingArticleWooCommerce);
         updateWooCommerce.forEach(async article=> {
 
             if (existingArticleWooCommerce.data.some(art => art.id===article.id_article_woocommerce)) {
