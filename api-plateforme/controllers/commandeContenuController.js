@@ -63,11 +63,12 @@ export const removeFromCommandeContenu = catchAsync( async function(request, res
 
     const contenu_commande = await contenu.contenuUneCommande(id_commande);
 
-    if (!contenu_commande) return next(createError(400, "La commande n'existe pas"))
-    if (!contenu_commande.some(art=> art.code_barre===article)) return next(createError(400, `L'article que vous voulez supprimer
-    N'est pas dans le contenu de la commande`))
-    if (contenu_commande.length<2) return next(createError(400, `Le contenu d'une commande ne peut pas être vide,
-    impossible d'effectuer la supression`))
+    if (!contenu_commande) 
+        return next(createError(400, "La commande n'existe pas"))
+    if (!contenu_commande.some(art=> art.code_barre===article)) 
+        return next(createError(400, `L'article que vous voulez supprimer n'est pas dans le contenu de la commande`))
+    if (contenu_commande.length<2) 
+        return next(createError(400, `Le contenu d'une commande ne peut pas être vide,impossible d'effectuer la supression`))
 
     await contenu.removeArticleFromCommande(id_commande, article)    
 
@@ -79,12 +80,32 @@ export const removeFromCommandeContenu = catchAsync( async function(request, res
 
 export const changeQuantity = catchAsync( async function(request, response, next) {
     
-    const commande = request.body.commande;
-    commande.id_commande = request.params.id;    
+    const id_commande = request.params.id;
+    const article = request.body.code_barre
+    const quantite = request.body.quantite;
+
+    if (!id_commande || !article || !quantite) return next(createError(400, "Une information nécessaire n'a pas été fournie"))
+
+    const commande = await contenu.contenuUneCommande(id_commande);
+
+    if (!commande) return next(createError(400, "La commande n'existe pas"))
+
+    try {
+        var stock = await verifyArticleStock([{code_barre : article, quantité : quantite}]);
+    } catch(error) {
+        //Ici, si le stock est trop faible la commande ne passe pas.
+        //Mais il pourrait y avoir un cas ou un employé veut faire passer une commande pour un article hors stock
+        //TODO : permettre ça en ne vérifiant que si le code barre existe bien, pas le stock de l'article
+        return next(createError(400, error))
+    }
+    
+    const result = await contenu.updateQuantiteCommande(id_commande, article, quantite)
 
     return response.status(200).json({
         status: "ok",
+        commande : result
     });
+
 });
 
 
