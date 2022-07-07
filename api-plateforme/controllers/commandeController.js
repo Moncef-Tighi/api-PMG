@@ -117,7 +117,11 @@ export const createCommande = catchAsync( async function(request, response, next
 
     const commandesByClient = await contenu.arrayOfCommandeForOneClient(commande.email_client);
     if (commandesByClient.length>0) {
-        if (commandesByClient.some(commande=> objectDeepEqual(commande.articles, contenu_commande))) 
+        if (commandesByClient.some(commande=> objectDeepEqual(
+            //On a besoin de sort les commandes parce qu'une commande peut être identique mais avoir les articles dans un ordre différent
+            commande.articles.sort((a, b) =>  (a.code_barre > b.code_barre) ? 1 : ((b.code_barre > a.code_barre) ? -1 : 0)), 
+            contenu_commande.sort((a, b) =>  (a.code_barre > b.code_barre) ? 1 : ((b.code_barre > a.code_barre) ? -1 : 0))
+            ))) 
         return next(createError(400, "Duplication : Votre commande est déjà en cours de traitement")) 
     }
 

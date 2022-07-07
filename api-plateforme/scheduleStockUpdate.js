@@ -42,6 +42,7 @@ export const autoUpdateStock = new AsyncTask('simple task', async ()=> {
         })
     }
 }, (error) =>{
+    console.log(error);
     console.log(`La mise à jour automatique du stock n'a pas eu lieu à cause de cette erreur : 
     ${error}`);
 })
