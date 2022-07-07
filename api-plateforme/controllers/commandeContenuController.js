@@ -6,17 +6,54 @@ import * as attribution from '../models/commande_attribution.js';
 import * as historique from '../models/commande_historique.js';
 import { addToHistory } from './commadeHistoriqueController.js';
 import createError from 'http-errors';
+import { verifyArticleStock, getPrices } from '../util/VerificationCommande.js';
+
+
 
 export const addToCommandeContenu = catchAsync( async function(request, response, next) {
     
-    const commande = request.body.commande;
-    commande.id_commande = request.params.id;
+    const id_commande = request.params.id;
+    const newArtilce = request.body.code_barre
+    const quantite = request.body.quantite;
+    
+    if (!id_commande ) return next(createError(400, "Vous n'avez pas fournit la commande ciblée"))
+    if (!newArtilce ) return next(createError(400, "Le contenu de la commande est invalide"))
+    if (!quantite || quantite<1) return next(createError(400, "La quantité de l'article demandé n'est pas valide"))
 
-    if (!contenu_commande || contenu_commande.constructor!== Array) return next(createError(400, "Le contenu de la commande est invalide"))
+    //Il faut vérifier si l'article demandé est déjà dans la commande, et return une erreur si c'est le cas
 
 
-    return response.status(200).json({
+    const commande = await contenu.contenuUneCommande(id_commande);
+
+    if (!commande) return next(createError(400, "La commande n'existe pas"))
+
+    try {
+        var stock = await verifyArticleStock([{code_barre : newArtilce, quantité : quantite}]);
+    } catch(error) {
+        //Ici, si le stock est trop faible la commande ne passe pas.
+        //Mais il pourrait y avoir un cas ou un employé veut faire passer une commande pour un article hors stock
+        //TODO : permettre ça en ne vérifiant que si le code barre existe bien, pas le stock de l'article
+        return next(createError(400, error))
+    }
+
+    const prices = await getPrices(stock);
+    
+    console.log(stock);
+    console.log(prices.find(price => 
+        price.code_article === stock.find(art=> art.GA_CODEBARRE===newArtilce).GA_CODEARTICLE
+        ).prix)
+
+    const result = await contenu.addArticleToCommand(id_commande,newArtilce, quantite,
+        prices.find(price => 
+            price.code_article === stock.find(art=> art.GA_CODEBARRE===newArtilce).GA_CODEARTICLE
+        ).prix
+    )
+
+
+
+    return response.status(201).json({
         status: "ok",
+        commande : result
     });
 });
 
@@ -27,9 +64,25 @@ export const removeFromCommandeContenu = catchAsync( async function(request, res
 
     if (!contenu_commande || contenu_commande.constructor!== Array) return next(createError(400, "Le contenu de la commande est invalide"))
 
+    //Il faut vérifier que l'article est bien dans la commande ET si la commande n'est pas vide.
+    //Il faut empêcher l'employé de vider une commande, c'est pas ouf comme UX sur certains points
+    //Mais ça évite une erreur humaine où tu supprimes les articles d'une commande sans les réajouter ensuite
+
+
 
     return response.status(200).json({
         status: "ok",
     });
 });
+
+export const changeQuantity = catchAsync( async function(request, response, next) {
+    
+    const commande = request.body.commande;
+    commande.id_commande = request.params.id;    
+
+    return response.status(200).json({
+        status: "ok",
+    });
+});
+
 

@@ -28,3 +28,9 @@ export const addToHistory = async function(id_employe, commande_id, type, raison
     const creationHistorique = await historique.createHistorique(commande_id, id_employe, type, description, raison)
     return creationHistorique
 }
+
+
+export const historiqueOneCommande = async function(request,response,next) {
+
+    //L'historique doit être paginé ! Il pourrait y en avoir 20-30 dans certains cas.
+}

@@ -5,7 +5,9 @@ export const verifyArticleStock = async function (contenu_commande) {
     //Cette fonction vérifie que l'article existe ET qu'il est disponible dans une quantité suffisante pour effectuer la commande
     //Cette fonction est utilisé lors de la création ET de la modification d'une commande
 
+    console.log(contenu_commande);
     const code_barres = contenu_commande.map(taille => taille.code_barre);
+    console.log(code_barres);
     const stock = await axios.post(`${process.env.API_CEGID}/articles/taille?code_barre=true`, { articles: code_barres });
     if (stock.data.body.articles.length != code_barres.length)
         throw "Un des articles demandé n'existe pas";
@@ -21,6 +23,9 @@ export const verifyArticleStock = async function (contenu_commande) {
     });
     return stock.data.body.articles;
 };
+
+
+
 export const getPrices = async function (stock) {
     //L'input de cette fonction est l'output de la fonction verifyArticleStock
 

@@ -8,7 +8,7 @@ import createError from 'http-errors';
 import apiWooCommerce from "../models/api.js";
 import axios from 'axios';
 import objectDeepEqual from '../util/objectDeepEqual.js';
-import { verifyArticleStock, getPrices } from '../util/VerificationCommande';
+import { verifyArticleStock, getPrices } from '../util/VerificationCommande.js';
 
 
 export const listeCommandes = catchAsync( async function(request, response, next) {
