@@ -21,8 +21,6 @@ export const addToHistory = async function(id_employe, commande_id, type, raison
         case "Première Attribution":
             description= "Première attribution de la commande"
             break;
-        default :
-            throw new Error("Le type d'action obtenu n'existe pas");
     }
 
     const creationHistorique = await historique.createHistorique(commande_id, id_employe, type, description, raison)
@@ -33,4 +31,7 @@ export const addToHistory = async function(id_employe, commande_id, type, raison
 export const historiqueOneCommande = async function(request,response,next) {
 
     //L'historique doit être paginé ! Il pourrait y en avoir 20-30 dans certains cas.
+    //Faudra probablement un infinitescroll à la fin de la page
+
+
 }

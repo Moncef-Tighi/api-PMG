@@ -15,6 +15,7 @@ export const addToCommandeContenu = catchAsync( async function(request, response
     const id_commande = request.params.id;
     const newArtilce = request.body.code_barre
     const quantite = request.body.quantite;
+    const raison = request.body.raison;
     
     if (!id_commande ) return next(createError(400, "Vous n'avez pas fournit la commande ciblée"))
     if (!newArtilce ) return next(createError(400, "Le contenu de la commande est invalide"))
@@ -44,6 +45,9 @@ export const addToCommandeContenu = catchAsync( async function(request, response
         ).prix
     )
 
+    await addToHistory(request.user.id_employe, id_commande, "Ajout au contenu", raison || ""
+    , `La taille ${newArtilce} a été ajouté au contenu de la commande`)
+
     return response.status(201).json({
         status: "ok",
         commande : result
@@ -54,6 +58,7 @@ export const removeFromCommandeContenu = catchAsync( async function(request, res
     
     const id_commande = request.params.id;
     const article = request.body.code_barre
+    const raison = request.body.raison;
 
     if (!id_commande || !article) return next(createError(400, "Une information nécessaire n'a pas été fournie"))
 
@@ -72,10 +77,15 @@ export const removeFromCommandeContenu = catchAsync( async function(request, res
 
     await contenu.removeArticleFromCommande(id_commande, article)    
 
+    await addToHistory(request.user.id_employe, id_commande, "Supression du contenu", raison || ""
+    , `La taille ${article} a été retiré du contenu de la commande`)
+
+
     return response.status(200).json({
         status: "ok",
         message: "L'article a bien été retiré de la commande "
     });
+
 });
 
 export const changeQuantity = catchAsync( async function(request, response, next) {
@@ -83,6 +93,7 @@ export const changeQuantity = catchAsync( async function(request, response, next
     const id_commande = request.params.id;
     const article = request.body.code_barre
     const quantite = request.body.quantite;
+    const raison = request.body.raison;
 
     if (!id_commande || !article || !quantite) return next(createError(400, "Une information nécessaire n'a pas été fournie"))
 
@@ -101,6 +112,10 @@ export const changeQuantity = catchAsync( async function(request, response, next
     
     const result = await contenu.updateQuantiteCommande(id_commande, article, quantite)
 
+    await addToHistory(request.user.id_employe, id_commande, "Changement quantité", raison || ""
+    , `L'article ${article} a vu sa quantité passer de ${commande[0].quantite} à ${quantite}`)
+
+    
     return response.status(200).json({
         status: "ok",
         commande : result
