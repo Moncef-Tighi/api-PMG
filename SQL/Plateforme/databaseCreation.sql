@@ -135,7 +135,6 @@ CREATE TABLE status_commande (
     id_status INT NOT NULL,
     commentaire TEXT,
     status_date TIMESTAMP DEFAULT now(),
-    PRIMARY KEY(id_status, id_commande),
     CONSTRAINT fk_commande FOREIGN KEY (id_commande) REFERENCES commande(id_commande),
     CONSTRAINT fk_status FOREIGN KEY (id_status) REFERENCES liste_status_commande(id_status)
 );

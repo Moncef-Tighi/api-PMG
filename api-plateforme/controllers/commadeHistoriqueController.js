@@ -8,11 +8,11 @@ import createError from 'http-errors';
 //Et parfois on veut ajouter à l'historique après qu'une action soit effectuée 
 //(par exemple : Quand l'attribution de la commande change)
 
-export const addToHistory = async function(commande_id, type, raison, description="") {
+export const addToHistory = async function(id_employe, commande_id, type, raison, description="") {
 
     if (!commande_id) throw new Error("L'id de la commande n'a pas été fournit")
     if (!type) throw new Error("Impossible d'ajouter l'action dans l'historique, aucun type d'actions n'a été spécifié")
-    if (!request.user.id_employe) throw new Error("L'employé n'est pas connecté, impossible d'ajouter son action à l'historique");
+    if (!id_employe) throw new Error("L'id de l'employé n'a pas été reçu");
 
     switch(type) {
         case "Attribution":
@@ -25,6 +25,6 @@ export const addToHistory = async function(commande_id, type, raison, descriptio
             throw new Error("Le type d'action obtenu n'existe pas");
     }
 
-    const creationHistorique = await historique.createHistorique(commande_id, request.user.id_employe, type, description, raison)
+    const creationHistorique = await historique.createHistorique(commande_id, id_employe, type, description, raison)
     return creationHistorique
 }

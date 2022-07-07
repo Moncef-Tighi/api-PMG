@@ -34,7 +34,7 @@ export const getAllArticles = async function(parametres,having={}) {
     INNER JOIN ARTICLE ON GA_ARTICLE=GQ_ARTICLE AND GQ_CLOTURE <> 'X' AND GA_TYPEARTICLE = 'MAR' 
     LEFT JOIN CHOIXCOD  A ON A.CC_CODE=GA_FAMILLENIV1 AND A.CC_TYPE='FN1'
     LEFT JOIN CHOIXCOD AS B ON B.CC_CODE=GA_LIBREART4 AND B.CC_TYPE='FN4'
-    WHERE GA_DATEMODIF> '2020' ${query.where(parametres, true)} 
+    WHERE GA_DATEMODIF> '2015' ${query.where(parametres, true)} 
     GROUP BY GA_CODEARTICLE
     ${query.having(having)}
     ${query.sort(parametres)}

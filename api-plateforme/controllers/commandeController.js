@@ -221,28 +221,34 @@ export const changeCommandeAttribution = catchAsync( async function(request, res
     const commande = await attribution.getCommandeAttribution(id);
 
     let type= "";
-    if (!commande.id_employe) {
-        type = "Première Attribution"
-        await historique.createStatus(4, id, "Commende attribuée à un employé pour la première fois")
-    }
-    else if (commande.id_employe===employe) {
-        return next(createError(400, "La commande est déjà attribuée à l'employé"))
-    }
-    else {
-        if (!request.body.raison) return next(createError(400, "Vous ne pouvez pas changer l'attribution d'une commande sans raison"))
-        type= "Attribution"
-    }
-
-    const creationAttribute = await attribution.attributeCommande(id, employe);
-    const creationHistorique = await addToHistory(id, type, request.body.raison || "", description);
-
-    return response.status(200).json({
-        status: "ok",
-        body : {
-            attribute : creationAttribute,
-            historique : creationHistorique
+    try {
+        if (!commande || !commande.id_employe) {
+            type = "Première Attribution"
+            await historique.createStatus(4, id, "Commende attribuée à un employé pour la première fois")
         }
-    });
+        else if (commande.id_employe===employe) {
+            return next(createError(400, "La commande est déjà attribuée à l'employé"))
+        }
+        else {
+            if (!request.body.raison) return next(createError(400, "Vous ne pouvez pas changer l'attribution d'une commande sans raison"))
+            type= "Attribution"
+        }
+
+        const creationAttribute = await attribution.attributeCommande(id, employe);
+        const creationHistorique = await addToHistory(employe,id, type, request.body.raison || "");
+        
+        return response.status(200).json({
+            status: "ok",
+            body : {
+                attribute : creationAttribute,
+                historique : creationHistorique
+            }
+        });
+    } catch(error) {
+        console.log(error);
+        return next(createError(400,"La commande demandée n'existe pas !"));
+    }
+
 })
 
 export const checkAttribution = catchAsync( async function(request, response, next) {
