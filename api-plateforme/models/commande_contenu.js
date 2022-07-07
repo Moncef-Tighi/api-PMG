@@ -63,6 +63,14 @@ export const updateQuantiteCommande = async function(id_commande, code_barre, qu
 }
 
 
-export const removeArticleCommande = async function() {
+export const removeArticleFromCommande = async function(id_commande, code_barre) {
+
+    const sql= `
+    DELETE FROM article_commande
+    WHERE id_commande=$1 AND code_barre = $2
+    `
+    const values = [id_commande, code_barre];
+    const response = await db.query(sql, values)
+    return response.rows;
 
 }

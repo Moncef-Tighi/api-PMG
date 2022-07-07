@@ -38,18 +38,11 @@ export const addToCommandeContenu = catchAsync( async function(request, response
 
     const prices = await getPrices(stock);
     
-    console.log(stock);
-    console.log(prices.find(price => 
-        price.code_article === stock.find(art=> art.GA_CODEBARRE===newArtilce).GA_CODEARTICLE
-        ).prix)
-
     const result = await contenu.addArticleToCommand(id_commande,newArtilce, quantite,
         prices.find(price => 
             price.code_article === stock.find(art=> art.GA_CODEBARRE===newArtilce).GA_CODEARTICLE
         ).prix
     )
-
-
 
     return response.status(201).json({
         status: "ok",
@@ -59,19 +52,28 @@ export const addToCommandeContenu = catchAsync( async function(request, response
 
 export const removeFromCommandeContenu = catchAsync( async function(request, response, next) {
     
-    const commande = request.body.commande;
-    commande.id_commande = request.params.id;
+    const id_commande = request.params.id;
+    const article = request.body.code_barre
 
-    if (!contenu_commande || contenu_commande.constructor!== Array) return next(createError(400, "Le contenu de la commande est invalide"))
+    if (!id_commande || !article) return next(createError(400, "Une information nécessaire n'a pas été fournie"))
 
     //Il faut vérifier que l'article est bien dans la commande ET si la commande n'est pas vide.
     //Il faut empêcher l'employé de vider une commande, c'est pas ouf comme UX sur certains points
     //Mais ça évite une erreur humaine où tu supprimes les articles d'une commande sans les réajouter ensuite
 
+    const contenu_commande = await contenu.contenuUneCommande(id_commande);
 
+    if (!contenu_commande) return next(createError(400, "La commande n'existe pas"))
+    if (!contenu_commande.some(art=> art.code_barre===article)) return next(createError(400, `L'article que vous voulez supprimer
+    N'est pas dans le contenu de la commande`))
+    if (contenu_commande.length<2) return next(createError(400, `Le contenu d'une commande ne peut pas être vide,
+    impossible d'effectuer la supression`))
+
+    await contenu.removeArticleFromCommande(id_commande, article)    
 
     return response.status(200).json({
         status: "ok",
+        message: "L'article a bien été retiré de la commande "
     });
 });
 
