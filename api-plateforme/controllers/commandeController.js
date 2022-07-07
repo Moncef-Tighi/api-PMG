@@ -165,10 +165,9 @@ export const createCommande = catchAsync( async function(request, response, next
 export const updateCommande = catchAsync( async function(request, response, next) {
     
     // ATTENTION ! Cette route n'update que les informations global de la commande, pas le contenu.
-
     const commande = request.body.commande;
-    
-    if (!commande) return next(createError(400, 'Impossible de trouver la commande'))
+    commande.id_commande = request.params.id;
+
     if (!commande.adresse || !commande.numero_client ||
         !commande.email_client || !commande.numero_commune ||
         !commande.nom_client || !commande.prenom_client)
@@ -177,12 +176,17 @@ export const updateCommande = catchAsync( async function(request, response, next
     if (!commande.id_prestataire || Number(commande.id_prestataire)<0) return next(createError(400), "Impossible de trouver le prestataire de la commande")
     if (commande.commune<0 || commande.commune>1550) return next(createError(400, "Le numéro de la commune n'est pas valide"))
 
-    const updatedCommande = await model.updateCommande(commande);
+    try {
+        const updatedCommande = await model.updateCommande(commande);
+        return response.status(200).json({
+            status: "ok",
+            body : updatedCommande
+        });
+    } catch(error) {
+        console.log(error);
+        return next(createError(400, "La modification de la commande a échouée, soit la commande n'existe pas soit il y a eu une erreur lors de la modification"))
+    }
 
-    return response.status(200).json({
-        status: "ok",
-        body : updatedCommande
-    });
 });
 
 
@@ -253,7 +257,7 @@ export const changeCommandeAttribution = catchAsync( async function(request, res
 
 export const checkAttribution = catchAsync( async function(request, response, next) {
 
-    const id = request.body.id_commande;
+    const id = request.body.id_commande || request.params.id;
     const employe = request.user.id_employe;
 
     if (!id) return next(createError(400, "Aucune commande n'a été sélectionnée"))

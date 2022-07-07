@@ -75,7 +75,7 @@ export const updateCommande = async function({id_prestataire,nom_client, prenom_
     ,email_client,numero_commune,adresse, id_commande}) {
     const sql= `
     UPDATE commande
-    SET id_prestataire=$1, nom_client=$2, prenom_client=$3, numero_client=$4,email_client=$5,numero_commune=$6,adresse=$7 )
+    SET id_prestataire=$1, nom_client=$2, prenom_client=$3, numero_client=$4,email_client=$5,numero_commune=$6,adresse=$7
     WHERE id_commande = $8
     
     RETURNING *
