@@ -23,10 +23,10 @@ export const addToCommandeContenu = catchAsync( async function(request, response
 
     //Il faut vérifier si l'article demandé est déjà dans la commande, et return une erreur si c'est le cas
 
-
     const commande = await contenu.contenuUneCommande(id_commande);
-
+    
     if (!commande) return next(createError(400, "La commande n'existe pas"))
+    if (commande.some(article=> article.code_barre===newArtilce)) return next(createError(400, "L'article à ajouter est déjà dans la commande"))
 
     try {
         var stock = await verifyArticleStock([{code_barre : newArtilce, quantité : quantite}]);
