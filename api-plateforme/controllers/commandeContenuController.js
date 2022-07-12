@@ -7,7 +7,36 @@ import * as historique from '../models/commande_historique.js';
 import { addToHistory } from './commadeHistoriqueController.js';
 import createError from 'http-errors';
 import { verifyArticleStock, getPrices } from '../util/VerificationCommande.js';
+import axios from 'axios';
 
+
+export const contenuCommande = catchAsync( async function(request,response, next) {
+
+    const id_commande = request.params.id;
+
+    const commande_plateforme = await contenu.contenuUneCommande(id_commande);
+
+    if (!commande_plateforme) return next(400, "La commande demandée n'existe pas");
+
+    //Récupération du stock actuel pour chaque article sur CEGID
+    
+    const code_barres = commande_plateforme.map(commande => commande.code_barre);
+    const stock = await axios.post(`${process.env.API_CEGID}/articles/taille?code_barre=true`, {articles : code_barres});
+    const contenu_commande = commande_plateforme.map(commande => {
+        return {
+            ...commande,
+            stock : stock.data.body.articles.find(article=> article.GA_CODEBARRE===commande.code_barre).stockNet
+        }
+    })
+
+    console.log(contenu_commande);
+
+    return response.status(200).json({
+        status: "ok",
+        contenu_commande,
+    });
+
+})
 
 
 export const addToCommandeContenu = catchAsync( async function(request, response, next) {
