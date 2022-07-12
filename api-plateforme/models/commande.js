@@ -23,13 +23,20 @@ export const listeCommandes = async function(param) {
         
         INNER JOIN status_commande ON status_commande.id_commande= commande.id_commande AND status_date= 
             (SELECT MAX(status_date) FROM status_commande
-            WHERE id_commande = commande.id_commande) 
+            WHERE status_commande.id_commande = commande.id_commande) 
 
         INNER JOIN liste_status_commande ON liste_status_commande.id_status = status_commande.id_status
         
         LEFT JOIN commande_attribution ON commande.id_commande = commande_attribution.id_commande
+		AND date_attribution = (SELECT MAX(date_attribution) FROM commande_attribution)
     
         ${query.where(param)}
+        GROUP BY  commande.id_commande, prenom_client,nom_client,numero_client,email_client
+        ,status_commande.id_status,status
+        ,commande_date_debut,commande_date_fin,provenance
+        ,nom_commune,nom_daira,nom_wilaya,adresse
+        ,nom_prestataire,id_employe
+
         ${query.sort(param)}
         ${query.paginate(param)}
     `
