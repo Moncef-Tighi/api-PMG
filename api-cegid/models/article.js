@@ -177,8 +177,8 @@ export const emplacementTaille = async function(code_barres) {
     const sql= `
 
         SELECT
-        GA_CODEBARRE,
-        GDE_LIBELLE,
+        GA_CODEBARRE AS "code_barre",
+        GDE_LIBELLE AS "depot",
         SUM(GQ_PHYSIQUE-GQ_RESERVECLI+GQ_RESERVEFOU-GQ_PREPACLI) AS 'stockNet'
 
         FROM DISPO
