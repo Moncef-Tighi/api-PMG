@@ -24,18 +24,28 @@ export const contenuCommande = catchAsync( async function(request,response, next
 
     //On a pas vraiment besoin de juste réccupérer le stock, on a besoin du stock dans chaque dépot
     // const stock = await axios.post(`${process.env.API_CEGID}/articles/taille?code_barre=true`, {articles : code_barres});
-    // const contenu_commande = commande_plateforme.map(commande => {
-    //     return {
-    //         ...commande,
-    //         stock : stock.data.body.articles.find(article=> article.GA_CODEBARRE===commande.code_barre).stockNet
-    //     }
-    // })
 
     const stock = await axios.post(`${process.env.API_CEGID}/articles/detail_taille`, {tailles : code_barres});
 
+    const contenu_commande = commande_plateforme.map(commande => {
+        return {
+            ...commande,
+            emplacement : stock.data["tailleDépot"].reduce((result, taille)=> {
+                if (taille.code_barre===commande.code_barre) {
+                    return result.concat({
+                        depot :  taille.depot,
+                        stock : taille.stockNet
+                    })
+                }
+                return result;
+            }, [])
+        }
+    })
+
+
     return response.status(200).json({
         status: "ok",
-        contenu_commande : stock.data["tailleDépot"],
+        contenu_commande,
     });
 
 })
