@@ -170,10 +170,14 @@ export const emplacementArticle = async function(article) {
     
 };
 
-export const emplacementTaille = async function(code_barre) {
-    const data=await db.query`
+export const emplacementTaille = async function(code_barres) {
+
+    const request = new db.Request();
+
+    const sql= `
 
         SELECT
+        GA_CODEBARRE,
         GDE_LIBELLE,
         SUM(GQ_PHYSIQUE-GQ_RESERVECLI+GQ_RESERVEFOU-GQ_PREPACLI) AS 'stockNet'
 
@@ -181,12 +185,14 @@ export const emplacementTaille = async function(code_barre) {
 
         LEFT JOIN ARTICLE ON GA_ARTICLE=GQ_ARTICLE
         INNER JOIN DEPOTS ON GQ_DEPOT= depots.GDE_DEPOT
-        WHERE GA_CODEBARRE=${code_barre} AND GQ_CLOTURE <> 'X' AND GA_TYPEARTICLE = 'MAR' 
+        WHERE GA_CODEBARRE IN ('${code_barres.join("','")}') AND GQ_CLOTURE <> 'X' AND GA_TYPEARTICLE = 'MAR' 
         AND GQ_PHYSIQUE-GQ_RESERVECLI+GQ_RESERVEFOU-GQ_PREPACLI>0
         
-        GROUP BY GDE_LIBELLE
+        GROUP BY GDE_LIBELLE, GA_CODEBARRE
     
     `
+    const data = await request.query(sql);
+
     return data.recordset;
 
 }

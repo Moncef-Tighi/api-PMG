@@ -21,7 +21,17 @@ export const contenuCommande = catchAsync( async function(request,response, next
     //Récupération du stock actuel pour chaque article sur CEGID
     
     const code_barres = commande_plateforme.map(commande => commande.code_barre);
-    const stock = await axios.post(`${process.env.API_CEGID}/articles/taille?code_barre=true`, {articles : code_barres});
+
+    //On a pas vraiment besoin de juste réccupérer le stock, on a besoin du stock dans chaque dépot
+    // const stock = await axios.post(`${process.env.API_CEGID}/articles/taille?code_barre=true`, {articles : code_barres});
+    // const contenu_commande = commande_plateforme.map(commande => {
+    //     return {
+    //         ...commande,
+    //         stock : stock.data.body.articles.find(article=> article.GA_CODEBARRE===commande.code_barre).stockNet
+    //     }
+    // })
+
+    const stock = await axios.post(`${process.env.API_CEGID}/articles/detail_taille`, {tailles : code_barres});
     const contenu_commande = commande_plateforme.map(commande => {
         return {
             ...commande,
