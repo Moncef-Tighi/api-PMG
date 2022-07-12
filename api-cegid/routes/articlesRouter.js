@@ -7,6 +7,7 @@ router.get("/", controllers.listArticles);
 router.post("/disponible", controllers.ArticlesDisponible);
 router.post("/taille", controllers.tailleDisponible);
 router.get("/update/:minutes", controllers.updateStock);
+router.get("/detail_taille/:code_barre", controllers.tailleDepot);
 router.get("/detail_stock/:article", controllers.ArticleDepot);
 router.get("/:article", controllers.unArticle);
 

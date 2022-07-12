@@ -81,6 +81,19 @@ const formatResponseDepot = function(depots,taille) {
 
 }
 
+export const tailleDepot = catchAsync( async function(request,response,next) {
+    const taille = await model.emplacementTaille(request.params.code_barre);
+
+    if (taille.length===0) {
+        return next(createError(404,`Aucun taille avec ce code n'a été trouvé`));
+    }
+    return response.status(200).json({
+        status : 'ok',
+        taille,
+    })
+
+});
+
 export const ArticleDepot = catchAsync( async function(request, response,next){
     
     const article = await model.emplacementArticle(request.params.article);

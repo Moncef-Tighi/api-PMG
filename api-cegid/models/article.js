@@ -91,6 +91,10 @@ export const infoArticle = async function(parametre) {
 
 
 export const dispoArticleTaille = async function(article, field='GA_CODEARTICLE') {
+
+    //Attention ! Le code de cette query est complexe parce que parfois on veut avoir la disponibilité de l'article
+    //Et parfois on veut la disponibilité d'une taille. Cette fonction donne les deux ! 
+
     const request = new db.Request();
     let sql = `
     SELECT
@@ -165,6 +169,28 @@ export const emplacementArticle = async function(article) {
     return data.recordset;
     
 };
+
+export const emplacementTaille = async function(code_barre) {
+    const data=await db.query`
+
+        SELECT
+        GDE_LIBELLE,
+        SUM(GQ_PHYSIQUE-GQ_RESERVECLI+GQ_RESERVEFOU-GQ_PREPACLI) AS 'stockNet'
+
+        FROM DISPO
+
+        LEFT JOIN ARTICLE ON GA_ARTICLE=GQ_ARTICLE
+        INNER JOIN DEPOTS ON GQ_DEPOT= depots.GDE_DEPOT
+        WHERE GA_CODEBARRE=${code_barre} AND GQ_CLOTURE <> 'X' AND GA_TYPEARTICLE = 'MAR' 
+        AND GQ_PHYSIQUE-GQ_RESERVECLI+GQ_RESERVEFOU-GQ_PREPACLI>0
+        
+        GROUP BY GDE_LIBELLE
+    
+    `
+    return data.recordset;
+
+}
+
 
 export const disponibilitéArticle = async function(articles) {
 
