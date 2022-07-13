@@ -13,21 +13,16 @@ import axios from 'axios';
 export const contenuCommande = catchAsync( async function(request,response, next) {
 
     const id_commande = request.params.id;
-
     const commande_plateforme = await contenu.contenuUneCommande(id_commande);
-
     if (!commande_plateforme) return next(400, "La commande demandée n'existe pas");
 
     //Récupération du stock actuel pour chaque article sur CEGID
     
     const code_barres = commande_plateforme.map(commande => commande.code_barre);
-
-    //On a pas vraiment besoin de juste réccupérer le stock, on a besoin du stock dans chaque dépot
-    // const stock = await axios.post(`${process.env.API_CEGID}/articles/taille?code_barre=true`, {articles : code_barres});
-
     const stock = await axios.post(`${process.env.API_CEGID}/articles/detail_taille`, {tailles : code_barres});
-
     const contenu_commande = commande_plateforme.map(commande => {
+        //Ici c'est du formattage, on combine d'abord les infos de la palteforme avec ceux de CEGID
+        //Puis, on place les informations d'emplacement dans la taille qui lui appartient
         return {
             ...commande,
             emplacement : stock.data["tailleDépot"].reduce((result, taille)=> {
