@@ -1,6 +1,6 @@
 
 SELECT code_barre, quantite, prix_vente
-,COALESCE(nom_lieu_ramassage, 'Aucun Magasin choisi') as "Magasin"
+,COALESCE(nom_magasin, 'Aucun Magasin choisi') as "Magasin"
 ,confirmation_prestataire, confirmation_magasin, COALESCE(date_demande_ramassage::text, 'Non Ramassée') as "date_demande_ramassage"
 
 FROM article_commande

@@ -3,7 +3,7 @@ import db from "./postGreSql.js";
 export const unArticleCommande = async function(id_article_commande) {
     const sql = `
         SELECT code_barre, quantite, prix_vente
-        ,nom_lieu_ramassage
+        ,nom_magasin
         ,confirmation_prestataire
         ,confirmation_magasin
         ,COALESCE(date_demande_ramassage::text, 'Non Ramassée') as "date_demande_ramassage"
@@ -22,7 +22,7 @@ export const unArticleCommande = async function(id_article_commande) {
 export const contenuUneCommande = async function(id_commande) {
     const sql = `
         SELECT id_article_commande,code_barre, quantite, prix_vente
-        ,COALESCE(nom_lieu_ramassage, 'Aucun Magasin choisi') as "magasin"
+        ,COALESCE(nom_magasin, 'Aucun Magasin choisi') as "magasin"
         ,confirmation_prestataire, confirmation_magasin, COALESCE(date_demande_ramassage::text, 'Non Ramassée') as "date_demande_ramassage"
         
         FROM article_commande
