@@ -2,15 +2,15 @@ import db from "./postGreSql.js";
 
 export const unArticleCommande = async function(id_article_commande) {
     const sql = `
-        SELECT code_barre, quantite, prix_vente
+        SELECT article_commande.id_article_commande,code_barre, quantite, prix_vente
         ,nom_magasin
         ,confirmation_prestataire
         ,confirmation_magasin
         ,COALESCE(date_demande_ramassage::text, 'Non Ramassée') as "date_demande_ramassage"
         
         FROM article_commande
-        LEFT OUTER JOIN ramassage ON ramassage.id_lieu_ramassage = article_commande.id_lieu_ramassage
-        WHERE id_article_commande= $1
+        LEFT OUTER JOIN ramassage ON ramassage.id_article_commande = article_commande.id_article_commande
+        WHERE article_commande.id_article_commande= $1
     `
     const values = [id_article_commande];
     const response = await db.query(sql, values)
@@ -21,12 +21,12 @@ export const unArticleCommande = async function(id_article_commande) {
 
 export const contenuUneCommande = async function(id_commande) {
     const sql = `
-        SELECT id_article_commande,code_barre, quantite, prix_vente
+        SELECT article_commande.id_article_commande,code_barre, quantite, prix_vente
         ,COALESCE(nom_magasin, 'Aucun Magasin choisi') as "magasin"
         ,confirmation_prestataire, confirmation_magasin, COALESCE(date_demande_ramassage::text, 'Non Ramassée') as "date_demande_ramassage"
         
         FROM article_commande
-        LEFT OUTER JOIN ramassage ON ramassage.id_lieu_ramassage = article_commande.id_lieu_ramassage
+        LEFT OUTER JOIN ramassage ON ramassage.id_article_commande = article_commande.id_article_commande
         WHERE id_commande= ${id_commande}
     `
     const response = await db.query(sql)

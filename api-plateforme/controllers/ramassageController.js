@@ -9,7 +9,7 @@ import createError from 'http-errors';
 import axios from 'axios';
 
 
-export const choixMagasin = catchAsync(function(request,response,next) {
+export const choixMagasin = catchAsync(async function(request,response,next) {
 
     const id_article_commande = request.body.id_article_commande;
     const nom_magasin= request.body.magasin;
@@ -17,7 +17,7 @@ export const choixMagasin = catchAsync(function(request,response,next) {
 
     if (!id_article_commande || !nom_magasin) return next(createError(400, "L'article ou le nom du magasin n'a pas été trouvé"))
 
-    const article = contenu.unArticleCommande(id_article_commande);
+    const article = await contenu.unArticleCommande(id_article_commande);
 
     if (!article) return next(createError("L'article dans la commande sélectionné n'a pas été trouvé"))
 
@@ -29,7 +29,7 @@ export const choixMagasin = catchAsync(function(request,response,next) {
         addToHistory(request.user.id_article_commande, article.id_commande, "Modification magasin", raison)
     }
 
-    const ramassage = model.ajoutPointRamassage(id_article_commande, nom_magasin);
+    const ramassage = await model.ajoutPointRamassage(id_article_commande, nom_magasin);
 
     //TODO : 
     //Ajouter une vérification, si l'article qu'on vient de sélectionner comme magasin était le dernier à ne pas être attribuée
