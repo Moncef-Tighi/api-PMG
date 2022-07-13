@@ -5150,7 +5150,7 @@
 											"visible": false,
 											"font": "Arial;13;0",
 											"left": 688,
-											"top": -464,
+											"top": -448,
 											"height": 13
 										},
 										{
@@ -5161,7 +5161,7 @@
 											},
 											"font": "Arial;13;1",
 											"left": 1669,
-											"top": 759,
+											"top": 767,
 											"width": 147.0498046875,
 											"height": 13,
 											"text": "ramassage"
@@ -5175,7 +5175,7 @@
 											"visible": false,
 											"font": "Arial;13;0",
 											"left": 688,
-											"top": -464,
+											"top": -448,
 											"width": 80.9072265625,
 											"height": 13,
 											"text": "(from Model1)"
@@ -5189,14 +5189,14 @@
 											"visible": false,
 											"font": "Arial;13;0",
 											"left": 688,
-											"top": -464,
+											"top": -448,
 											"height": 13,
 											"horizontalAlignment": 1
 										}
 									],
 									"font": "Arial;13;0",
 									"left": 1664,
-									"top": 752,
+									"top": 760,
 									"width": 157.0498046875,
 									"height": 25,
 									"stereotypeLabel": {
@@ -5233,7 +5233,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 1669,
-											"top": 782,
+											"top": 790,
 											"width": 147.0498046875,
 											"height": 13,
 											"text": "+id_ramassage",
@@ -5250,27 +5250,10 @@
 											},
 											"font": "Arial;13;0",
 											"left": 1669,
-											"top": 797,
+											"top": 805,
 											"width": 147.0498046875,
 											"height": 13,
-											"text": "+id_commande",
-											"horizontalAlignment": 0
-										},
-										{
-											"_type": "UMLAttributeView",
-											"_id": "AAAAAAGB9sKn/GvEXf8=",
-											"_parent": {
-												"$ref": "AAAAAAGBXOlqwBmis0k="
-											},
-											"model": {
-												"$ref": "AAAAAAGB9sKn72usCt4="
-											},
-											"font": "Arial;13;0",
-											"left": 1669,
-											"top": 812,
-											"width": 147.0498046875,
-											"height": 13,
-											"text": "+code_barre",
+											"text": "+id_article_commande",
 											"horizontalAlignment": 0
 										},
 										{
@@ -5284,7 +5267,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 1669,
-											"top": 827,
+											"top": 820,
 											"width": 147.0498046875,
 											"height": 13,
 											"text": "+nom_magasin",
@@ -5301,7 +5284,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 1669,
-											"top": 842,
+											"top": 835,
 											"width": 147.0498046875,
 											"height": 13,
 											"text": "+confirmation_prestataire",
@@ -5318,7 +5301,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 1669,
-											"top": 857,
+											"top": 850,
 											"width": 147.0498046875,
 											"height": 13,
 											"text": "+confirmation_magasin",
@@ -5335,7 +5318,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 1669,
-											"top": 872,
+											"top": 865,
 											"width": 147.0498046875,
 											"height": 13,
 											"text": "+date_ramassage",
@@ -5344,9 +5327,9 @@
 									],
 									"font": "Arial;13;0",
 									"left": 1664,
-									"top": 777,
+									"top": 785,
 									"width": 157.0498046875,
-									"height": 113
+									"height": 98
 								},
 								{
 									"_type": "UMLOperationCompartmentView",
@@ -5359,7 +5342,7 @@
 									},
 									"font": "Arial;13;0",
 									"left": 1664,
-									"top": 890,
+									"top": 883,
 									"width": 157.0498046875,
 									"height": 10
 								},
@@ -5375,7 +5358,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 344,
-									"top": -208,
+									"top": -200,
 									"width": 10,
 									"height": 10
 								},
@@ -5391,7 +5374,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 344,
-									"top": -208,
+									"top": -200,
 									"width": 10,
 									"height": 10
 								}
@@ -5399,9 +5382,9 @@
 							"font": "Arial;13;0",
 							"containerChangeable": true,
 							"left": 1664,
-							"top": 752,
+							"top": 760,
 							"width": 157.0498046875,
-							"height": 148,
+							"height": 133,
 							"nameCompartment": {
 								"$ref": "AAAAAAGBXOlqwBmdMOA="
 							},
@@ -7279,7 +7262,7 @@
 										"$ref": "AAAAAAGBYWEGAKa9Slg="
 									},
 									"edgePosition": 2,
-									"text": "+1..*"
+									"text": "+1"
 								},
 								{
 									"_type": "EdgeLabelView",
@@ -7334,7 +7317,7 @@
 									},
 									"font": "Arial;13;0",
 									"left": 1752,
-									"top": 720,
+									"top": 728,
 									"width": 14.82177734375,
 									"height": 13,
 									"alpha": -0.5235987755982988,
@@ -7356,7 +7339,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 1772,
-									"top": 717,
+									"top": 725,
 									"height": 13,
 									"alpha": -0.7853981633974483,
 									"distance": 40,
@@ -7376,7 +7359,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 1731,
-									"top": 724,
+									"top": 732,
 									"height": 13,
 									"alpha": 0.5235987755982988,
 									"distance": 25,
@@ -7420,7 +7403,7 @@
 							"tail": {
 								"$ref": "AAAAAAGAPAlyAmooTGc="
 							},
-							"points": "1500:568;1744:568;1744:752",
+							"points": "1500:568;1744:568;1744:760",
 							"showVisibility": true,
 							"nameLabel": {
 								"$ref": "AAAAAAGBYWEGAKa+kRQ="
@@ -10660,7 +10643,7 @@
 								"_parent": {
 									"$ref": "AAAAAAGBYWEGAKa5pZY="
 								},
-								"name": "1..*",
+								"name": "1",
 								"reference": {
 									"$ref": "AAAAAAGAPAlyAmomcYE="
 								}
@@ -11061,15 +11044,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGBXOlqwBmaU50="
 							},
-							"name": "id_commande"
-						},
-						{
-							"_type": "UMLAttribute",
-							"_id": "AAAAAAGB9sKn72usCt4=",
-							"_parent": {
-								"$ref": "AAAAAAGBXOlqwBmaU50="
-							},
-							"name": "code_barre"
+							"name": "id_article_commande"
 						},
 						{
 							"_type": "UMLAttribute",
