@@ -21,8 +21,6 @@ export const choixMagasin = catchAsync(async function(request,response,next) {
 
     if (!article) return next(createError("L'article dans la commande sélectionné n'a pas été trouvé"))
 
-    console.log(article);
-
     if (article.confirmation_magasin || article.confirmation_prestataire) 
         return next(createError("Vous ne pouvez pas changer le magasin pour un article qui a déjà été ramassé"))
 
@@ -40,9 +38,9 @@ export const choixMagasin = catchAsync(async function(request,response,next) {
     //La commande passe en status : "En attente de magasin"
 
     const commande_contenu= await contenu.contenuUneCommande(article.id_commande);
-    console.log(commande_contenu);
-    if(!commande_contenu.some(article=> !article.nom_magasin)) {
-        await historique.createStatus(4, id, "Attribution de la commande à tout les magasins");
+
+    if(!commande_contenu.some(article=> !article.magasin)) {
+        await historique.createStatus(4, article.id_commande, "Attribution de la commande à tout les magasins");
     }
     
     return response.status(201).json({

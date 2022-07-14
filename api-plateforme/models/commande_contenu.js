@@ -11,10 +11,11 @@ export const unArticleCommande = async function(id_article_commande) {
         FROM article_commande
         LEFT OUTER JOIN ramassage ON ramassage.id_article_commande = article_commande.id_article_commande
         WHERE article_commande.id_article_commande= $1
-        AND date_demande_ramassage = (
+        AND (date_demande_ramassage = (
             SELECT MAX(date_demande_ramassage) FROM ramassage WHERE ramassage.id_article_commande=$1
-        )
-    `
+        ) OR date_demande_ramassage IS NULL)
+           
+        `
     const values = [id_article_commande];
     const response = await db.query(sql, values)
     return response.rows[0];
