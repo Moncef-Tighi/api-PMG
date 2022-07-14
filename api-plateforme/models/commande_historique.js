@@ -1,5 +1,9 @@
 import db from "./postGreSql.js";
 
+//ATTENTION ! Il y a deux historiques :
+//L'historique global, et l'historique pour chaque commande.
+//Ici, c'est l'historique pour chaque commande.
+
 
 export const createStatus = async function(id_status, id_commande, commentaire="") {
     const sql = `

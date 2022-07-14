@@ -1,5 +1,11 @@
 import db from "./postGreSql.js";
 
+
+//ATTENTION ! Il y a deux historiques :
+//L'historique global, et l'historique pour chaque commande.
+//Ici, c'est l'historique pour chaque commande.
+
+
 export const createAction = async function(id_employe, action_sur,categorie,type,description ){
     const sql = `
     INSERT INTO historique_actions(id_employe, action_sur, categorie, date_creation,type,description)

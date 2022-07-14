@@ -59,18 +59,17 @@ VALUES
 INSERT INTO liste_status_commande(id_status, status)
 VALUES
 
-(1,'Annulée'),
-(2,'Reçu'),
-(3,'Nouvelle Commande'),
-(4,'En attente de confirmation'),
-(5,'Confimée'),
-(6,'En Attente des magasins'),
-(7,'En cours de packaging'),
-(8,'En cours de ramassage'),
-(9,'En cours de livraison'),
-(10,'Echange'),
-(11,'Réussie'),
-(12,'Echouée');
+(1,'Nouvelle Commande'),
+(2,'En attente de confirmation'),
+(3,'Confimée'),
+(4,'En Attente des magasins'),
+(5,'En cours de packaging'),
+(6,'En cours de ramassage'),
+(7,'En cours de livraison'),
+(8,'Echange'),
+(9,'Annulée'),
+(10,'Echouée'),
+(11,'Réussie');
 
 INSERT INTO prestataire(id_prestataire, nom_prestataire, url_api)
 VALUES

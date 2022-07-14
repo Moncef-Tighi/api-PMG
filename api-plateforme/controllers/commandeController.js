@@ -96,6 +96,7 @@ export const createCommande = catchAsync( async function(request, response, next
 
 
     const createdContenu = await Promise.all(contenuPromises)
+    await historique.createStatus(1, createdCommande.id_commande);
 
     return response.status(201).json({
         status: "ok",
@@ -163,7 +164,7 @@ export const changeCommandeAttribution = catchAsync( async function(request, res
     try {
         if (!commande || !commande.id_employe) {
             type = "Première Attribution"
-            await historique.createStatus(4, id, "Commende attribuée à un employé pour la première fois")
+            await historique.createStatus(2, id, "Commende attribuée à un employé pour la première fois")
         }
         else if (commande.id_employe===employe) {
             return next(createError(400, "La commande est déjà attribuée à l'employé"))
