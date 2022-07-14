@@ -2,7 +2,7 @@ import db from "./postGreSql.js";
 
 export const unArticleCommande = async function(id_article_commande) {
     const sql = `
-        SELECT article_commande.id_article_commande,code_barre, quantite, prix_vente
+        SELECT article_commande.id_commande,article_commande.id_article_commande,code_barre, quantite, prix_vente
         ,nom_magasin
         ,confirmation_prestataire
         ,confirmation_magasin
@@ -11,10 +11,13 @@ export const unArticleCommande = async function(id_article_commande) {
         FROM article_commande
         LEFT OUTER JOIN ramassage ON ramassage.id_article_commande = article_commande.id_article_commande
         WHERE article_commande.id_article_commande= $1
+        AND date_demande_ramassage = (
+            SELECT MAX(date_demande_ramassage) FROM ramassage WHERE ramassage.id_article_commande=$1
+        )
     `
     const values = [id_article_commande];
     const response = await db.query(sql, values)
-    return response.rows;
+    return response.rows[0];
 }
 
 
