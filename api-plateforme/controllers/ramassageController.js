@@ -21,6 +21,8 @@ export const choixMagasin = catchAsync(async function(request,response,next) {
 
     if (!article) return next(createError("L'article dans la commande sélectionné n'a pas été trouvé"))
 
+    if (article.id_status<3 || article.id_status>8) 
+        return next(createError(400, "Impossible de faire l'attribution pour une commande non confirmée ou terminée"))
     if (article.confirmation_magasin || article.confirmation_prestataire) 
         return next(createError("Vous ne pouvez pas changer le magasin pour un article qui a déjà été ramassé"))
 

@@ -3,17 +3,19 @@ import db from "./postGreSql.js";
 export const unArticleCommande = async function(id_article_commande) {
     const sql = `
         SELECT article_commande.id_commande,article_commande.id_article_commande,code_barre, quantite, prix_vente
-        ,nom_magasin
+        ,nom_magasin, status_commande.id_status
         ,confirmation_prestataire
         ,confirmation_magasin
         ,COALESCE(date_demande_ramassage::text, 'Non Ramassée') as "date_demande_ramassage"
         
         FROM article_commande
+        INNER JOIN status_commande ON status_commande.id_commande = article_commande.id_commande
         LEFT OUTER JOIN ramassage ON ramassage.id_article_commande = article_commande.id_article_commande
         WHERE article_commande.id_article_commande= $1
         AND (date_demande_ramassage = (
             SELECT MAX(date_demande_ramassage) FROM ramassage WHERE ramassage.id_article_commande=$1
         ) OR date_demande_ramassage IS NULL)
+
            
         `
     const values = [id_article_commande];
