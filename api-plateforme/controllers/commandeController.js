@@ -218,10 +218,9 @@ export const appelClient = catchAsync(async function(request, response, next) {
 
     if(!result || !id_commande) return next(createError(400, "Une information obligatoire n'a pas été fournie"))
 
-    if(!result in ["annuler", "confirmer"]) return next(createError(400, "Un appel client ne peut donner lieu qu'à deux résultat possible : Annuler et Confirmer"))
+    if(!result in ["annuler", "confirmer", "restorer"]) return next(createError(400, "Un appel client ne peut donner lieu qu'à deux résultat possible : Annuler et Confirmer"))
     
-    const commande = model.getOneCommande(id_commande)
-    console.log(commande);
+    const commande = await model.getOneCommande(id_commande)
 
     if (result==="annuler") {
         if (commande.id_status===9) return next(createError(400, "La commande est déjà annulée"))
@@ -232,6 +231,11 @@ export const appelClient = catchAsync(async function(request, response, next) {
         if (commande.id_status!==2) return next(createError(400, "Il n'est possible de confirmer une commande que si elle en status 'Attribuée' "))
         await historique.createStatus(3, id_commande, "commande confirmée par le client")
         await historique.createHistorique(id_commande, request.user.id_employe, "changement status", "Le client a confirmé sa commande.");
+    }
+    if (result==="restorer") {
+        if (commande.id_status!==9) return next(createError(400, "Vous ne pouvez pas restorer une commande qui n'est pas annulée"))
+        await historique.createStatus(3, id_commande, "commande restoré")
+        await historique.createHistorique(id_commande, request.user.id_employe, "changement status", "Le client a choisi de réactiver la commande");
     }
 
 

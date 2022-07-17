@@ -61,7 +61,7 @@ VALUES
 
 (1,'Nouvelle Commande'),
 (2,'En attente de confirmation'),
-(3,'Confimée'),
+(3,'Confirmée'),
 (4,'En Attente des magasins'),
 (5,'En cours de packaging'),
 (6,'En cours de ramassage'),

@@ -17,14 +17,14 @@ export const getOneCommande = async function(id_commande) {
 
         INNER JOIN liste_status_commande ON liste_status_commande.id_status = status_commande.id_status
 
-        WHERE commande.id_commande = 26
+        WHERE commande.id_commande = $1
 
         GROUP BY  commande.id_commande, prenom_client,nom_client,numero_client,email_client
         ,status_commande.id_status,status
         ,commande_date_debut,commande_date_fin,provenance,adresse
     `
 
-    const response = await db.query(sql, query.sanitize())
+    const response = await db.query(sql, [id_commande])
 
     return response.rows[0];
     
