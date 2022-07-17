@@ -27,15 +27,10 @@ export const choixMagasin = catchAsync(async function(request,response,next) {
     if (article.nom_magasin) {
         if (article.nom_magasin===nom_magasin) return next(createError(400, "L'article est déjà attribué à ce magasin"))
         if (!raison) return next(createError(400,"Vous ne pouvez pas modifier le magasin sans raison"))
-        console.log(request.user.id_article_commande)
         addToHistory(request.user.id_article_commande, article.id_commande, "Modification magasin", raison)
     }
 
     const ramassage = await model.ajoutPointRamassage(id_article_commande, nom_magasin);
-    
-    //TODO : 
-    //Ajouter une vérification, si l'article qu'on vient de sélectionner comme magasin était le dernier à ne pas être attribuée
-    //La commande passe en status : "En attente de magasin"
 
     const commande_contenu= await contenu.contenuUneCommande(article.id_commande);
 

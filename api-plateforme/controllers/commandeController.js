@@ -208,3 +208,24 @@ export const checkAttribution = catchAsync( async function(request, response, ne
     request.commande= commande;
     next();
 })
+
+
+
+export const appelClient = catchAsync(async function(request, response, next) {
+
+    const result = request.body.resultat;
+    const id_commande = request.params.id;
+
+    if(!result || !id_commande) return next(createError(400, "Une information obligatoire n'a pas été fournie"))
+
+    if(!result in ["annuler", "confirmer"]) return next(createError(400, "Un appel client ne peut donner lieu qu'à deux résultat possible : Annuler et Confirmer"))
+    if (result==="annuler") {
+        await historique.createStatus(9,id_commande, "la commande a été annulée par client");
+        await historique.createHistorique(id_commande, request.user.id_employe, "changement status", "Après un appel du client, la commande a été annulée");
+        return;
+    } 
+    await historique.createStatus(3, id_commande, "commande confirmée par le client")
+    await historique.createHistorique(id_commande, request.user.id_employe, "changement status", "Le client a confirmé sa commande.");
+
+
+})

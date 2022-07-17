@@ -11,6 +11,7 @@ router.use('/contenu', contenuRouter)
 // router.use(protect);
 router.get('/', controllers.listeCommandes);
 router.put('/update/:id', protect, controllers.checkAttribution ,controllers.updateCommande);
+router.patch('/appel/:id', protect, controllers.checkAttribution ,controllers.appelClient);
 router.patch('/status', controllers.updateCommandeStatus);
 router.patch('/disable', controllers.disableCommande);
 router.post('/attribution/:id', protect, controllers.changeCommandeAttribution);
