@@ -38,6 +38,11 @@ export const historiqueOneCommande = async function(request,response,next) {
 
     if(!id_commande) return next(createError(400, "Aucune id n'a été trouvé pour la commande"));
 
-    const historique = await historique.OneHistorique(id_commande, page);
+    const result = await historique.OneHistorique(id_commande, page);
+
+    return response.status(200).json({
+        status: "ok",
+        historique : result,
+    })
 
 }

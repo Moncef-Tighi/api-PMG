@@ -194,6 +194,7 @@ class QueryPostGre extends Query {
     paginate(queryString) {
         // ATTENTION ! Impossible de paginé avec cette méthode sans Order By
         if (!queryString.sort) return "";
+        if (queryString.page<0 || queryString.pagesize<0) return ""
         const page=Number(queryString.page) || 1
         let pageSize = Number(queryString.pagesize) || 100;
         if (pageSize>1000) pageSize=1000
