@@ -1,8 +1,26 @@
 import db from "./postGreSql.js";
+import QueryPostGre from "../util/query.js";
 
 //ATTENTION ! Il y a deux historiques :
 //L'historique global, et l'historique pour chaque commande.
 //Ici, c'est l'historique pour chaque commande.
+
+
+export const OneHistorique= async function(id_commande, page) {
+    const query= new QueryPostGre("-date_action")
+
+    const sql = `
+        SELECT nom,prenom, date_action, type, description, commentaire FROM historique_commande
+        LEFT OUTER JOIN employee ON historique_commande.id_employe=employee.id_employe
+        WHERE id_commande=$1
+        ${query.sort()}
+        ${query.paginate({page, pageSize : 2})}
+    `
+
+    const response = await db.query(sql, [id_commande])
+    return response.rows
+
+}
 
 
 export const createStatus = async function(id_status, id_commande, commentaire="") {

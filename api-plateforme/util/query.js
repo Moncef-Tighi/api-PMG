@@ -208,9 +208,9 @@ class QueryPostGre extends Query {
 
 }
 
-const query1= new QueryPostGre("GA_CODEARTICLE",["b"]);
+// const query1= new QueryPostGre("GA_CODEARTICLE",["b"]);
 
-const query2= new QueryPostGre("",["invalidField"]);
+// const query2= new QueryPostGre("",["invalidField"]);
 
 // console.log(query1.where(qs.parse(""))
 // + query1.sort(qs.parse("")) 

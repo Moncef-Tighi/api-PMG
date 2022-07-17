@@ -33,5 +33,11 @@ export const historiqueOneCommande = async function(request,response,next) {
     //L'historique doit être paginé ! Il pourrait y en avoir 20-30 dans certains cas.
     //Faudra probablement un infinitescroll à la fin de la page
 
+    const id_commande = request.params.id;
+    const page = request.query.page || 1;
+
+    if(!id_commande) return next(createError(400, "Aucune id n'a été trouvé pour la commande"));
+
+    const historique = await historique.OneHistorique(id_commande, page);
 
 }
