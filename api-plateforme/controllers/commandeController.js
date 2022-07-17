@@ -220,15 +220,20 @@ export const appelClient = catchAsync(async function(request, response, next) {
 
     if(!result in ["annuler", "confirmer"]) return next(createError(400, "Un appel client ne peut donner lieu qu'à deux résultat possible : Annuler et Confirmer"))
     
-    const commande = model.listeCommandes({id_commande})
+    const commande = model.getOneCommande(id_commande)
+    console.log(commande);
+
     if (result==="annuler") {
+        if (commande.id_status===9) return next(createError(400, "La commande est déjà annulée"))
         await historique.createStatus(9,id_commande, "la commande a été annulée par client");
         await historique.createHistorique(id_commande, request.user.id_employe, "changement status", "Après un appel du client, la commande a été annulée");
     } 
-    if (result==="confirmer") {
+    if (result==="confirmer" ) {
+        if (commande.id_status!==2) return next(createError(400, "Il n'est possible de confirmer une commande que si elle en status 'Attribuée' "))
         await historique.createStatus(3, id_commande, "commande confirmée par le client")
         await historique.createHistorique(id_commande, request.user.id_employe, "changement status", "Le client a confirmé sa commande.");
     }
+
 
     return response.status(200).json({
         status : "ok",
