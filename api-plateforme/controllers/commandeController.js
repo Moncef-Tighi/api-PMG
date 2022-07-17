@@ -121,15 +121,22 @@ export const updateCommande = catchAsync( async function(request, response, next
     if (!commande.id_prestataire || Number(commande.id_prestataire)<0) return next(createError(400), "Impossible de trouver le prestataire de la commande")
     if (commande.commune<0 || commande.commune>1550) return next(createError(400, "Le numéro de la commune n'est pas valide"))
 
+    const oldCommande = model.getOneCommande(id_commande);
+    if (!oldCommande) return next(createError(400, "Cette commande n'existe pas"))
+    if (oldCommande.id_status>8) return next(createError(400, "Impossible de modifier une commande terminée"))
+    if (oldCommande.id_status>2 && !request.body.rasion) return next(createError(400, "Impossible de modifier une commande confirmée sans raison"))
     try {
         const updatedCommande = await model.updateCommande(commande);
+        if (oldCommande.id_status>2) await historique.createHistorique(id_commande, request.user.id_employe, "Modification", raison);
+        else await historique.createHistorique(id_commande, request.user.id_employe, "Modification", "La commande a été modifié avant sa confirmation");
+        
         return response.status(200).json({
             status: "ok",
             body : updatedCommande
         });
     } catch(error) {
         console.log(error);
-        return next(createError(400, "La modification de la commande a échouée, soit la commande n'existe pas soit il y a eu une erreur lors de la modification"))
+        return next(createError(400, "Il y a eu une erreur lors de la modification"))
     }
 
 });
