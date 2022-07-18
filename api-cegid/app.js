@@ -6,24 +6,19 @@ import cors from 'cors';
 import { errorHandeler } from "./controllers/errorController.js";
 import produitsRouter from './routes/articlesRouter.js';
 import tarifsRouter from './routes/tarifsRouter.js'
-import viewRouter from './routes/viewRouter.js';
  
 const app = express();
 
 app.use(cors());
 app.use(helmet());
-app.set('view engine', 'ejs');
 app.disable('x-powered-by');
 app.use(express.json({
     limit : "100kb" //Limite la taille du body à 100kb
 }));
 app.use(express.urlencoded({extended: true}));
 
-
-app.use(express.static('public'));
 app.use('/cegid/api/v1/articles', produitsRouter);
 app.use('/cegid/api/v1/tarifs', tarifsRouter);
-app.use('/cegid', viewRouter);
 
 app.all('*', (request, response, next)=> {    
     //Ce middelware a pour seul but de catch les erreurs 404 
