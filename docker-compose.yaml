@@ -22,7 +22,7 @@ services:
     build: 
       context: ./api-plateforme
       dockerfile: api.plateforme.Dockerfile
-    command: npm run start
+    command: npm run docker
     ports: 
       - "4001:4001"
     container_name: api-plateforme
@@ -36,7 +36,7 @@ services:
     build: 
       context : ./api-cegid
       dockerfile: api.cegid.Dockerfile
-    command: npm run start
+    command: npm run prod
     ports: 
       - "5000:5000"
     container_name: api-cegid
@@ -45,16 +45,18 @@ services:
     image: postgres:14
     restart: always
     ports: 
-      - "5432:5432"
+    ## On le run au port 5433 pour éviter des problèmes si il y a deux bases de données. Surtout dans l'environnement de dev
+      - "5433:5432"
     volumes: 
       - postgres-plateforme:/var/lib/postgresql/data
-      - ./db/init.sql:/SQL/plateforme/databaseCreation.sql
       # Cette ligne remplace le script d'initalization de postgres par notre script d'initalisation pour la base de donnée
+      - ./SQL/Plateforme/init.sql:/docker-entrypoint-initdb.d/init.sql
+
     container_name: postgres
     environment:
-      - POSTGRES_PASSWORD=root
-      - POSTGRES_USER=Moncef
-      - POSTGRES_DB=plateforme
+      - POSTGRES_PASSWORD=wYH582It2xA
+      - POSTGRES_USER=apiplateforme
+      - POSTGRES_DB=ecommerce
 
 volumes:
   postgres-plateforme:
