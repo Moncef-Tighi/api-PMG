@@ -13,6 +13,9 @@ services:
     depends_on:
     - api-cegid
     - api-plateforme
+    volumes:
+      - './:/plateforme'
+
 
   api-plateforme:
     build: 
@@ -24,6 +27,9 @@ services:
     depends_on:
     - postgres
     - api-cegid
+    volumes:
+      - './:/api-plateforme'
+
 
   api-cegid: 
     build: 
@@ -32,6 +38,8 @@ services:
     ports: 
       - "3000:3000"
     container_name: Dockerfile
+    volumes:
+      - './:/api-cegid'
 
   postgres: 
     image: postgres:14
