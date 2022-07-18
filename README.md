@@ -24,8 +24,52 @@ Le projet est séparé en trois applications :
 
 L'entreprise espère a l'avenir remplacer son site web actuelle ainsi que créer une application mobile. L'application doit donc être découplé de leur architecture actuelle.
 
+## Deployment
+
+D'abord, cloner le projet
+
+```bash
+  git clone https://github.com/Moncef-Tighi/api-PMG
+```
+
+### Connexion à CEGID : 
+
+Il faut configurer les variables utilisées pour se connecter à la base de données de Cegid :
+
+```bash
+  cd ./api-cegid
+```
+
+copier le fichier contenant les variables d'environnement :
+
+```bash
+  cp config.test.env config.env
+```
+
+Modifier les variables d'environnement avec un éditeur de texte
+
+```bash
+  nano config.env
+```
+
+C'était les seules variables à configurer, pour le reste il faut installer Docker ainsi que Docker-Compose.
+Puis, aller dans la racine du projet et lancer la commande : 
+
+```bash
+  docker-compose up -d
+```
+
+Il faudra penser à vérifier dans les logs des 4 containers qu'il n'y a pas de message d'erreur.
+
+
 
 ## Run Locally
+
+Pour pouvoir faire des modifications, il vaut mieux installer tout sur la machine.
+
+Il est peut être possible de modifier et lancer avec le script docker-compose, mais il faudra le modifier.
+
+Dans l'état actuel, le script est fait pour la production, pas pour le développement.
 
 D'abord, cloner le projet
 
