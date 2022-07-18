@@ -8,4 +8,4 @@ RUN npm install
 RUN npm ci
 COPY . .
 EXPOSE 4001
-CMD ["npm", "run", "prod"]
+CMD ["npm", "run", "start"]

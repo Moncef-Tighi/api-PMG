@@ -5,19 +5,18 @@ FROM node:16 as node
 ARG REACT_APP=/plateforme
 WORKDIR /app
 
-COPY ./plateforme/package*.json ./
-
-RUN npm install
-
+# COPY ./plateforme/package*.json ./
 COPY ./plateforme .
 
+RUN npm install
+RUN npm run build
 ## J'ai choisi de build à  chaque fois pour simplifier le déploiement.
 ## Mais il serait possible de copier le contenu du fichier build et build manuellement avant le déploiement.
-RUN npm run build
+
+
 
 FROM nginx
 
-# RUN serve build -p 80
 ##Supression de la page d'accueil par défault d'nginx
 RUN rm -rf /usr/share/nginx/html/*
 COPY ./nginx.conf /etc/nginx/nginx.conf
@@ -25,5 +24,5 @@ COPY ./nginx.conf /etc/nginx/nginx.conf
 ##On copie le contenu du dossier build dans les fichiers de nginx
 COPY --from=node /app/build /usr/share/nginx/html
 
-EXPOSE 3000 80 443
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
+EXPOSE 80 443
+ENTRYPOINT ["/usr/sbin/nginx", "-g", "daemon off;"]
