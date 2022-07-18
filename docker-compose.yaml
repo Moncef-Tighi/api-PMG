@@ -34,11 +34,21 @@ services:
     container_name: Dockerfile
 
   postgres: 
-    image: postgres
+    image: postgres:14
     restart: always
+    ports: 
+      - "5432:5432"
+    volumes: 
+      - db:/var/lib/postgresql/data
+      - ./db/init.sql:/SQL/plateforme/databaseCreation.sql
+      # Cette ligne remplace le script d'initalization de postgres par notre script d'initalisation pour la base de donnée
+
     environment:
       - POSTGRES_PASSWORD=root
       - POSTGRES_USER=Moncef
       - POSTGRES_DB=plateforme
 
+volumes:
+  db:
+    driver: local
   

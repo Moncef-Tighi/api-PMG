@@ -11,7 +11,7 @@ RUN npm install
 
 COPY . .
 
-RUN NPM BUILD
+RUN npm build
 
 FROM nginx
 
