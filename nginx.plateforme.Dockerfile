@@ -5,13 +5,13 @@ FROM node:16 as build
 ARG REACT_APP=/plateforme
 WORKDIR /app
 
-COPY package*.json ./
+COPY ./plateforme/package*.json ./
 
 RUN npm install
 
-COPY . .
+COPY ./plateforme .
 
-RUN npm build
+RUN npm run build
 
 FROM nginx
 

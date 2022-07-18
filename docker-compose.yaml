@@ -4,12 +4,13 @@ services:
   plateforme:
     build: 
       context: .
+      dockerfile: nginx.plateforme.Dockerfile
     ports: 
       - "80:80"
       - "443:443"
       - "3000:3000"
     command: npm run start
-    container_name: Dockerfile
+    container_name: nginx.plateforme.Dockerfile
     depends_on:
     - api-cegid
     - api-plateforme
@@ -20,10 +21,11 @@ services:
   api-plateforme:
     build: 
       context: ./api-plateforme
+      dockerfile: api.plateforme.Dockerfile
     command: npm run start
     ports: 
       - "4001:4001"
-    container_name: Dockerfile
+    container_name: api.plateforme.Dockerfile
     depends_on:
     - postgres
     - api-cegid
@@ -34,10 +36,11 @@ services:
   api-cegid: 
     build: 
       context : ./api-cegid
+      dockerfile: api.cegid.Dockerfile
     command: npm run start
     ports: 
       - "3000:3000"
-    container_name: Dockerfile
+    container_name: api.cegid.Dockerfile
     volumes:
       - './:/api-cegid'
 
