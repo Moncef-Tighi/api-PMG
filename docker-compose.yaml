@@ -4,18 +4,17 @@ services:
   plateforme:
     build: 
       context: .
-      dockerfile: nginx.plateforme.Dockerfile
+      dockerfile: Dockerfile.nginx
     ports: 
-      - "80:80"
+      - "3000:80"
       - "443:443"
-      - "3000:3000"
     command: npm run start
-    container_name: nginx.plateforme.Dockerfile
+    # container_name: nginx.plateforme.Dockerfile
     depends_on:
     - api-cegid
     - api-plateforme
     volumes:
-      - './:/plateforme'
+      - react-plateforme:/plateforme
 
 
   api-plateforme:
@@ -30,7 +29,7 @@ services:
     - postgres
     - api-cegid
     volumes:
-      - './:/api-plateforme'
+      - api-plateforme:/api-plateforme
 
 
   api-cegid: 
@@ -39,10 +38,8 @@ services:
       dockerfile: api.cegid.Dockerfile
     command: npm run start
     ports: 
-      - "3000:3000"
+      - "5000:5000"
     container_name: api.cegid.Dockerfile
-    volumes:
-      - './:/api-cegid'
 
   postgres: 
     image: postgres:14
@@ -50,7 +47,7 @@ services:
     ports: 
       - "5432:5432"
     volumes: 
-      - db:/var/lib/postgresql/data
+      - postgres-plateforme:/var/lib/postgresql/data
       - ./db/init.sql:/SQL/plateforme/databaseCreation.sql
       # Cette ligne remplace le script d'initalization de postgres par notre script d'initalisation pour la base de donnée
 
@@ -60,6 +57,10 @@ services:
       - POSTGRES_DB=plateforme
 
 volumes:
-  db:
+  postgres-plateforme:
+    driver: local
+  react-plateforme:
+    driver: local
+  api-plateforme:
     driver: local
   
