@@ -1,0 +1,33 @@
+version: '2'
+services:
+  plateforme:
+    build: .
+    ports: 
+      - "80:80"
+      - "443:443"
+      - "3000:3000"
+    command: npm run start
+  api-plateforme:
+    build: 
+      context: ./api-plateforme
+    command: npm run start
+    ports: 
+      - "4001:4001"
+    container_name: DockerFile
+    depends_on:
+    - postgres
+    - api-cegid
+  api-cegid: 
+    build: 
+      context : ./api-cegid
+    command: npm run start
+    ports: 
+      - "3000:3000"
+    container_name: DockerFile
+
+  postgres: 
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=root
+  

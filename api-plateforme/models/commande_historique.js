@@ -14,7 +14,7 @@ export const OneHistorique= async function(id_commande, page) {
         LEFT OUTER JOIN employee ON historique_commande.id_employe=employee.id_employe
         WHERE id_commande=$1
         ${query.sort()}
-        ${query.paginate({sort: true, page, pagesize : 2})}
+        ${query.paginate({sort: true, page, pagesize : 10})}
     `
 
     const response = await db.query(sql, [id_commande])
