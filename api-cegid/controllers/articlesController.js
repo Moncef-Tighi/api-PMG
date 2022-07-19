@@ -25,7 +25,10 @@ export const listArticles = catchAsync( async function(request, response,next){
         delete request.query.division
     }
 
-    const [articles, length] = await model.getAllArticles(request.query, having);
+    const old = request.query.old || false;
+    delete request.query.old
+
+    const [articles, length] = await model.getAllArticles(request.query, having, old);
 
     if (articles.length===0) return (next(createError(404, 'Aucun article ne correspond à cette recherche')))
     

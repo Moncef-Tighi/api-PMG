@@ -4,9 +4,9 @@ import qs from "qs";
 
 const query= new Query('-MAX(GA_DATEMODIF)');
 
-export const getAllArticles = async function(parametres,having={}) {
+export const getAllArticles = async function(parametres,having={}, old=false) {
     
-
+ 
     const sql = `
     SELECT DISTINCT
     GA_CODEARTICLE
@@ -34,7 +34,7 @@ export const getAllArticles = async function(parametres,having={}) {
     INNER JOIN ARTICLE ON GA_ARTICLE=GQ_ARTICLE AND GQ_CLOTURE <> 'X' AND GA_TYPEARTICLE = 'MAR' 
     LEFT JOIN CHOIXCOD  A ON A.CC_CODE=GA_FAMILLENIV1 AND A.CC_TYPE='FN1'
     LEFT JOIN CHOIXCOD AS B ON B.CC_CODE=GA_LIBREART4 AND B.CC_TYPE='FN4'
-    WHERE GA_DATEMODIF> '2015' ${query.where(parametres, true)} 
+    WHERE ${!old ? GA_DATEMODIF> '2021' : ""} ${query.where(parametres, true)} 
     GROUP BY GA_CODEARTICLE
     ${query.having(having)}
     ${query.sort(parametres)}
