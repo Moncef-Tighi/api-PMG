@@ -34,14 +34,14 @@ const Navigation = function({menu,toggleDrawer}) {
                     <ListItemText primary="Articles" className={classes.textLink}/>
                 </ListItemButton>
               </NavLink> 
-                <NavLink  to="/commande" className={({ isActive }) =>isActive ? classes.activeLink : classes.navLink}>
+                {/* <NavLink  to="/commande" className={({ isActive }) =>isActive ? classes.activeLink : classes.navLink}>
                     <ListItemButton sx={{ width: '100%', height: "65px"}}>
                         <ListItemIcon>
                         <ContactPhone  sx={{width:'1.3em', height: '1.3em', color: '#262626'}}/>
                         </ListItemIcon>
                         <ListItemText primary="Commandes" className={classes.textLink}/>
                     </ListItemButton>
-                </NavLink>
+                </NavLink> */}
                 {/* <NavLink to="/prix" className={({ isActive }) =>isActive ? classes.activeLink : classes.navLink}> 
                     <ListItemButton sx={{ width: '100%', height: "65px"}}>
                         <ListItemIcon>

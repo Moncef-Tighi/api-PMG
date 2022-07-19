@@ -34,7 +34,7 @@ const LoginForm = function() {
             })
             setError("");
             authContext.login(response.data.token, response.data.employe);
-            navigate("/accueil");
+            navigate("/article");
         } catch(error) {
             console.log(error);
             if (error.response) {
