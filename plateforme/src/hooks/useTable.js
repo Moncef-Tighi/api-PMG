@@ -12,10 +12,13 @@ const useTable = function(query) {
     }, [searchParams] )
     
     useEffect( ()=> {
-        const key = query?.key;
         let param={}
-        param[key] = query?.value
-        if (query?.value) setSearchParams(param)
+        const key = query?.key || " ";
+        param[key] = query?.value || " "
+        if (query?.old) param["old"]= true;
+        if (query?.value || query?.old) {
+            setSearchParams(param)
+        }
     }, [query, setSearchParams])
 
     const readURL = function(searchParams) {

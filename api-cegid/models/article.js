@@ -7,6 +7,9 @@ const query= new Query('-MAX(GA_DATEMODIF)');
 export const getAllArticles = async function(parametres,having={}, old=false) {
     
  
+    if (parametres[" "]) delete parametres[" "]
+    console.log(parametres);
+    if (!old) parametres.GA_DATEMODIF=qs.parse("[gt]=2021")
     const sql = `
     SELECT DISTINCT
     GA_CODEARTICLE
@@ -34,12 +37,13 @@ export const getAllArticles = async function(parametres,having={}, old=false) {
     INNER JOIN ARTICLE ON GA_ARTICLE=GQ_ARTICLE AND GQ_CLOTURE <> 'X' AND GA_TYPEARTICLE = 'MAR' 
     LEFT JOIN CHOIXCOD  A ON A.CC_CODE=GA_FAMILLENIV1 AND A.CC_TYPE='FN1'
     LEFT JOIN CHOIXCOD AS B ON B.CC_CODE=GA_LIBREART4 AND B.CC_TYPE='FN4'
-    WHERE ${!old ? GA_DATEMODIF> '2021' : ""} ${query.where(parametres, true)} 
+    ${query.where(parametres)} 
     GROUP BY GA_CODEARTICLE
     ${query.having(having)}
     ${query.sort(parametres)}
     ${query.paginate(parametres)}
     `
+    console.log(sql);
     const request = new db.Request();
     query.sanitize(request);
     const data = await request.query(sql);

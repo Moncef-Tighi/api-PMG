@@ -9,20 +9,29 @@ import { InputAdornment } from "@mui/material";
 import AuthContext from "../state/AuthContext";
 import ListeArticlePlateforme from "../components/Articles/ListeArticlePlateforme";
 import { Tooltip } from '@mui/material';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+
+
 
 const Article = function(props) {
     const [query, setQuery] = useState("");
     const [sortBy] = useState("");
+    const [old, checkBoxChange] = useState(false);
     const navigate= useNavigate();
-
     const authContext = useContext(AuthContext);
+    const checkLocation= useLocation().pathname==='/article'
     const basicSearch= function(event) {
         event.preventDefault();
         const {select, recherche}= event.currentTarget.elements
-        setQuery(()=> {return {
+
+        const newQuery = {
             key : recherche.value ? `${select.value}[like]` : ` `,
-            value :  recherche.value || ' '
-        }})
+            value :  recherche.value || ' ',
+        }
+        if (checkLocation) newQuery.old=old
+        setQuery(()=> newQuery)
     }
 
     const [tab, setTab] = useState(useLocation().pathname || '/article');
@@ -49,6 +58,7 @@ const Article = function(props) {
                         <option value="marque">Marque</option>
                         <option value="silhouette">Silhouette</option>
                     </NativeSelect>
+
                     <TextField id='recherche' size="small" variant="outlined" sx={{display: "block", marginLeft: "10px", width:"100%"}} 
                     InputProps={{
                         startAdornment: (
@@ -56,9 +66,18 @@ const Article = function(props) {
                             <Search />
                             </InputAdornment>
                         ),
-                        }}
+                    }}
                     >
                     </TextField>
+                    {useLocation().pathname==='/article' ? 
+                    <FormGroup>
+                        <FormControlLabel control={<Checkbox 
+                        id="old"
+                        checked={old}
+                        onChange={()=> checkBoxChange(!old)}                  
+                        />} label="Anciens articles ?" />
+                    </FormGroup>
+                    : ""}
                     <Button color="primary" size="small" variant="contained" type="submit">
                         Rechercher
                     </Button>
@@ -79,7 +98,7 @@ const Article = function(props) {
                 </TabList>
             </Box>
             <TabPanel value="/article">
-                <ListeArticleCegid query={query} sortBy={sortBy} 
+                <ListeArticleCegid query={query} sortBy={sortBy}
                 modification={authContext.permissions.some(permission => (permission === "admin" || permission=== "modification") ) } />
             </TabPanel>
             <TabPanel value="/article/plateforme">
