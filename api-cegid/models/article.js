@@ -8,7 +8,6 @@ export const getAllArticles = async function(parametres,having={}, old=false) {
     
  
     if (parametres[" "]) delete parametres[" "]
-    console.log(parametres);
     if (!old) parametres.GA_DATEMODIF=qs.parse("[gt]=2021")
     const sql = `
     SELECT DISTINCT
@@ -43,7 +42,6 @@ export const getAllArticles = async function(parametres,having={}, old=false) {
     ${query.sort(parametres)}
     ${query.paginate(parametres)}
     `
-    console.log(sql);
     const request = new db.Request();
     query.sanitize(request);
     const data = await request.query(sql);
