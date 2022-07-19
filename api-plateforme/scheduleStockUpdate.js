@@ -13,19 +13,27 @@ export const autoUpdateStock = new AsyncTask('simple task', async ()=> {
     //Pour pouvoir envoyer ça il faut un algorithme qui va chercher si il y a eu un changement dans le status de l'article
     //Et envoyer une requête si c'est le cas
 
+    console.log("---- New Update ----");
     const code_article = await articleAyantChange();
+    console.log("Nombre d'articles ayant changés : ")
+    console.log(code_article.length);
     if (!code_article) return;
     const articlesInPlateforme= await findArticles(code_article)
+    console.log("Articles sur la plateforme ayant changé :")
+    console.log(articlesInPlateforme);
     if (!articlesInPlateforme) return;
     const stockArticles = await findStockArticle(articlesInPlateforme);
     const update = await updateStockTaille(stockArticles);
-
+    console.log("Nouveau stock : ");
+    console.log(update);
     const updateWooCommerce = articlesInPlateforme.filter(article => {
         return update.find(articleUpdate => article.code_article===articleUpdate.code_article 
             && article.disponible!=articleUpdate.disponible);
     })
 
     if (updateWooCommerce.length>0) {
+        console.log("wooCommerce, articles qui doivent changer : ")
+        console.log(updateWooCommerce);
         const verifyArticles = new Set();
         updateWooCommerce.forEach(article=> verifyArticles.add(article.code_article));
         const existingArticleWooCommerce = await apiWooCommerce.get(`products?sku=${Array.from(verifyArticles).join(",")}`)
