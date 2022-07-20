@@ -8,7 +8,9 @@ WORKDIR /app
 # COPY ./plateforme/package*.json ./
 COPY ./plateforme .
 
-RUN npm install  --prefer-offline --no-audit
+RUN npm config set fetch-retry-mintimeout 20000
+RUN npm config set fetch-retry-maxtimeout 120000
+RUN npm install  --prefer-offline --no-audit --force
 RUN npm ci  --prefer-offline --no-audit
 RUN npm run build
 ## J'ai choisi de build à  chaque fois pour simplifier le déploiement.

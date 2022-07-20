@@ -4,6 +4,9 @@ ENV DIRPATH=./config.prod.env
 COPY *.env ./
 COPY package*.json ./
 
+
+RUN npm config set fetch-retry-mintimeout 20000
+RUN npm config set fetch-retry-maxtimeout 120000
 RUN npm install --prefer-offline --no-audit
 RUN npm ci  --prefer-offline --no-audit
 COPY . .
