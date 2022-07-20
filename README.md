@@ -61,6 +61,24 @@ Puis, aller dans la racine du projet et lancer la commande :
 
 Il faudra penser à vérifier dans les logs des 4 containers qu'il n'y a pas de message d'erreur.
 
+### ATTENTION !
+
+Si vous rencontrez des erreurs des timeout lors de l'installation des dépendences (NPM install)
+La seule solution est de build individuellement chaque Dockerfile AVANT de lancer le docker-compouse up.
+
+Voici les commandes à lancer séparéement :
+
+```bash
+  docker build -f Dockerfile.nginx .
+```
+```bash
+  docker build -f api.plateforme.Dockerfile ./api-plateforme
+```
+```bash
+  docker build -f api.cegid.Dockerfile ./api-cegid
+```
+
+Avec ces commandes un timeout est toujours possible, mais il semble avoir moins de chance d'arriver.
 
 
 ## Run Locally

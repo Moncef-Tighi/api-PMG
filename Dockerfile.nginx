@@ -1,16 +1,13 @@
 # ATTENTION ! Ce Docker File build l'application React (ce qui peut prendre du temps)
 # Puis démarre NGINX, pour modifier la confirmation Nginx il faut modifier le fichier nginx.conf
 
-FROM node:lts-alpine3.15 as node
+FROM node:16.15.0-alpine3.15 as node
 ARG REACT_APP=/plateforme
 WORKDIR /app
 
 # COPY ./plateforme/package*.json ./
 COPY ./plateforme .
 
-RUN npm install -g npm@latest
-RUN npm config set fetch-retry-mintimeout 20000
-RUN npm config set fetch-retry-maxtimeout 120000
 RUN npm install  --prefer-offline --no-audit --force
 RUN npm ci  --prefer-offline --no-audit
 RUN npm run build
