@@ -8,7 +8,7 @@ WORKDIR /app
 # COPY ./plateforme/package*.json ./
 COPY ./plateforme .
 
-RUN npm install
+RUN npm ci  --prefer-offline --no-audit
 RUN npm run build
 ## J'ai choisi de build à  chaque fois pour simplifier le déploiement.
 ## Mais il serait possible de copier le contenu du fichier build et build manuellement avant le déploiement.
