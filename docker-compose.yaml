@@ -18,6 +18,7 @@ services:
       - react-plateforme:/plateforme
 
 
+
   api-plateforme:
     build: 
       context: ./api-plateforme
@@ -46,6 +47,8 @@ services:
     restart: always
     ports: 
     ## On le run au port 5433 pour éviter des problèmes si il y a deux bases de données. Surtout dans l'environnement de dev
+      - "5433:5432"
+    expose:
       - "5433:5432"
     volumes: 
       - postgres-plateforme:/var/lib/postgresql/data
