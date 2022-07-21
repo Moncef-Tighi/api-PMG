@@ -8,6 +8,9 @@ services:
     ports: 
       - "100:80"
       - "500:443"
+    expose:
+      - 100
+      - 500
     container_name: plateforme
     # container_name: nginx.plateforme.Dockerfile
     depends_on:
@@ -47,8 +50,6 @@ services:
     restart: always
     ports: 
     ## On le run au port 5433 pour éviter des problèmes si il y a deux bases de données. Surtout dans l'environnement de dev
-      - "5433:5432"
-    expose:
       - "5433:5432"
     volumes: 
       - postgres-plateforme:/var/lib/postgresql/data
