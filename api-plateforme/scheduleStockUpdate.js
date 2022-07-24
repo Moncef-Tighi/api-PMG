@@ -16,16 +16,16 @@ export const autoUpdateStock = new AsyncTask('simple task', async ()=> {
     console.log("---- New Update ----");
     const code_article = await articleAyantChange();
     console.log("Nombre d'articles ayant changés : ")
-    console.log(code_article.length);
+    console.log(code_article);
     if (!code_article) return;
     const articlesInPlateforme= await findArticles(code_article)
     console.log("Articles sur la plateforme ayant changé :")
     console.log(articlesInPlateforme);
-    if (!articlesInPlateforme) return;
+    if (articlesInPlateforme.length===0) return;
     const stockArticles = await findStockArticle(articlesInPlateforme);
     const update = await updateStockTaille(stockArticles);
     console.log("Nouveau stock : ");
-    console.log(update);
+    console.log(update.code_article + " " + update.stock_dimension);
     const updateWooCommerce = articlesInPlateforme.filter(article => {
         return update.find(articleUpdate => article.code_article===articleUpdate.code_article 
             && article.disponible!=articleUpdate.disponible);
