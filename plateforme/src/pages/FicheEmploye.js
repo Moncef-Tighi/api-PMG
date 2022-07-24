@@ -28,6 +28,7 @@ const FicheEmploye = function(props) {
     const handleClose = () => setOpen(false);
 
 
+    const [permission, setPermission] = useState();
     const [openNotif, setNotif] = useState("");
     const [err, setError] = useState("");
     const closeNotif = (event, reason) => {
@@ -38,8 +39,9 @@ const FicheEmploye = function(props) {
     const editEmploye =async  function(event) {
         event.preventDefault();
 
-        const {nom, prenom, email, poste ,active}= event.currentTarget?.elements
+        const {nom, prenom, email, poste ,active, permission}= event.currentTarget?.elements
 
+        console.log(permission);
         const data = {
             id_employe : id,
             nom : nom.value,
@@ -50,11 +52,12 @@ const FicheEmploye = function(props) {
 
         try {
             if (props.id) {
-                await axios.put(`${API_PLATEFORME}/employes/editProfile`, data, {
+               await axios.put(`${API_PLATEFORME}/employes/editProfile`, data, {
                     headers : {
                         "Authorization" : `Bearer ${authContext.token}`
                     }
                 })    
+                
             }else {
                 data.active = active.value==="oui" ? true : false 
                 await axios.put(`${API_PLATEFORME}/employes/modifier`, data, {
@@ -62,6 +65,40 @@ const FicheEmploye = function(props) {
                         "Authorization" : `Bearer ${authContext.token}`
                     }
                 })
+                if (id!==authContext.employe) {
+                    console.log(email.value)
+                    await axios.delete(`${API_PLATEFORME}/permissions/supprimer`, {
+                        "email": email.value,
+                        "role" : employe?.body?.permissions[0],
+                    }, {
+                        headers : {
+                            "Authorization" : `Bearer ${authContext.token}`
+                        }
+                    })
+                }
+
+                console.log("ok");
+                const addPermission = await axios.post(`${API_PLATEFORME}/permissions/ajouter`, {
+                    "email": email.value,
+                    "role" : permission.value
+                }, {
+                    headers : {
+                        "Authorization" : `Bearer ${authContext.token}`
+                    }
+                })
+                console.log(addPermission);
+                if (id===authContext.employe && permission.value==="admin") {
+                    console.log("delete admin")
+                    await axios.delete(`${API_PLATEFORME}/permissions/supprimer`, {
+                        "email": email.value,
+                        "role" : employe?.body?.permissions[0],
+                    }, {
+                        headers : {
+                            "Authorization" : `Bearer ${authContext.token}`
+                        }
+                    })
+                }
+
             }
             setNotif("L'employé a bien été modifié");
         } catch(error) {
@@ -96,19 +133,36 @@ const FicheEmploye = function(props) {
                         <InputLabel htmlFor="poste">Poste</InputLabel>
                         <OutlinedInput id='poste' color='primary' size='small' fullWidth={true} required
                         defaultValue={employe?.body?.poste} key={employe?.body?.poste+'poste'} />
+                        <div style={{display: "flex", justifyContent: "space-around"}}>
+
+                        <div>
                         <InputLabel htmlFor="active">Activé ?</InputLabel>
                         <NativeSelect variant='outlined'
-                            color='primary' sx={{marginTop : "15px"}}
+                            color='primary' 
                             defaultValue={"true"}
                             inputProps={{name: 'active',id: 'active',}}
                             >
                                 <option value={"oui"}>Oui</option>
                                 <option value={"non"}>Non</option>
                         </NativeSelect>
+                        </div>
+                        <div>
+                        <InputLabel htmlFor="permission">Permission</InputLabel>
+                        <NativeSelect variant='outlined' id='poste'
+                                color='primary'
+                                value={permission || employe?.body?.permissions[0]}
+                                onChange={(event)=> setPermission(event.target.value)}
+                                inputProps={{name: 'permission',id: 'permission'}}
+                                >
+                                    <option value={"modification"}>E-Commerce</option>
+                                    <option value={"community"}>Community manager</option>
+                                    <option value={"admin"}>Admin</option>
+                        </NativeSelect>
+                        </div>
+                    </div>
                     </>}
-                    <br/>
-                    <Button onClick={handleOpen} sx={{marginTop: "10px"}}>Change Password</Button>
 
+                    <Button onClick={handleOpen} sx={{marginTop: "10px"}}>Change Password</Button>
                     <div className={classes.flex}>
                     <Button color="primary" variant="contained" fullWidth={true}
                     size="large" type="submit">
