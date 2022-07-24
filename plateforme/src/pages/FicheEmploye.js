@@ -41,7 +41,6 @@ const FicheEmploye = function(props) {
 
         const {nom, prenom, email, poste ,active, permission}= event.currentTarget?.elements
 
-        console.log(permission);
         const data = {
             id_employe : id,
             nom : nom.value,
@@ -66,8 +65,8 @@ const FicheEmploye = function(props) {
                     }
                 })
                 if (id!==authContext.employe) {
-                    console.log(email.value)
-                    await axios.delete(`${API_PLATEFORME}/permissions/supprimer`, {
+                    console.log(employe?.body?.permissions[0])
+                    await axios.patch(`${API_PLATEFORME}/permissions/supprimer`, {
                         "email": email.value,
                         "role" : employe?.body?.permissions[0],
                     }, {

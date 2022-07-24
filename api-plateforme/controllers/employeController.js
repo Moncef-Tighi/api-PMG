@@ -86,6 +86,7 @@ export const modifyAnyEmploye = catchAsync( async function(request, response, ne
     newAction(request.user.id_employe,data.id_employe,"employe", "modification",
     `${request.user.nom} ${request.user.prenom} a modifié l'employé ${nom} ${prenom}`)
     delete data.password;
+
     return response.status(201).json({
         status: "ok",
         message : "L'employé a bien été modifié",

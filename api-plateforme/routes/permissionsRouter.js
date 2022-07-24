@@ -5,6 +5,6 @@ const router = express.Router();
 
 router.use(protect)
     router.post("/ajouter", restrict('admin'), controllers.emailAndRoleAndId , controllers.newPermission);
-    router.delete("/supprimer", restrict('admin') ,controllers.emailAndRoleAndId , controllers.removePermission);
+    router.patch("/supprimer", restrict('admin') ,controllers.emailAndRoleAndId , controllers.removePermission);
 
 export default router;
