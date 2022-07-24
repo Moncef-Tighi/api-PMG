@@ -11,6 +11,7 @@ export const checkDisponibilite = async function(articles) {
 
 export const readAllArticles = async function(param) {
     const query= new QueryPostGre("-date_ajout")
+
     if (param.code_article) {
         param["article.code_article"]=param.code_article;
         delete param.code_article;
@@ -28,7 +29,6 @@ export const readAllArticles = async function(param) {
         `
 
     const response = await db.query(sql, query.sanitize())
-
     return response.rows;
 
 }

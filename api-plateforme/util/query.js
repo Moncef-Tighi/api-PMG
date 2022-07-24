@@ -82,7 +82,7 @@ class Query {
                 if (param in this.operators) {
                     if (!fields[param]) throw this.errorHandeler( `Erreur de syntax, aucune valeur n'a été trouvé pour ${field}[${param}]`);
                     if (param === 'like') {
-                        result +=`${field} LIKE '%' || ${this.param}${i} || '%' `;
+                        result +=`LOWER(${field}) LIKE '%' || LOWER(${this.param}${i}) || '%' `;
                         //On est obligé d'inclure les " % " Après parce que le parser de MSSQL ne les gère pas
                     }
                     else {
