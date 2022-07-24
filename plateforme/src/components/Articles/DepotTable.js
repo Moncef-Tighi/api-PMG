@@ -49,7 +49,7 @@ export const DepotTable = function ({ taille, stock }) {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {Object.keys(find).map(depot => {
+                                    {Object.keys(find).filter(depot=> find[depot].stock>0).map(depot => {
                                         return (<TableRow key={depot}>
                                             <TableCell component="th" scope="row">
                                                 {depot}
@@ -58,6 +58,13 @@ export const DepotTable = function ({ taille, stock }) {
                                         </TableRow>);
                                     }
                                     )}
+                                    {Object.keys(find).filter(depot=> find[depot].stock>0).length===0 && 
+                                    <TableRow>
+                                        <TableCell component="th" scope="row">
+                                            L'article n'est disponible dans aucun dépot
+                                        </TableCell>
+                                    </TableRow>
+                                     }
                                 </TableBody>
                             </Table>
                         </Box>
