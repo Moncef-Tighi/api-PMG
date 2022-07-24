@@ -12,6 +12,7 @@ class Query {
         this.queryString={};
         //On sauvgarde les inputs dans cet attribut pour pouvoir les sanetize après
         this.inputs={};
+        this.i = 0;
     }
     
     errorHandeler = function(message, status="badQuery") {
@@ -65,7 +66,6 @@ class Query {
 
     _conditions(start) {
         let result = start;
-        let i=0;
         for (const field of Object.keys(this.queryString)) {
             if (this.reservedKeyWords.includes(field)) continue;
             
@@ -78,30 +78,30 @@ class Query {
             //Exemple : b>@b AND b<@b ne fonctionnerait pas. Mais b>@1 AND b<@2 fonctionne (les chiffres sont la valeur de i)
             //IDEE : MSSQL fait la sanitization auto avec param1, param2...
             for (const param of Object.keys(fields)) {
-                i++;
+                this.i++;
                 if (param in this.operators) {
                     if (!fields[param]) throw this.errorHandeler( `Erreur de syntax, aucune valeur n'a été trouvé pour ${field}[${param}]`);
                     if (param === 'like') {
-                        result +=`${field} LIKE '%' + ${this.param}${i} + '%' `;
+                        result +=`${field} LIKE '%' + ${this.param}${this.i} + '%' `;
                         //On est obligé d'inclure les " % " Après parce que le parser de MSSQL ne les gère pas
                     }
                     else {
-                        result+=`${field} ${this.operators[param]} ${this.param}${i}`; 
+                        result+=`${field} ${this.operators[param]} ${this.param}${this.i}`; 
                     }
-                    this.inputs[`${this.inputParam}${i}`]= fields[param];
+                    this.inputs[`${this.inputParam}${this.i}`]= fields[param];
                 }
                 else {
                         const params = this.queryString[field]
                         if (typeof params === 'string' || params instanceof String) {
-                            result+=`${field}=${this.param}${i}`;
-                            this.inputs[`${this.inputParam}${i}`]=params;
+                            result+=`${field}=${this.param}${this.i}`;
+                            this.inputs[`${this.inputParam}${this.i}`]=params;
                         }else{
                             //TODO: Remplacer la vraie value par le @ du prepared statement
                             let inOperator = "";
                             for (var y=0; y<params.length;y++) {
-                                inOperator+= `${this.param}${i},`;
-                                this.inputs[`${this.inputParam}${i}`]=params[y];
-                                i++;
+                                inOperator+= `${this.param}${this.i},`;
+                                this.inputs[`${this.inputParam}${this.i}`]=params[y];
+                                this.i++;
                             }
                             result+=`${field} IN (${inOperator.slice(0,-1)})`;
                         }
@@ -194,19 +194,19 @@ const query2= new Query("",["invalidField"]);
 // + query1.paginate(qs.parse("")));
 
 
-//Des querry qui doivent être valides pour WHERE: 
+// Des querry qui doivent être valides pour WHERE: 
 
 // console.log(query1.where(qs.parse("marque=nike&marque=adidas&a[gt]=10")))
 // console.log(query2.having(qs.parse("marque=adidas,nike&stock[gt]=10&stock[lte]=20")));
 // console.log(query2.where(qs.parse("stock[lt]=10&b=20&a[gt]=10")));
 // console.log(query1.where(qs.parse("GA_CODEARTICLE= 000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZ&GA_CODEARTICLE=000I-0HZv")))
 
-//Des querry qui devraient être valide pour SORT : 
+// // Des querry qui devraient être valide pour SORT : 
 
 // console.log(query1.sort(qs.parse("sort=-marque,+stock")));
 // console.log(query2.where(qs.parse("marque=adidas,nike&stock[gt]=10&stock[lte]=20")) + query1.sort(qs.parse("sort=-marque,+stock")) );
 
-//Des querry qui devraient être valide pour Paginate : 
+// // Des querry qui devraient être valide pour Paginate : 
 
 // console.log(query1.where(qs.parse("marque=adidas,nike&stock[gt]=10&stock[lte]=20"))
 // + query1.sort(qs.parse("sort=-marque,+stock")) 

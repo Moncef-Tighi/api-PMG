@@ -6,8 +6,8 @@ const query= new Query('-MAX(GA_DATEMODIF)');
 
 export const getAllArticles = async function(parametres,having={}, old=false) {
     
- 
     if (parametres[" "]) delete parametres[" "]
+
     if (!old) parametres.GA_DATEMODIF=qs.parse("[gt]=2021")
     const sql = `
     SELECT DISTINCT
@@ -42,6 +42,7 @@ export const getAllArticles = async function(parametres,having={}, old=false) {
     ${query.sort(parametres)}
     ${query.paginate(parametres)}
     `
+
     const request = new db.Request();
     query.sanitize(request);
     const data = await request.query(sql);
