@@ -10,7 +10,7 @@ export const emailAndRoleAndId = catchAsync(async function(request, response , n
     //Mais c'est ce qu'il y a de mieux pour améliorer la lisibilité et les options
     //à la fois côté programmation et côté historique des actions.
     //Toute fois, la requête n'a vraiment besoin que de l'id de l'employé et du rôle pour enregistrer le changement
-    
+
     if (!request.body.email){
         const id=request.body.id_employe
         if (!id) return(next(createError(404, `aucun employé n'a été trouvé`)))
@@ -59,6 +59,7 @@ export const newPermission = catchAsync( async function(request, response) {
 })
 
 export const removePermission = catchAsync(async function(request,response) {
+    console.log("ok");
     await model.deletePermission(request.body.id_employe, request.body.id_role);
 
     newAction(request.user.id_employe,request.body.id_employe,"employe", "admin",
