@@ -2,6 +2,7 @@ version: '2'
 services:
 
   plateforme:
+    restart: always
     build: 
       context: .
       dockerfile: Dockerfile.nginx
@@ -23,6 +24,7 @@ services:
 
 
   api-plateforme:
+    restart: always
     build: 
       context: ./api-plateforme
       dockerfile: api.plateforme.Dockerfile
@@ -37,6 +39,7 @@ services:
       - api-plateforme:/api-plateforme
 
   api-cegid: 
+    restart: always
     build: 
       context : ./api-cegid
       dockerfile: api.cegid.Dockerfile
