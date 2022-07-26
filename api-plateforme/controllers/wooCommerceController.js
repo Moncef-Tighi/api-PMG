@@ -129,6 +129,11 @@ export const insertTailleWooCommerce = catchAsync( async function(request, respo
         const page2 = await apiWooCommerce.get(`products/attributes/${id_taille_WooCommerce}/terms?per_page=100&page=2`)
         liste_taille_woocommerce.data.push(page2.data);
     }
+    if (liste_taille_woocommerce["X-WP-TotalPages"]>2) {
+        const page3 = await apiWooCommerce.get(`products/attributes/${id_taille_WooCommerce}/terms?per_page=100&page=3`)
+        liste_taille_woocommerce.data.push(page3.data);
+    }
+
 
     // ATTENTION ! Si l'inseriton a lieu plusieurs fois au lieu d'update, les tailles vont se répéter
     const insertionRequests = await insertion?.map( async info=> {
