@@ -119,15 +119,15 @@ export const insertTailleWooCommerce = catchAsync( async function(request, respo
     //L'id corresponds à celui de l'attribut taille dans wooCommerce
     const id_taille_WooCommerce= 1
     //Si une taille n'existe pas sur wooCommerce, il faut l'ajouter avant de pouvoir ajouter la taille de l'article
-    const liste_taille_woocommerce = await apiWooCommerce.get(`/wp-json/wc/v3/products/attributes/${id_taille_WooCommerce}/terms`)
+    const liste_taille_woocommerce = await apiWooCommerce.get(`products/attributes/${id_taille_WooCommerce}/terms`)
     console.log(liste_taille_woocommerce);
     // ATTENTION ! Si l'inseriton a lieu plusieurs fois au lieu d'update, les tailles vont se répéter
     const insertionRequests = await insertion?.map( async info=> {
         const variationInsert= variations.find(art=> art.code_article===info.code_article)
         return await apiWooCommerce.post(`products/${info.id}/variations/batch`,{
         create :  variationInsert.tailles.map(async taille=>{
-            if (!liste_taille_woocommerce.some(attribut=> attribut.name===taille.dimension)) {
-                await apiWooCommerce.post(`/wp-json/wc/v3/products/attributes/${id_taille_WooCommerce}/terms`, {name : taille.dimension})
+            if (!liste_taille_woocommerce?.data.some(attribut=> attribut.name===taille.dimension)) {
+                await apiWooCommerce.post(`products/attributes/${id_taille_WooCommerce}/terms`, {name : taille.dimension})
             }
             return {
                 stock_status: taille.stock > process.env.MINSTOCK ? "instock" : "outofstock", 
