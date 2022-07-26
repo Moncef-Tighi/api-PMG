@@ -12,6 +12,7 @@ export const checkDisponibilite = async function(articles) {
 export const readAllArticles = async function(param) {
     const query= new QueryPostGre("-date_ajout")
 
+    if (param[" "]) delete param[" "]
     if (param.code_article) {
         param["article.code_article"]=param.code_article;
         delete param.code_article;
@@ -27,7 +28,6 @@ export const readAllArticles = async function(param) {
         ${query.sort(param)}
         ${query.paginate(param)}
         `
-
     const response = await db.query(sql, query.sanitize())
     return response.rows;
 
