@@ -115,24 +115,32 @@ export const insertTailleWooCommerce = catchAsync( async function(request, respo
 
     if (!update && !insertion) return next(createError(400, "Aucune taille n'a été insérée ou modifiée sur WooCommerce"))
 
+    //ATTENTION ! IL FAUT MODIFIER MANUELLE L'ID. Si il y a un crash dans les variations c'est à cause de ça
+    //L'id corresponds à celui de l'attribut taille dans wooCommerce
+    const id_taille_WooCommerce= 1
+    //Si une taille n'existe pas sur wooCommerce, il faut l'ajouter avant de pouvoir ajouter la taille de l'article
+    const liste_taille_woocommerce = await apiWooCommerce.get(`/wp-json/wc/v3/products/attributes/${id_taille_WooCommerce}/terms`)
+    console.log(liste_taille_woocommerce);
     // ATTENTION ! Si l'inseriton a lieu plusieurs fois au lieu d'update, les tailles vont se répéter
     const insertionRequests = await insertion?.map( async info=> {
         const variationInsert= variations.find(art=> art.code_article===info.code_article)
         return await apiWooCommerce.post(`products/${info.id}/variations/batch`,{
-        create :  variationInsert.tailles.map(taille=>{
+        create :  variationInsert.tailles.map(async taille=>{
+            if (!liste_taille_woocommerce.some(attribut=> attribut.name===taille.dimension)) {
+                await apiWooCommerce.post(`/wp-json/wc/v3/products/attributes/${id_taille_WooCommerce}/terms`, {name : taille.dimension})
+            }
             return {
                 stock_status: taille.stock > process.env.MINSTOCK ? "instock" : "outofstock", 
                 regular_price: String(variationInsert.prix_initial),
                 sale_price: String(variationInsert.prix_vente) ,
                 attributes : [{
-                    id : 3,
+                    id : id_taille_WooCommerce,
                     option : taille.dimension
                 }]
             }
         })
         })
     })
-
     const updateRequests = await update?.map( async info=> {
 
         const allVariations = await apiWooCommerce.get(`products/${info.id}/variations`);
@@ -153,13 +161,13 @@ export const insertTailleWooCommerce = catchAsync( async function(request, respo
     const insertResult= await Promise.all(insertionRequests || []);
     const wooCommerceInsertVariation = insertResult?.map(promesse => promesse.data.create)
 
+    console.log(wooCommerceInsertVariation[0][0])
     const updateResult= await Promise.all(updateRequests || []);
     const wooCommerceUpdateVariation = updateResult?.map(promesse => promesse.data.update)
 
-
     //On ajoute les ID des articles sur la plateforme pour pouvoir update leur stock
     wooCommerceInsertVariation[0]?.forEach(async art=> await model.update_id_taille_wooCommerce(art.sku,  art.attributes[0].option, art.id ))
-    wooCommerceUpdateVariation[0]?.forEach(async art=> await model.update_id_taille_wooCommerce(art.sku,  art.attributes[0].option, art.id ))
+    wooCommerceUpdateVariation[0]?.forEach(async art=> await model.update_id_taille_wooCommerce(art.sku, art.attributes[0].option, art.id ))
     
     //Ces deux lignes sont bizarre mais elles sont nécessaire pour l'error handeling
     //Si la création d'une variation parmis toute les variations échoue ce n'est pas toute l'opération qui échoue
