@@ -6,9 +6,10 @@ import apiWooCommerce from './models/api.js';
 import pino from 'pino';
 import pretty from 'pino-pretty'
 import fs from "fs"
+import path from 'path';
 
 const date = new Date();
-fs.writeFileSync(`../logs-stock-update/update-du-${date.getDate()}-${date.getMonth()}-${date.getFullYear()}.log`,"",{encoding: "utf8"})
+fs.writeFileSync( path.resolve(`../logs-stock-update/update-du-${date.getDate()}-${date.getMonth()}-${date.getFullYear()}.log`),"",{encoding: "utf8"})
 const stream = [
     {stream: pretty({
         colorize: true,
