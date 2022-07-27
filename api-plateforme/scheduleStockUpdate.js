@@ -8,22 +8,23 @@ import pretty from 'pino-pretty'
 import fs from "fs"
 
 const date = new Date();
-fs.open(`../logs-stock-update/update-du-${date.getDate()}-${date.getMonth()}-${date.getFullYear()}.log`,"r", async function(err, fd) {
+fs.open(`../logs-stock-update/update-du-${date.getDate()}-${date.getMonth()}-${date.getFullYear()}.log`,"r", function(err, fd) {
     if (err) {
-        await fs.writeFile(`../logs-stock-update/update-du-${date.getDate()}-${date.getMonth()}-${date.getFullYear()}.log`,function(data) {
-            console.log("Log file created");
-        })
+        fs.writeFileSync(`../logs-stock-update/update-du-${date.getDate()}-${date.getMonth()}-${date.getFullYear()}.log`,"",{encoding: "utf8"})
     }
 })
-const stream = pretty({
-    colorize: true,
-    ignore: "pid, hostname",
-    hideObject: true,
-    append: true,
-})
-const logger= pino(stream,  
-    pino.destination(`../logs-stock-update/update-du-${date.getDate()}-${date.getMonth()}-${date.getFullYear()}.log`)
-)
+const stream = [
+    {stream: pretty({
+        colorize: true,
+        ignore: "pid, hostname",
+        hideObject: true,
+        }),
+    }, {
+        stream: pino.destination(`../logs-stock-update/update-du-${date.getDate()}-${date.getMonth()}-${date.getFullYear()}.log`)
+    }
+];
+
+const logger= pino({timestamp: pino.stdTimeFunctions.isoTime, base: undefined},pino.multistream(stream))
 
 export const autoUpdateStock = new AsyncTask('simple task', async ()=> {
     //TOUTE LES X MINUTES CETTE FONCTION EST EXECUTEE POUR METTRE A JOUR LE STOCK COTE PLATEFORME 
