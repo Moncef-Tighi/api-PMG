@@ -3,6 +3,25 @@ import axios from 'axios';
 import db from './models/postGreSql.js';
 import { updateStockTaille } from './models/article.js';
 import apiWooCommerce from './models/api.js';
+import pino from 'pino';
+import fs from "fs"
+
+fs.open(`../logs-stock-update/update-du-${getDate}-${getMonth}-${getFullYear}`,"r", async function(err, fd) {
+    if (err) {
+        await fs.writeFile(`../logs-stock-update/update-du-${getDate}-${getMonth}-${getFullYear}`)
+    }
+})
+
+const logger= pino(
+    {
+        prettyPrint: {
+            colorize: true,
+            levelFirst: true,
+            translateTime: "dd-mm-yyyy, h:MM:ss TT",
+        },
+    },
+    pino.destination(`../logs-stock-update/update-du-${getDate}-${getMonth}-${getFullYear}`)
+)
 
 export const autoUpdateStock = new AsyncTask('simple task', async ()=> {
     //TOUTE LES X MINUTES CETTE FONCTION EST EXECUTEE POUR METTRE A JOUR LE STOCK COTE PLATEFORME 
