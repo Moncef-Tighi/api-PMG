@@ -7,7 +7,7 @@ import * as model from '../models/article.js'
 
 //ATTENTION ! IL FAUT MODIFIER MANUELLE L'ID. Si il y a un crash dans les variations c'est à cause de ça
 //L'id corresponds à celui de l'attribut taille dans wooCommerce
-const id_taille_WooCommerce= 1
+const id_taille_WooCommerce= 3
 
 
 
