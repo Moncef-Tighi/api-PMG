@@ -17,7 +17,7 @@ const stream = [
     {stream: pretty({
         colorize: true,
         ignore: "pid, hostname",
-        hideObject: true,
+        hideObject: false,
         }),
     }, {
         stream: pino.destination(`../logs-stock-update/update-du-${date.getDate()}-${date.getMonth()}-${date.getFullYear()}.log`)
@@ -46,15 +46,13 @@ export const autoUpdateStock = new AsyncTask('simple task', async ()=> {
     if (articlesInPlateforme.length===0) return;
     const stockArticles = await findStockArticle(articlesInPlateforme);
     const update = await updateStockTaille(stockArticles);
-    logger.info("Nouveau stock : ");
-    logger.warn(update.code_article + " " + update.stock_dimension);
     const updateWooCommerce = articlesInPlateforme.filter(article => {
         return update.find(articleUpdate => article.code_article===articleUpdate.code_article 
             && article.disponible!=articleUpdate.disponible);
     })
 
     if (updateWooCommerce.length>0) {
-        logger.info("wooCommerce, articles qui doivent changer : ")
+        logger.info("wooCommerce, articles dont la status a changé : ")
         logger.warn(updateWooCommerce);
         const verifyArticles = new Set();
         updateWooCommerce.forEach(article=> verifyArticles.add(article.code_article));
@@ -92,8 +90,8 @@ export const findArticles = async function(articles) {
 
 
 const articleAyantChange= async () => {
-    const code_articles = await axios.get(`${process.env.API_CEGID}/articles/update/${process.env.UPDATE_STOCK_EVERY_MINUTE}`);
-    // const code_articles = await axios.get(`${process.env.API_CEGID}/articles/update/500000`);
+    // const code_articles = await axios.get(`${process.env.API_CEGID}/articles/update/${process.env.UPDATE_STOCK_EVERY_MINUTE}`);
+    const code_articles = await axios.get(`${process.env.API_CEGID}/articles/update/500000`);
 
     return code_articles.data.body.articles
 }
