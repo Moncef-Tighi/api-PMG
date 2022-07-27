@@ -27,6 +27,8 @@
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",
     "pg": "^8.7.3",
+    "pino": "^8.3.0",
+    "pino-pretty": "^8.1.0",
     "qs": "6.10.3",
     "toad-scheduler": "^1.6.0"
   },
