@@ -125,13 +125,13 @@ export const insertTailleWooCommerce = catchAsync( async function(request, respo
 
     //Si une taille n'existe pas sur wooCommerce, il faut l'ajouter avant de pouvoir ajouter la taille de l'article
     const liste_taille_woocommerce = await apiWooCommerce.get(`products/attributes/${id_taille_WooCommerce}/terms?per_page=100`)
-    if (liste_taille_woocommerce["X-WP-TotalPages"]>1) {
+    if (liste_taille_woocommerce.headers["x-wp-totalpages"]>1) {
         const page2 = await apiWooCommerce.get(`products/attributes/${id_taille_WooCommerce}/terms?per_page=100&page=2`)
-        liste_taille_woocommerce.data.push(page2.data);
+        liste_taille_woocommerce.data.push(...page2.data);
     }
-    if (liste_taille_woocommerce["X-WP-TotalPages"]>2) {
+    if (liste_taille_woocommerce.headers["x-wp-totalpages"]>2) {
         const page3 = await apiWooCommerce.get(`products/attributes/${id_taille_WooCommerce}/terms?per_page=100&page=3`)
-        liste_taille_woocommerce.data.push(page3.data);
+        liste_taille_woocommerce.data.push(...page3.data);
     }
 
 
