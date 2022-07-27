@@ -8,11 +8,7 @@ import pretty from 'pino-pretty'
 import fs from "fs"
 
 const date = new Date();
-fs.open(`../logs-stock-update/update-du-${date.getDate()}-${date.getMonth()}-${date.getFullYear()}.log`,"r", function(err, fd) {
-    if (err) {
-        fs.writeFileSync(`../logs-stock-update/update-du-${date.getDate()}-${date.getMonth()}-${date.getFullYear()}.log`,"",{encoding: "utf8"})
-    }
-})
+fs.writeFileSync(`../logs-stock-update/update-du-${date.getDate()}-${date.getMonth()}-${date.getFullYear()}.log`,"",{encoding: "utf8"})
 const stream = [
     {stream: pretty({
         colorize: true,
@@ -90,8 +86,8 @@ export const findArticles = async function(articles) {
 
 
 const articleAyantChange= async () => {
-    // const code_articles = await axios.get(`${process.env.API_CEGID}/articles/update/${process.env.UPDATE_STOCK_EVERY_MINUTE}`);
-    const code_articles = await axios.get(`${process.env.API_CEGID}/articles/update/500000`);
+    const code_articles = await axios.get(`${process.env.API_CEGID}/articles/update/${process.env.UPDATE_STOCK_EVERY_MINUTE}`);
+    // const code_articles = await axios.get(`${process.env.API_CEGID}/articles/update/500000`);
 
     return code_articles.data.body.articles
 }
