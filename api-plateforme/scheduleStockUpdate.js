@@ -4,23 +4,25 @@ import db from './models/postGreSql.js';
 import { updateStockTaille } from './models/article.js';
 import apiWooCommerce from './models/api.js';
 import pino from 'pino';
+import pretty from 'pino-pretty'
 import fs from "fs"
 
-fs.open(`../logs-stock-update/update-du-${getDate}-${getMonth}-${getFullYear}`,"r", async function(err, fd) {
+const date = new Date();
+fs.open(`../logs-stock-update/update-du-${date.getDate()}-${date.getMonth()}-${date.getFullYear()}.log`,"r", async function(err, fd) {
     if (err) {
-        await fs.writeFile(`../logs-stock-update/update-du-${getDate}-${getMonth}-${getFullYear}`)
+        await fs.writeFile(`../logs-stock-update/update-du-${date.getDate()}-${date.getMonth()}-${date.getFullYear()}.log`,function(data) {
+            console.log("Log file created");
+        })
     }
 })
-
-const logger= pino(
-    {
-        prettyPrint: {
-            colorize: true,
-            levelFirst: true,
-            translateTime: "dd-mm-yyyy, h:MM:ss TT",
-        },
-    },
-    pino.destination(`../logs-stock-update/update-du-${getDate}-${getMonth}-${getFullYear}`)
+const stream = pretty({
+    colorize: true,
+    ignore: "pid, hostname",
+    hideObject: true,
+    append: true,
+})
+const logger= pino(stream,  
+    pino.destination(`../logs-stock-update/update-du-${date.getDate()}-${date.getMonth()}-${date.getFullYear()}.log`)
 )
 
 export const autoUpdateStock = new AsyncTask('simple task', async ()=> {
@@ -32,27 +34,27 @@ export const autoUpdateStock = new AsyncTask('simple task', async ()=> {
     //Pour pouvoir envoyer ça il faut un algorithme qui va chercher si il y a eu un changement dans le status de l'article
     //Et envoyer une requête si c'est le cas
 
-    console.log("---- New Update ----");
+    logger.info("---- New Update ----");
     const code_article = await articleAyantChange();
-    console.log("Nombre d'articles ayant changés : ")
-    console.log(code_article);
+    logger.info("Nombre d'articles ayant changés : ")
+    logger.warn(code_article);
     if (code_article.length===0) return;
     const articlesInPlateforme= await findArticles(code_article)
-    console.log("Articles sur la plateforme ayant changé :")
-    console.log(articlesInPlateforme);
+    logger.info("Articles sur la plateforme ayant changé :")
+    logger.warn(articlesInPlateforme);
     if (articlesInPlateforme.length===0) return;
     const stockArticles = await findStockArticle(articlesInPlateforme);
     const update = await updateStockTaille(stockArticles);
-    console.log("Nouveau stock : ");
-    console.log(update.code_article + " " + update.stock_dimension);
+    logger.info("Nouveau stock : ");
+    logger.warn(update.code_article + " " + update.stock_dimension);
     const updateWooCommerce = articlesInPlateforme.filter(article => {
         return update.find(articleUpdate => article.code_article===articleUpdate.code_article 
             && article.disponible!=articleUpdate.disponible);
     })
 
     if (updateWooCommerce.length>0) {
-        console.log("wooCommerce, articles qui doivent changer : ")
-        console.log(updateWooCommerce);
+        logger.info("wooCommerce, articles qui doivent changer : ")
+        logger.warn(updateWooCommerce);
         const verifyArticles = new Set();
         updateWooCommerce.forEach(article=> verifyArticles.add(article.code_article));
         const existingArticleWooCommerce = await apiWooCommerce.get(`products?sku=${Array.from(verifyArticles).join(",")}`)
@@ -69,7 +71,7 @@ export const autoUpdateStock = new AsyncTask('simple task', async ()=> {
         })
     }
 }, (error) =>{
-    console.log(`La mise à jour automatique du stock n'a pas eu lieu à cause de cette erreur : 
+    logger.error(`La mise a jour automatique du stock n'a pas eu lieu a cause de cette erreur : 
     ${error}`);
 })
 
