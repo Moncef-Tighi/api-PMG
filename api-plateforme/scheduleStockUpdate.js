@@ -31,8 +31,9 @@ export const autoUpdateStock = new AsyncTask('simple task', async ()=> {
     //Pour pouvoir envoyer ça il faut un algorithme qui va chercher si il y a eu un changement dans le status de l'article
     //Et envoyer une requête si c'est le cas
 
-    logger.info("---- New Update ----");
     const code_article = await articleAyantChange();
+    if (!code_article) return;
+    logger.info("---- New Update ----");
     logger.info("Nombre d'articles ayant changés : ")
     logger.warn(code_article);
     if (code_article.length===0) return;
