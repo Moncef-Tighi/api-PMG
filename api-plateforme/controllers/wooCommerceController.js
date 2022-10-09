@@ -62,14 +62,16 @@ export const insertArticlesWooCommerce = catchAsync( async function(request, res
     creationWooCommerce.data?.create?.forEach(async (art)=> await model.update_id_wooCommerce(art.sku, art.id ))
     creationWooCommerce.data?.update?.forEach(async (art)=> await model.update_id_wooCommerce(art.sku, art.id ))
     
+
     //Ajout des brands aux articles
-    creationWooCommerce.data?.create?.forEach(async(art)=> {
-        const article = insertArticles.find(inserted => inserted.code_article===art.sku);
-        console.log(article);
-        const id = marques_id.find(marque => marque?.slug===article?.marque).id
-        console.log(id);
-        await apiWooCommerce.put(`products/${art.id}`, {brands: [id]})
-    })
+    //On a besoin de le faire séparément parce que les brands sont un module (payants)
+    if (marques_id) {
+        creationWooCommerce.data?.create?.forEach(async(art)=> {
+            const article = insertArticles.find(inserted => inserted.code_article===art.sku);
+            const id = marques_id.data.find(marque => marque?.slug===article?.marque?.toLowerCase())?.id
+            if (id) await apiWooCommerce.put(`products/${art.id}`, {brands: [id]})
+        })
+    }
     
     return response.status(201).json({
         status: "ok",
