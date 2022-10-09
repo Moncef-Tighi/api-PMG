@@ -49,7 +49,9 @@ export const DepotTable = function ({ taille, stock }) {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {Object.keys(find).filter(depot=> find[depot].stock>0).map(depot => {
+                                    {Object.keys(find).filter(depot=> typeof find[depot].stock=== "number"
+                                    && find[depot].stock!==0)
+                                    .map(depot => {
                                         return (<TableRow key={depot}>
                                             <TableCell component="th" scope="row">
                                                 {depot}

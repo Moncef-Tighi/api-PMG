@@ -277,7 +277,7 @@ export const getImages = catchAsync(async function(request,response,next) {
 
     const code_articles = request.body.code_articles;
     if (!code_articles) return next(createError(400, "Impossible de trouver le code article pour les images"))
-    if (code_articles.constructor !== Array) return next(createError(400, "La liste des code article doit être un array"))
+    if (!code_articles instanceof Array) return next(createError(400, "La liste des code article doit être un array"))
 
     const result = {};
     code_articles.forEach(async code_article=> {
