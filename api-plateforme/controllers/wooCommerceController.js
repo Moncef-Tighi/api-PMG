@@ -273,30 +273,6 @@ export const getCategorie = catchAsync(async function(request, response, next) {
 
 })
 
-export const getImages = catchAsync(async function(request,response,next) {
-
-    const code_articles = request.body.code_articles;
-    if (!code_articles) return next(createError(400, "Impossible de trouver le code article pour les images"))
-    if (!code_articles instanceof Array) return next(createError(400, "La liste des code article doit être un array"))
-
-    const result = {};
-    code_articles.forEach(async code_article=> {
-        const response = await axios.get(`${WOOCOMMERCE_URL}/wp-json/wp/v2/media?search=${code_article}`);
-        console.log(response);
-        if (!result[code_article]) result[code_article]= []; 
-        response.forEach(image=> result[code_article].push(image.guid.rendered))
-        console.log(result[code_article]);
-    })
-    console.log(result);
-
-    return response.status(200).json({
-        status: "ok",
-        body: {
-            images: result
-        }
-    })
-})
-
 export const getCategorieForArticle = catchAsync(async function(request,response,next) {
     const articles = request.body;
     if (!articles) return next(createError(400, "Aucun article n'a été trouvé"));
