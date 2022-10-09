@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom"
-import { API_CEGID } from "..";
+import { API_CEGID, WOOCOMMERCE_URL } from "..";
 import TailleTable from "../components/Table/TailleTable";
 import classes from './FicheArticle.module.css';
 
@@ -35,10 +35,13 @@ const FicheArticle = function() {
     const [article, setArticle] =  useState(emptyArticle);
     const [stock, setStock] =  useState([]);
     const [taille, setTaille] =  useState([]);
+    const [src, setSrc] =  useState("");
 
     useEffect(()=> {
         const fetch = async () => {
             try {
+                const image = await axios.get(`${WOOCOMMERCE_URL}/wp-json/wp/v2/media?search=${code_article}`);
+                if (image.data.length>0) setSrc(image.data[0].guid.rendered);
                 const {article, taille, stock} = await query(code_article)
                 setTaille(taille);
                 setStock(stock);
@@ -66,7 +69,11 @@ const FicheArticle = function() {
                 <h1 style={{marginLeft: '0px'}}>Code article : {code_article}</h1>
                 <h2 className={article.prixActuel? classes.prixInitial : classes.prixUnique}>Prix Initial : {article.prixInitial} DA</h2>
                 {article.prixActuel ? <h2>Prix Actuel : {article.prixActuel } DA</h2> : ""}
-                <img style={{width:"300px", height:"300px", backgroundColor: "lightgrey"}} alt="illustration de l'article"></img>
+                <img 
+                src={src}
+                style={{minWidth:"200px", minHeight:"200px", maxWidth: "400px", maxHeight: "400px",
+                 backgroundColor: "lightgrey", marginTop: "20px"}} alt="Aucune image trouvée"
+                ></img>
             </div>
             <TailleTable tailles={taille} stock={stock}/>
             <div>
