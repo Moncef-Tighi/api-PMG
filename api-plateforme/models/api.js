@@ -20,7 +20,7 @@ try {
 }
 
 //On récupère l'id des marques parce qu'on en a besoin pour ajouter une brand à un article
-if (process.env.NODE_ENV="production") {
+if (process.env.NODE_ENV==="production") {
     var value = await apiWooCommerce.get("products/brands?per_page=100");
 } else {
     //J'ai besoin de faire ça parce que le module brand est payant, donc je ne l'ai pas en dev

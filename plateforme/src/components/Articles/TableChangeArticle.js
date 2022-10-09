@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import TableCustom from "../Table/TableCustom";
 import TableHeadCustom from "../Table/TableHeadCustom";
 import { TableCell, TableRow, TableBody } from "@mui/material";
-import {API_CEGID, API_PLATEFORME} from "../..";
+import {API_CEGID, API_PLATEFORME, WOOCOMMERCE_URL} from "../..";
 import axios from "axios";
 
 
@@ -72,8 +72,15 @@ function TableChangeArticles({setSelectedCategories, selection, selectedCategori
                 setSelectedCategories({});
                 try {
                     const data = await findTailles(selection);
+                    await Object.keys(data).forEach(async code_article=> {
+                        const response = await axios.get(`${WOOCOMMERCE_URL}/wp-json/wp/v2/media?search=${code_article}`);
+                        data[code_article].images=response?.data.map(image=> {
+                            return image.guid.rendered
+                        })
+                    })
                     const categorie = await getCategories();
                     setCategories(categorie);
+
                     setArticles(()=> data);
                     
                     if (initialCategories) {
