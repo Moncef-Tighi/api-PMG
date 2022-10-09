@@ -2,7 +2,7 @@ import { catchAsync } from "./errorController.js";
 import createError from 'http-errors';
 import apiWooCommerce from "../models/api.js";
 import * as model from '../models/article.js'
-
+import { marques_id } from "../models/api.js";
 
 
 //ATTENTION ! IL FAUT MODIFIER MANUELLE L'ID. Si il y a un crash dans les variations c'est à cause de ça
@@ -63,7 +63,13 @@ export const insertArticlesWooCommerce = catchAsync( async function(request, res
     creationWooCommerce.data?.update?.forEach(async (art)=> await model.update_id_wooCommerce(art.sku, art.id ))
     
     //Ajout des brands aux articles
-    creationWooCommerce.data?.create?.forEach(async(art)=> await model.addBrand(art.id))
+    creationWooCommerce.data?.create?.forEach(async(art)=> {
+        const article = insertArticles.find(inserted => inserted.code_article===art.sku);
+        console.log(article);
+        const id = marques_id.find(marque => marque?.slug===article?.marque).id
+        console.log(id);
+        await apiWooCommerce.put(`products/${art.id}`, {brands: [id]})
+    })
     
     return response.status(201).json({
         status: "ok",
