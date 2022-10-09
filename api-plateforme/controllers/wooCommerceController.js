@@ -62,6 +62,8 @@ export const insertArticlesWooCommerce = catchAsync( async function(request, res
     creationWooCommerce.data?.create?.forEach(async (art)=> await model.update_id_wooCommerce(art.sku, art.id ))
     creationWooCommerce.data?.update?.forEach(async (art)=> await model.update_id_wooCommerce(art.sku, art.id ))
     
+    //Ajout des brands aux articles
+    creationWooCommerce.data?.create?.forEach(async(art)=> await model.addBrand(art.id))
     
     return response.status(201).json({
         status: "ok",
