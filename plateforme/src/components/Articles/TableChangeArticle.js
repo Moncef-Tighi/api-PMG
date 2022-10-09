@@ -16,6 +16,7 @@ const header = [
     { name: "Gender", sort: false},
     { name: "Division", sort: false},
     { name: "Silhouette", sort: false},
+    { name: "Images", sort: false},
     { name: "Prix Initial", sort: false},
     { name: "Prix de vente", sort: false},
     { name: "Categories", sort: false},
@@ -73,8 +74,9 @@ function TableChangeArticles({setSelectedCategories, selection, selectedCategori
                 try {
                     const data = await findTailles(selection);
                     await Object.keys(data).forEach(async code_article=> {
+                        //Ce code réccupérer l'URL des images de wordpress
                         const response = await axios.get(`${WOOCOMMERCE_URL}/wp-json/wp/v2/media?search=${code_article}`);
-                        data[code_article].images=response?.data.map(image=> {
+                        data[code_article].images=response.data.map(image=> {
                             return image.guid.rendered
                         })
                     })
@@ -126,6 +128,9 @@ function TableChangeArticles({setSelectedCategories, selection, selectedCategori
                     <TableCell align="left">{articles[code_article].gender}</TableCell>
                     <TableCell align="left">{articles[code_article].division}</TableCell>
                     <TableCell align="left">{articles[code_article].silhouette}</TableCell>
+                    <TableCell align="center"
+                    sx={{color : articles[code_article].images?.length===0 ? "red" : "green"}}
+                    >{articles[code_article].images?.length}</TableCell>
                     <TableCell align="center" sx={{maxWidth: "25px"}}>{numberWithDots(articles[code_article].GA_PVTTC || articles[code_article].prix_initial)}</TableCell>
                     <TableCell align="center" sx={{maxWidth: "25px"}}>
                         <Input color="primary" id={`${code_article}-prixVente`} 
