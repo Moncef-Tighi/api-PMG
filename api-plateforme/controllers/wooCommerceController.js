@@ -8,7 +8,7 @@ import axios from "axios";
 
 //ATTENTION ! IL FAUT MODIFIER MANUELLE L'ID. Si il y a un crash dans les variations c'est à cause de ça
 //L'id corresponds à celui de l'attribut taille dans wooCommerce
-const id_taille_WooCommerce= 3
+const id_taille_WooCommerce= process.env.NODE_ENV==="production" ? 3 : 1
 
 
 
@@ -23,7 +23,7 @@ export const insertArticlesWooCommerce = catchAsync( async function(request, res
 
     const data = {
         create : insertArticles?.map(article=>{
-            return {
+            const data =  {
                 name : article.libelle,
                 type: "variable",
                 regular_price: String(article.prix_initial),
@@ -38,16 +38,22 @@ export const insertArticlesWooCommerce = catchAsync( async function(request, res
                     options :  article.tailles.map(dim => dim.dimension)
                 }],
                 categories : article?.categorie?.map(cat=> {return {"id" : cat}}) || []
-            }}),
+            }
+            if (article.images) data.images = article.images.map(image=>{ return {id : image }});
+            return data
+        }),
         update : updateArticles?.map(article=> {
-            return {
+            const data = {
                 id: wooCommerceExistance.data.find(art=> art.sku===article.code_article).id,
                 default_attributes: {
-                sale_price: String(article.prix_vente),
-                date_modified: Date.now(),
-                name : article.libelle,
-                categories : article.categorie ? article.categorie.map(cat=> {return {"id" : cat}}) : []
-        }}
+                    sale_price: String(article.prix_vente),
+                    date_modified: Date.now(),
+                    name : article.libelle,
+                    categories : article.categorie ? article.categorie.map(cat=> {return {"id" : cat}}) : []
+                }
+            }
+            if (article.images) article.images.map(image=>{ return {id : image }})
+            return data;
     })}
     const creationWooCommerce = await apiWooCommerce.post('products/batch', data)
 
