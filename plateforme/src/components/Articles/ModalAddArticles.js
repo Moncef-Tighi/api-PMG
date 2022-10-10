@@ -2,7 +2,7 @@ import { Modal, Box, Button } from "@mui/material"
 import { useContext, useReducer, useState } from "react";
 import classes from './ModalAddArticles.module.css';
 import axios from "axios";
-import {  API_PLATEFORME } from "../..";
+import {  API_PLATEFORME, WOOCOMMERCE_URL } from "../..";
 import Notification from "../util/Util";
 import AuthContext from "../../state/AuthContext";
 import TableChangeArticles from "./TableChangeArticle";
@@ -35,6 +35,12 @@ const ModalAddArticles = function({open, onClose, selection}) {
         try {
             let article= [];
             for (const code_article of Object.keys(selection)) {
+                
+                //Je réccupère les images deux fois faute d'échange de données. À améliorer.
+                const response = await axios.get(`${WOOCOMMERCE_URL}/wp-json/wp/v2/media?search=${code_article}`);
+                selection[code_article].images=response.data.map(image=> {
+                    return image.id
+                })
                 article.push({
                     "code_article" : code_article,
                     "marque" : selection[code_article].marque,
@@ -46,6 +52,7 @@ const ModalAddArticles = function({open, onClose, selection}) {
                     "prix_initial" : selection[code_article].GA_PVTTC,
                     "prix_vente" : inputs[`${code_article}-prixVente`].value,
                     "description" : "",
+                    "images" : selection[code_article].images || [],
                     tailles : [],
                     categorie : selectedCategories[code_article],
                 })

@@ -77,7 +77,7 @@ function TableChangeArticles({setSelectedCategories, selection, selectedCategori
                         //Ce code réccupérer l'URL des images de wordpress
                         const response = await axios.get(`${WOOCOMMERCE_URL}/wp-json/wp/v2/media?search=${code_article}`);
                         data[code_article].images=response.data.map(image=> {
-                            return image.guid.rendered
+                            return image.id
                         })
                     })
                     const categorie = await getCategories();
