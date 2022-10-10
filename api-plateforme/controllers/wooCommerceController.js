@@ -106,14 +106,16 @@ export const updateArticleWooCommerce = catchAsync(async function(request,respon
 
     const data = {
         update : updateArticles?.map(article=> {
-            return {
+            const info = {
                 id: wooCommerceExistance.data.find(art=> art.sku===article.code_article).id,
                 default_attributes: {
                 sale_price: String(article.prix_vente),
                 date_modified: Date.now(),
                 name : article.libelle,
                 categories : article.categorie ? article.categorie.map(cat=> {return {"id" : cat}}) : []
-        }}
+            }}
+            if (article.images) info.images = article.images.map(image=>{ return {id : image }});
+            return info
     })}
     const updateWooCommerce = await apiWooCommerce.post('products/batch', data)
 
