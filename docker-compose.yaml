@@ -40,6 +40,7 @@ services:
 
   api-cegid: 
     restart: always
+    mem_limit: 1000000000
     build: 
       context : ./api-cegid
       dockerfile: api.cegid.Dockerfile
