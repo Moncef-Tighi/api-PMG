@@ -3,7 +3,6 @@ import createError from 'http-errors';
 import apiWooCommerce from "../models/api.js";
 import * as model from '../models/article.js'
 import { marques_id } from "../models/api.js";
-import axios from "axios";
 
 
 //ATTENTION ! IL FAUT MODIFIER MANUELLE L'ID. Si il y a un crash dans les variations c'est à cause de ça

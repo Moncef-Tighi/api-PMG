@@ -58,8 +58,8 @@ export const infoArticle = async function(parametre) {
     ,MAX(GA_DATECREATION) AS 'GA_DATECREATION'
     ,MAX(GA_LIBELLE) AS 'GA_LIBELLE'
     ,GF_PRIXUNITAIRE as 'prixActuel'
-    , MAX(GA_PVTTC) as 'prixInitial',
-    MAX(GF_DATEMODIF) as 'dernierTarif'
+    ,MAX(GA_PVTTC) as 'prixInitial'
+    ,MAX(GF_DATEMODIF) as 'dernierTarif'
     ,MAX(GF_LIBELLE) as 'descriptionTarif'
     ,MAX(GF_DATEDEBUT) as 'GF_DATEDEBUT'
     ,MAX(GF_DATEFIN)as 'GF_DATEFIN'

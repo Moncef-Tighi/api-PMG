@@ -1,19 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-// import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter} from 'react-router-dom'
 import { AuthContextProvider } from './state/AuthContext';
 
-export const API_PLATEFORME = 'http://192.168.0.78:4001/plateforme/api/v1';
-export const API_CEGID = 'http://192.168.0.78:5000/cegid/api/v1';
-export const WOOCOMMERCE_URL= "https://www.pmg.dz"
+// export const API_PLATEFORME = 'http://192.168.0.78:4001/plateforme/api/v1';
+// export const API_CEGID = 'http://192.168.0.78:5000/cegid/api/v1';
+// export const WOOCOMMERCE_URL= "https://www.pmg.dz"
 
-// export const API_PLATEFORME = 'http://localhost:4001/plateforme/api/v1';
-// export const API_CEGID = 'http://localhost:5000/cegid/api/v1';
-// export const WOOCOMMERCE_URL= "http://localhost/pmg-test"
+export const API_PLATEFORME = 'http://localhost:4001/plateforme/api/v1';
+export const API_CEGID = 'http://localhost:5000/cegid/api/v1';
+export const WOOCOMMERCE_URL= "http://localhost/pmg-test"
 
 ReactDOM.render(
   <AuthContextProvider>
