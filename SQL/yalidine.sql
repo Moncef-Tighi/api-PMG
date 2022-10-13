@@ -32,3 +32,11 @@ FROM ventes
 WHERE new_frais_livraison>0 AND frais_livraison>0 
 
 -------------------
+
+SELECT wilaya, MAX(frais_livraison) AS "Yalidine", AVG(new_frais_livraison) AS "Meslves", COUNT(wilaya) AS "nombre_livraison" 
+FROM ventes
+WHERE new_frais_livraison>0 AND `dernier_statut`="Livré"
+GROUP BY wilaya
+ORDER BY COUNT(wilaya) DESC
+
+
