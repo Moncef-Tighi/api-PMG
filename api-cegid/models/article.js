@@ -50,6 +50,7 @@ export const getAllArticles = async function(parametres,having={}, old=false) {
 
 export const infoArticle = async function(parametre) {
 
+    const currentDate= process.env.NODE_ENV==="production" ? "GETDATE()" : "2021-12-10"
     const data = await db.query `
     SELECT DISTINCT TOP 1
     GA_CODEARTICLE
@@ -70,20 +71,19 @@ export const infoArticle = async function(parametre) {
     FROM ARTICLE 
     LEFT OUTER JOIN TARIF ON TARIF.GF_ARTICLE = ARTICLE.GA_ARTICLE
     LEFT OUTER JOIN TARIFMODE ON TARIF.GF_TARFMODE = TARIFMODE.GFM_TARFMODE 
-    LEFT JOIN CHOIXCOD AS a ON a.CC_CODE=GA_FAMILLENIV1
-    LEFT JOIN CHOIXCOD AS b ON b.CC_CODE=GA_FAMILLENIV2    
     WHERE 
-    GF_DATEFIN>=GETDATE() AND GF_DATEDEBUT<=GETDATE()  AND
+    GF_DATEFIN>=${currentDate} AND GF_DATEDEBUT<=${currentDate} AND
     GF_FERME='-' AND
-    GA_CODEARTICLE = ${parametre} AND (
+    GA_CODEARTICLE=${parametre} AND
     (
-        (GF_REGIMEPRIX = 'TTC' AND ((GA_STATUTART='GEN' or GA_STATUTART='UNI')  
-        AND ( GFM_TYPETARIF IS NULL OR GFM_TYPETARIF IN ('','','001','RETAIL')) AND GF_ARTICLE<>'') AND GFM_NATURETYPE = 'VTE' ) 
-    )
-    OR GF_REGIMEPRIX IS NULL )
+        (
+            (GF_REGIMEPRIX = 'TTC' AND ((GA_STATUTART='GEN' or GA_STATUTART='UNI')  
+            AND ( GFM_TYPETARIF IS NULL OR GFM_TYPETARIF IN ('','','001','RETAIL')) AND GF_ARTICLE<>'') AND GFM_NATURETYPE = 'VTE' ) 
+        )
+        OR GF_REGIMEPRIX IS NULL )
     
-     GROUP BY GA_CODEARTICLE,GF_PRIXUNITAIRE, GA_PVTTC
-     ORDER BY GF_PRIXUNITAIRE DESC`;
+    GROUP BY GA_CODEARTICLE,GF_PRIXUNITAIRE, GA_PVTTC
+    ORDER BY GF_PRIXUNITAIRE DESC`;
     return data.recordset;
 
 }
@@ -101,7 +101,11 @@ export const dispoArticleTaille = async function(article, field='GA_CODEARTICLE'
     GA_CODEBARRE,
     ISNULL(GDI1.GDI_LIBELLE , GDI2.GDI_LIBELLE) AS 'dimension',
     SUM(GQ_PHYSIQUE-GQ_RESERVECLI+GQ_RESERVEFOU-GQ_PREPACLI) AS 'stockNet'
-    GQ_PHYSIQUE-GQ_RESERVECLI-GQ_PREPACLI
+    ,MAX(a.CC_LIBELLE) AS "marque"
+    ,MAX(b.CC_LIBELLE) AS "type"
+    ,MAX(GA_DATECREATION) AS 'GA_DATECREATION'
+    ,MAX(GA_LIBELLE) AS 'GA_LIBELLE'
+    ,MAX(GA_PVTTC) as 'prixInitial'
     FROM DISPO
 
     LEFT JOIN ARTICLE ON GA_ARTICLE=GQ_ARTICLE
@@ -110,7 +114,10 @@ export const dispoArticleTaille = async function(article, field='GA_CODEARTICLE'
         AND GDI1.GDI_TYPEDIM = 'DI1' 
     LEFT OUTER JOIN DIMENSION AS GDI2 ON ARTICLE.GA_GRILLEDIM2 = GDI2.GDI_GRILLEDIM 
         AND ARTICLE.GA_CODEDIM2 = GDI2.GDI_CODEDIM 
-        AND GDI2.GDI_TYPEDIM = 'DI2' `
+        AND GDI2.GDI_TYPEDIM = 'DI2'
+    LEFT JOIN CHOIXCOD AS a ON a.CC_CODE=GA_FAMILLENIV1
+    LEFT JOIN CHOIXCOD AS b ON b.CC_CODE=GA_FAMILLENIV2   
+    `
 
     if (Array.isArray(article)) {
         sql+= `${query.where(qs.parse(`${field}=`+ article.join(`&${field}=`)))}
