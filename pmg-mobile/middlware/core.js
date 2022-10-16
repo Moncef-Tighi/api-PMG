@@ -1,0 +1,1 @@
+"use strict";var core=function(a,b,c){c()};module.exports={core:core};

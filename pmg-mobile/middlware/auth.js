@@ -1,0 +1,1 @@
+"use strict";var _require=require("./errorHandler"),UnauthorizedError=_require.UnauthorizedError,Auth=function(a,b,c){return a.user?void c():c(new UnauthorizedError)};module.exports={Auth:Auth};

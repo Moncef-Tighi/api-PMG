@@ -1,0 +1,1 @@
+"use strict";var Joi=require("@hapi/joi");module.exports=Joi.object().keys({storeId:Joi.string().required()});

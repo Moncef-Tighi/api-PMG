@@ -1,0 +1,1 @@
+"use strict";var jwt=require("jsonwebtoken"),config=require("../config/config");module.exports={sign:function(b){return jwt.sign(b,config.secret)},verify:function(b){return jwt.verify(b,config.secret,{maxAge:config.token_exp})}};

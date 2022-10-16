@@ -1,0 +1,1 @@
+"use strict";var Enum=require("../lib/Enum"),modules=new Enum({ArticlesModule:"ArticlesModule",ReportsModule:"ReportsModule",FeedbacksModule:"FeedbacksModule",UsersModule:"UsersModule",ShiftsModule:"ShiftsModule",StatsModule:"StatsModule"},{});module.exports={modules:modules};

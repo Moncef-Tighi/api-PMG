@@ -1,0 +1,1 @@
+"use strict";var Joi=require("@hapi/joi");module.exports=Joi.object().keys({disabled:Joi.boolean(),username:Joi.string().min(1),password:Joi.string().allow("")["default"](""),accessStores:Joi.array().min(1).items(Joi.string().min(1)),accessZones:Joi.array().items(Joi.string())}).options({abortEarly:!1}).min(1);

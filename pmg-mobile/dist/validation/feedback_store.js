@@ -1,0 +1,1 @@
+"use strict";var Joi=require("@hapi/joi");module.exports=Joi.object().keys({title:Joi.string().required(),url:Joi.string().required(),visible:Joi.boolean().required()}).options({abortEarly:!1});

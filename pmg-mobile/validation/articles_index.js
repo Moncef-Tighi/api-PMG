@@ -1,0 +1,1 @@
+"use strict";var Joi=require("@hapi/joi");module.exports=Joi.object().keys({page:Joi.number().integer().min(0)["default"](0),search:Joi.string()});

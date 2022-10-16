@@ -1,0 +1,1 @@
+"use strict";var Joi=require("@hapi/joi");module.exports=Joi.object().keys({username:Joi.string().required(),password:Joi.string().required()}).options({abortEarly:!1});

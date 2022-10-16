@@ -1,0 +1,1 @@
+"use strict";var Enum=require("../lib/Enum"),accountType=new Enum({SellerAccount:"SELLER",UserAccount:"USER"},{});module.exports={accountType:accountType};

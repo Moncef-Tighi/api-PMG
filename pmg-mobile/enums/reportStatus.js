@@ -1,0 +1,1 @@
+"use strict";var Enum=require("../lib/Enum"),reportStatus=new Enum({Pending:"Pending",Rejected:"Rejected",Completed:"Completed"},{});module.exports={reportStatus:reportStatus};
