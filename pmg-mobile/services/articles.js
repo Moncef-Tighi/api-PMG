@@ -5,14 +5,18 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
     _require = require("../lib/db"),
     remoteDb = _require.remoteDb,
     articleQuery = function () {
-        return remoteDb("ARTICLE_MODE").where("GA_ESTPROFIL", "<>", "X").where("GA_TYPEARTICLE", "MAR").where("GA_FERME", "<>", "X")
+        return remoteDb("ARTICLE_MODE").
+        where("GA_ESTPROFIL", "<>", "X").
+        where("GA_TYPEARTICLE", "MAR").
+        where("GA_FERME", "<>", "X")
     },
     listArticlesQuery = function () {
         return articleQuery().select({
             codeArticle: "GA_CODEARTICLE",
             libelle: "GA_LIBELLE",
             marque: "CC2.CC_LIBELLE"
-        }).joinRaw("LEFT OUTER JOIN CHOIXCOD CC2 ON GA_FAMILLENIV1=CC2.CC_CODE AND CC2.CC_TYPE='FN1'").whereIn("GA_STATUTART", ["GEN", "UNI"])
+        }).joinRaw("LEFT OUTER JOIN CHOIXCOD CC2 ON GA_FAMILLENIV1=CC2.CC_CODE AND CC2.CC_TYPE='FN1'")
+        .whereIn("GA_STATUTART", ["GEN", "UNI"])
     },
     getArticleByBarcode = function (a) {
         return articleQuery().select({
@@ -28,7 +32,9 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
             statutArt: "GA_STATUTART",
             codeBarre: "GA_CODEBARRE",
             prixUnitaireTtc: "GA_PVTTC"
-        }).where("GA_CODEARTICLE", a).joinRaw("LEFT OUTER JOIN CHOIXCOD CC2 ON GA_FAMILLENIV1=CC2.CC_CODE AND CC2.CC_TYPE='FN1'").whereIn("GA_STATUTART", ["GEN", "UNI"]).limit(1).first()
+        }).where("GA_CODEARTICLE", a).
+        joinRaw("LEFT OUTER JOIN CHOIXCOD CC2 ON GA_FAMILLENIV1=CC2.CC_CODE AND CC2.CC_TYPE='FN1'")
+        .whereIn("GA_STATUTART", ["GEN", "UNI"]).limit(1).first()
     },
     getDepotStockFor = function (a) {
         return remoteDb("DISPO").select({
@@ -59,7 +65,17 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
                             dateDebut: "GF_DATEDEBUT",
                             dateFin: remoteDb.raw("DATEADD(day, 1, GF_DATEFIN)"),
                             typeTarif: "GFM_TYPETARIF"
-                        }).joinRaw("LEFT JOIN TARIFMODE ON GF_TARFMODE=GFM_TARFMODE").where("GF_FERME", "-").where("GF_REGIMEPRIX", "TTC").where("GF_NATUREAUXI", "CLI").where("GFM_NATURETYPE", "VTE").orderBy("GF_TARIF", "DESC"), b && e.where("GF_ARTICLE", b), c && e.where("GFM_TYPETARIF", c), d && e.where("GF_DATEDEBUT", "<=", d).where("GF_DATEFIN", ">", d), a.abrupt("return", e);
+                        }).joinRaw("LEFT JOIN TARIFMODE ON GF_TARFMODE=GFM_TARFMODE")
+                        .where("GF_FERME", "-")
+                        .where("GF_REGIMEPRIX", "TTC")
+                        .where("GF_NATUREAUXI", "CLI")
+                        .where("GFM_NATURETYPE", "VTE")
+                        .orderBy("GF_TARIF", "DESC"),
+                        b && e.where("GF_ARTICLE", b),
+                        c && e.where("GFM_TYPETARIF", c),
+                        d && e.where("GF_DATEDEBUT", "<=", d)
+                            .where("GF_DATEFIN", ">", d), 
+                        a.abrupt("return", e);
                     case 5:
                     case "end":
                         return a.stop();
