@@ -9,7 +9,10 @@ const query = async function(code_article) {
 
     const article = await axios.get(`${API_CEGID}/articles/${code_article}`);
     const detail_stock = await axios.get(article.data.details_stock);
-    return {article : article.data.body.info, taille : article.data.body.taille ,stock : detail_stock.data.body.depots}
+    console.log(article.data.body);
+    return {article : article.data.body,
+        taille : article.data.body.taille ,
+        stock : detail_stock.data.body.depots,}
 }
 
 const emptyArticle = {
@@ -84,17 +87,17 @@ const FicheArticle = function() {
                     <li><b>Date création : </b>{new Date(article.GA_DATECREATION).toLocaleDateString('fr-fr')  }</li>
                     {/* <li><b>LibreARTE : </b>{article.GA2_LIBREARTE  }</li> */}
                 </ul>
-                {article.prixActuel ?
+                {article.info ?
                 <>
-                    <h3>Informations Tarif :</h3>
+                    <h3>article.informations Tarif :</h3>
                     <ul>
-                        <li><b>Date du Tarif : </b>{ new Date(article.dernierTarif).toLocaleDateString('fr-fr') }</li>
-                        <li><b>Description Tarif : </b>{ article.descriptionTarif }</li>
-                        <li><b>Début Tarif : </b>{ new Date(article.GF_DATEDEBUT).toLocaleDateString('fr-fr') }</li>
-                        <li><b>Fin Tarif : </b>{ new Date(article.GF_DATEFIN).toLocaleDateString('fr-fr') }</li>
-                        <li><b>Type Tarif : </b>{ article.GFM_TYPETARIF }</li>
-                        <li><b>Nature Tarif : </b>{ article.GFM_NATURETYPE }</li>
-                        <li><b>PerTarif : </b>{ article.GFM_PERTARIF }</li>
+                        <li><b>Date du Tarif : </b>{ new Date(article.info.dernierTarif).toLocaleDateString('fr-fr') }</li>
+                        <li><b>Description Tarif : </b>{ article.info.descriptionTarif }</li>
+                        <li><b>Début Tarif : </b>{ new Date(article.info.GF_DATEDEBUT).toLocaleDateString('fr-fr') }</li>
+                        <li><b>Fin Tarif : </b>{ new Date(article.info.GF_DATEFIN).toLocaleDateString('fr-fr') }</li>
+                        <li><b>Type Tarif : </b>{ article.info.GFM_TYPETARIF }</li>
+                        <li><b>Nature Tarif : </b>{ article.info.GFM_NATURETYPE }</li>
+                        <li><b>PerTarif : </b>{ article.info.GFM_PERTARIF }</li>
                     </ul>
                 </> : <h3>Aucun Tarif trouvé</h3>
                  }

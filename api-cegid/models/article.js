@@ -52,14 +52,9 @@ export const infoArticle = async function(parametre) {
 
     const currentDate= process.env.NODE_ENV==="production" ? "GETDATE()" : "2021-12-10"
     const data = await db.query `
-    SELECT DISTINCT TOP 1
+    SELECT TOP 1
     GA_CODEARTICLE
-    ,MAX(a.CC_LIBELLE) AS "marque"
-    ,MAX(b.CC_LIBELLE) AS "type"
-    ,MAX(GA_DATECREATION) AS 'GA_DATECREATION'
-    ,MAX(GA_LIBELLE) AS 'GA_LIBELLE'
     ,GF_PRIXUNITAIRE as 'prixActuel'
-    ,MAX(GA_PVTTC) as 'prixInitial'
     ,MAX(GF_DATEMODIF) as 'dernierTarif'
     ,MAX(GF_LIBELLE) as 'descriptionTarif'
     ,MAX(GF_DATEDEBUT) as 'GF_DATEDEBUT'
@@ -67,12 +62,13 @@ export const infoArticle = async function(parametre) {
     ,MAX(GFM_TYPETARIF) as 'GFM_TYPETARIF'
     ,MAX(GFM_PERTARIF) as 'GFM_PERTARIF'
     ,MAX(GFM_NATURETYPE) as 'GFM_NATURETYPE'
-    
+        
     FROM ARTICLE 
     LEFT OUTER JOIN TARIF ON TARIF.GF_ARTICLE = ARTICLE.GA_ARTICLE
     LEFT OUTER JOIN TARIFMODE ON TARIF.GF_TARFMODE = TARIFMODE.GFM_TARFMODE 
+    
     WHERE 
-    GF_DATEFIN>=${currentDate} AND GF_DATEDEBUT<=${currentDate} AND
+    GF_DATEFIN>=GETDATE() AND GF_DATEDEBUT<=GETDATE() AND
     GF_FERME='-' AND
     GA_CODEARTICLE=${parametre} AND
     (

@@ -53,9 +53,9 @@ export const listArticles = catchAsync( async function(request, response,next){
 
 export const unArticle = catchAsync(async function(request, response, next) {
 
-    const infoArticle = await model.infoArticle(request.params.article);
-    if (infoArticle.length===0) return next(createError(400, "Aucun article avec ce code n'a été trouvé"))
     const taille = await model.dispoArticleTaille(request.params.article);
+    if (taille.length===0) return next(createError(400, "Aucun article avec ce code n'a été trouvé"))
+    const infoArticle = await model.infoArticle(request.params.article);
 
     //TODO : L'URL sera très certainement invalide en PROD
     return response.status(200).json({
@@ -64,6 +64,11 @@ export const unArticle = catchAsync(async function(request, response, next) {
         details_stock : encodeURI(`http://${request.get('host')}/cegid/api/v1/articles/detail_stock/${request.params.article}`),
         historiqueTarif : encodeURI(`http://${request.get('host')}/cegid/api/v1/cegid/tarifs/${request.params.article}`),
         body : {
+            marque : taille[0].marque,
+            type : taille[0].type,
+            "GA_DATECREATION" : taille[0].GA_DATECREATION,
+            "GA_LIBELLE" : taille[0].GA_LIBELLE,
+            prixInitial : taille[0].prixInitial,
             "info" : infoArticle[0],
             taille,
         }
