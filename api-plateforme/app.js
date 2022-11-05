@@ -2,7 +2,6 @@ import express from "express";
 import helmet from 'helmet';
 import createError from "http-errors";
 import cors from 'cors';
-
 import { errorHandeler } from "./controllers/errorController.js";
 import apiRouter from './routes/Router.js';
 //import produitsRouter from './routes/articlesRouter.js';
