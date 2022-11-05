@@ -1,6 +1,9 @@
 
 # Projet de plateforme E-Commerce
 
+
+
+
 Ce projet vise à créer une plateforme utiliser par l'équipe E-Commerce de l'entreprise PMG pour faciliter leur travail.
 Il y a trois objectifs principaux :
 
